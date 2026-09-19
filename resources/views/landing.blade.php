@@ -23,29 +23,7 @@
     </div>
 
     <!-- Encabezado -->
-    <header class="fixed top-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-        <div class="h-20 max-w-7xl mx-auto px-space-md lg:px-margin flex items-center justify-between">
-            <div class="flex items-center gap-space-lg">
-                <a class="flex items-center gap-space-sm group" data-path="inicio" href="#">
-                    <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-10 w-auto object-contain group-hover:scale-105 transition-transform"/>
-                    <div class="flex flex-col">
-                        <div class="flex items-center gap-space-xs">
-                            <span class="font-headline-md text-headline-md text-primary-container tracking-tight">Finora</span>
-                            <span class="px-space-xs py-[2px] rounded-lg bg-surface-container-low text-secondary font-label-sm text-label-sm uppercase tracking-wider">Catálogo Online</span>
-                        </div>
-                    </div>
-                </a>
-                <nav class="hidden lg:flex items-center gap-space-lg pl-space-md">
-                    <a class="transition-colors text-secondary font-title-md" data-path="inicio" href="#">Inicio</a>
-                    <a class="text-on-surface-variant hover:text-on-surface font-title-md text-title-md transition-colors" data-path="catalogo" href="#catalogo-destacados">Catálogo</a>
-                    <a class="text-on-surface-variant hover:text-on-surface font-title-md text-title-md transition-colors" data-path="categorias" href="#categorias">Categorías</a>
-                </nav>
-            </div>
-            <div class="flex items-center gap-space-md">
-                <a class="inline-flex items-center justify-center px-space-lg py-space-sm rounded-lg bg-gradient-to-r from-secondary-container to-secondary text-on-secondary font-title-md text-title-md shadow-[0_4px_14px_rgba(2,102,255,0.28)] hover:opacity-95 active:scale-98 transition-all" data-path="login" href="{{ route('login') }}">Iniciar sesión</a>
-            </div>
-        </div>
-    </header>
+    @include('partials.header')
 
     @php
     $categorias = [
@@ -273,90 +251,7 @@
     </main>
 
     <!-- Pie de página -->
-    <footer class="relative z-10 w-full bg-surface-container-low mt-space-2xl">
-        <div class="max-w-7xl mx-auto px-space-md lg:px-margin pt-space-2xl pb-space-xl">
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-space-xl">
-                <div class="lg:col-span-5 flex flex-col gap-space-md">
-                    <div class="flex items-center gap-space-sm">
-                        <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-8 w-auto object-contain"/>
-                        <span class="font-headline-sm text-headline-sm text-primary-container">Finora</span>
-                    </div>
-                    <p class="font-body-md text-body-md text-on-surface-variant max-w-sm">
-                        Plataforma de gestión comercial y catálogo digital para consultor independiente Natura.
-                    </p>
-                </div>
-                <div class="lg:col-span-3 flex flex-col gap-space-sm">
-                    <h3 class="font-title-md text-title-md text-on-surface">Categorías</h3>
-                    <ul class="flex flex-col gap-space-xs font-body-md text-body-md text-on-surface-variant">
-                        <li><a class="hover:text-secondary transition-colors" data-path="categorias" href="#categorias">Perfumería</a></li>
-                        <li><a class="hover:text-secondary transition-colors" data-path="categorias" href="#categorias">Cuidado Facial</a></li>
-                        <li><a class="hover:text-secondary transition-colors" data-path="categorias" href="#categorias">Maquillaje</a></li>
-                        <li><a class="hover:text-secondary transition-colors" data-path="categorias" href="#categorias">Cuidado Corporal</a></li>
-                    </ul>
-                </div>
-                <div class="lg:col-span-4 flex flex-col gap-space-sm">
-                    <h3 class="font-title-md text-title-md text-on-surface">Asistencia Directa</h3>
-                    <p class="font-body-md text-body-md text-on-surface-variant">¿Tienes dudas sobre algún producto? Chatea directamente con tu consultor.</p>
-                    <a class="inline-flex items-center justify-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container hover:text-on-surface font-title-md text-title-md shadow-[0_2px_8px_-2px_rgba(11,25,44,0.04)] transition-all" data-path="contacto-consultor" href="https://wa.me/?text=Hola%20deseo%20consultar%20el%20cat%C3%A1logo%20Finora" target="_blank" rel="noopener noreferrer">
-                        <span class="w-2 h-2 rounded-full bg-secondary-container"></span>
-                        WhatsApp Consultor
-                    </a>
-                </div>
-            </div>
-            <div class="mt-space-2xl pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md border-t border-surface-container-highest/60">
-                <p class="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Finora © {{ date('Y') }} - Catálogo digital para consultor independiente Natura. Todos los derechos reservados.</p>
-                <div class="flex items-center gap-space-lg font-body-sm text-body-sm text-on-surface-variant">
-                    <a class="hover:text-on-surface transition-colors" data-path="aviso-privacidad" href="#">Aviso de privacidad</a>
-                    <a class="hover:text-on-surface transition-colors" data-path="terminos-servicio" href="#">Términos de servicio</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 
-    <!-- Scripts para el buscador y filtros -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const productItems = document.querySelectorAll('.product-item');
-            const filterChips = document.querySelectorAll('.filter-chip');
-            const searchInput = document.getElementById('catalog-search');
-
-            let currentCategory = 'all';
-            let searchQuery = '';
-
-            function updateVisibility() {
-                productItems.forEach(item => {
-                    const catMatch = currentCategory === 'all' || item.getAttribute('data-cat') === currentCategory;
-                    const textMatch = !searchQuery || item.innerText.toLowerCase().includes(searchQuery);
-
-                    if (catMatch && textMatch) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            }
-
-            filterChips.forEach(chip => {
-                chip.addEventListener('click', () => {
-                    filterChips.forEach(c => {
-                        c.classList.remove('bg-secondary', 'text-on-secondary', 'shadow-sm', 'active');
-                        c.classList.add('bg-surface-container-low', 'text-primary-container');
-                    });
-                    chip.classList.add('bg-secondary', 'text-on-secondary', 'shadow-sm', 'active');
-                    chip.classList.remove('bg-surface-container-low', 'text-primary-container');
-
-                    currentCategory = chip.getAttribute('data-cat') || 'all';
-                    updateVisibility();
-                });
-            });
-
-            if (searchInput) {
-                searchInput.addEventListener('input', (e) => {
-                    searchQuery = e.target.value.toLowerCase().trim();
-                    updateVisibility();
-                });
-            }
-        });
-    </script>
 </body>
 </html>
