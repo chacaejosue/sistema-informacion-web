@@ -42,7 +42,7 @@
                 </nav>
             </div>
             <div class="flex items-center gap-space-md">
-                <a class="inline-flex items-center justify-center px-space-lg py-space-sm rounded-lg bg-gradient-to-r from-secondary-container to-secondary text-on-secondary font-title-md text-title-md shadow-[0_4px_14px_rgba(2,102,255,0.28)] hover:opacity-95 active:scale-98 transition-all" data-path="login" href="#">Iniciar sesión</a>
+                <a class="inline-flex items-center justify-center px-space-lg py-space-sm rounded-lg bg-gradient-to-r from-secondary-container to-secondary text-on-secondary font-title-md text-title-md shadow-[0_4px_14px_rgba(2,102,255,0.28)] hover:opacity-95 active:scale-98 transition-all" data-path="login" href="{{ route('login') }}">Iniciar sesión</a>
             </div>
         </div>
     </header>
