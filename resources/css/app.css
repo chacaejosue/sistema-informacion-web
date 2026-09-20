@@ -116,6 +116,13 @@
     display: none;
 }
 
+/* Ocultar el botón nativo de mostrar/ocultar contraseña del navegador */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
+
+
 /* Utilidades visuales y fondos interactivos Finora */
 .finora-gradient-btn {
     background: linear-gradient(135deg, #0050CC 0%, #0062FF 50%, #00D2DF 100%);

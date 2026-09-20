@@ -52,19 +52,19 @@
                 </div>
 
                 <!-- Formulario de autenticación -->
-                <form action="#" class="space-y-5" method="POST" onsubmit="event.preventDefault();">
+                <form action="{{ route('login.authenticate') }}" class="space-y-5" method="POST">
                     @csrf
 
-                    <!-- Campo: Correo electrónico o nombre de usuario -->
+                    <!-- Campo: Correo electrónico -->
                     <div>
                         <label class="block text-xs font-bold font-sans text-finora-navy mb-1.5" for="identity">
-                            Correo electrónico o usuario
+                            Correo electrónico
                         </label>
                         <div class="relative rounded-xl">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <span class="material-symbols-outlined text-[20px]">person</span>
                             </div>
-                            <input autocomplete="username" class="block w-full pl-10 pr-4 py-3 bg-[#F8FAFC] border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 text-finora-navy focus:bg-white focus:outline-none focus:ring-2 focus:ring-finora-blue focus:border-transparent transition-all" id="identity" name="identity" placeholder="Correo electrónico o nombre de usuario" required="" type="text"/>
+                            <input autocomplete="username" class="block w-full pl-10 pr-4 py-3 bg-[#F8FAFC] border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 text-finora-navy focus:bg-white focus:outline-none focus:ring-2 focus:ring-finora-blue focus:border-transparent transition-all" id="identity" name="identity" placeholder="tu@email.com" required="" type="email" value="{{ old('identity') }}"/>
                         </div>
                     </div>
 
@@ -89,12 +89,21 @@
                     <!-- Opción: Recordar sesión (recuperación de contraseña no implementada aún) -->
                     <div class="pt-1">
                         <label class="inline-flex items-center cursor-pointer select-none">
-                            <input class="h-4 w-4 rounded border-slate-300 text-finora-blue focus:ring-finora-blue cursor-pointer" id="remember-me" name="remember-me" type="checkbox"/>
+                            <input class="h-4 w-4 rounded border-slate-300 text-finora-blue focus:ring-finora-blue cursor-pointer" id="remember-me" name="remember" type="checkbox"/>
                             <span class="ml-2 text-xs font-medium text-finora-subtle">
                                 Recordar mi sesión
                             </span>
                         </label>
                     </div>
+
+                    {{-- Mensajes de error de autenticación --}}
+                    @if ($errors->any())
+                        <div role="alert" class="rounded-xl border border-red-200 bg-red-50 p-4">
+                            <p class="text-sm font-medium text-red-700">
+                                {{ $errors->first() }}
+                            </p>
+                        </div>
+                    @endif
 
                     <!-- Botón principal de acceso -->
                     <div class="pt-3">
