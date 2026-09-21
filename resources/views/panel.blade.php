@@ -106,23 +106,27 @@
             <!-- Cuadrícula con la estructura visual de los 6 módulos -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                <!-- Módulo 1: Productos -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
+                <!-- Módulo 1: Productos (Activo) -->
+                <a href="{{ route('panel.productos.index') }}" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-finora-blue transition-all flex flex-col justify-between relative overflow-hidden group">
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-finora-blue flex items-center justify-center">
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-finora-blue group-hover:bg-finora-blue group-hover:text-white transition-colors flex items-center justify-center">
                                 <span class="material-symbols-outlined text-2xl">package_2</span>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
-                                En preparación
+                            <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                Módulo Activo
                             </span>
                         </div>
-                        <h3 class="font-heading text-lg font-bold text-finora-navy">Productos</h3>
+                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-finora-blue transition-colors flex items-center gap-1">
+                            <span>Productos</span>
+                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                        </h3>
                         <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
-                            Gestión del catálogo de productos Natura, líneas, categorías y precios de referencia.
+                            Gestión del catálogo de productos, proveedores, líneas, categorías, precios y publicaciones.
                         </p>
                     </div>
-                </div>
+                </a>
 
                 <!-- Módulo 2: Compras -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">

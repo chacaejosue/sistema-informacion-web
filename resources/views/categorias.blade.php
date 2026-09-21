@@ -23,51 +23,11 @@
     <!-- Encabezado principal del sitio -->
     @include('partials.header')
 
-    @php
-        // Datos demostrativos de interfaz (sin MySQL ni inventario real)
-        $productos = [
-            [
-                'nombre' => 'Ilía Clásico Femenino 50ml',
-                'categoria' => 'Perfumería',
-                'clave' => 'perfumeria',
-                'descripcion' => 'Notas florales con jazmín y vainilla.',
-                'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuAXtGb-yTgj1NScMqY7sR_xLS8jNFHMJVOcvNNPumbDQGc3aT2Stp1l6NRz3vTaSbto60T8Z91LgptMo2i97T7S5Oq7zPtkwzyGJAtWrNBQ20HqFfpNTb3pZ2UaGt5BMLNPDrertfEZI6ohLwN0W-ODrVyLc_FDxDP1h-aZAFrWLbZAr5fyGnqQ2xIbq6YSQy1e8BhlovsC5mxSiG8sW7boqkpsRmr74YMGC3w1htf5qEGMUQzcDDOy',
-            ],
-            [
-                'nombre' => 'Chronos Gel Crema Antiseñales 30+',
-                'categoria' => 'Cuidado facial',
-                'clave' => 'facial',
-                'descripcion' => 'Tratamiento facial de la línea Chronos.',
-                'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDWlkYnIHu00cTU7Hr57G-L8Sje7fXhAIj2WBX5HBLAaeXmbdr-U1RUZGfFxiz4hphEaCoO7X2vKULB-g_33VEN5JjhIY33UoDFGyyL0J7gmep6Uh8gc2oUnfkIszmzWYvwOjpYL0H4w9UQQaFSi2s05RuLyrRBCLbCGqV5-zXrlOS90P3sDPeCGiAGDLjFqoQ2n5RGa2uo7WdUb5F6A0ZceHOrGDYrRs2K6yzwYK4vyim4XBpfCapz',
-            ],
-            [
-                'nombre' => 'Set Tododia Nuez Pecán y Cacao',
-                'categoria' => 'Cuidado corporal',
-                'clave' => 'corporal',
-                'descripcion' => 'Conjunto de productos corporales Tododia.',
-                'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuBM-yHExajLPg6IZwhc4VBHHVp5qJkLsJXhSlIYXOBHfD8ECFixSnkSbEtgASe6gHHOeDFfDuRRhOW-rtcM2EOmgaaIOMopJYPlXstVwIPSemDaq60dCO44qpz0P_Mi53AUSqYF6ddVWXt1cHAISn5KCuFOYQT5h6H4ypLOiwVx6JZvgqkoewR02OBXwNi9W7VwEdBvrVEvVB4gKrGb0ebF7vxFzw4SFn0hKxLOB07PzPJNgpTanFtt',
-            ],
-            [
-                'nombre' => 'Kaiak Aventura Masculino 100ml',
-                'categoria' => 'Perfumería',
-                'clave' => 'perfumeria',
-                'descripcion' => 'Fragancia masculina de la línea Kaiak.',
-                'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDIG2wP04rjfdzxvfVsXeXYk0srjLAzYfGG5ME3ozJkSg0bVPgZGB5HMR_I860WwD2gtc552COOZy2E0xcJLHavqzkyBVSjbvg0AwkMatrG6YHrLYeTqKwCIlDlj3G2ZwD8a94kZkab6peoAFnCoPGtinJBt1Li3VStFCdYRiposnF85aD2nTY3EnnFqMBmwdfErQ2rBAOQWWxsNTavv1_CNI5O1KGVLqQRPaUyL8s_9HyfbBPGBPEY',
-            ],
-        ];
-
-        $categorias = [
-            ['clave' => 'perfumeria', 'nombre' => 'Perfumería'],
-            ['clave' => 'facial', 'nombre' => 'Cuidado facial'],
-            ['clave' => 'corporal', 'nombre' => 'Cuidado corporal'],
-        ];
-    @endphp
-
     <!-- Contenido principal del catálogo por categorías -->
     <main id="catalogo" class="max-w-7xl mx-auto px-space-md lg:px-margin pt-28 pb-space-2xl">
         <!-- Encabezado y presentación de la página de categorías -->
         <div class="mb-space-xl">
-            <span class="text-secondary font-label-md uppercase tracking-wider">Catálogo demostrativo de Natura</span>
+            <span class="text-secondary font-label-md uppercase tracking-wider">Catálogo Comercial de Natura</span>
             <h1 class="font-headline-lg text-headline-lg text-primary-container mt-space-xs">Explora por categoría</h1>
             <p class="text-on-surface-variant mt-space-sm">Encuentra productos Natura por nombre o categoría.</p>
         </div>
@@ -80,9 +40,9 @@
                     <button type="button" data-category="all" aria-pressed="true"
                         class="category-filter rounded-lg px-space-md py-space-sm text-left bg-secondary text-on-secondary font-title-md transition-colors">Todas</button>
                     @foreach ($categorias as $categoria)
-                        <button type="button" data-category="{{ $categoria['clave'] }}" aria-pressed="false"
+                        <button type="button" data-category="{{ \Illuminate\Support\Str::slug($categoria->nombre) }}" aria-pressed="false"
                             class="category-filter rounded-lg px-space-md py-space-sm text-left bg-surface-container-low text-on-surface font-title-md hover:bg-surface-container-high transition-colors">
-                            {{ $categoria['nombre'] }}
+                            {{ $categoria->nombre }}
                         </button>
                     @endforeach
                 </div>
@@ -100,31 +60,34 @@
 
                 <!-- Contador dinámico de resultados -->
                 <p id="resultsCount" class="mb-space-md text-on-surface-variant" role="status" aria-live="polite">
-                    {{ count($productos) }} productos demostrativos
+                    {{ count($productos) }} {{ count($productos) === 1 ? 'producto disponible' : 'productos disponibles' }}
                 </p>
 
                 <!-- Rejilla con tarjetas de productos del catálogo -->
                 <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-space-lg">
                     @foreach ($productos as $producto)
-                        <article data-product-category="{{ $producto['clave'] }}"
+                        <article data-product-category="{{ \Illuminate\Support\Str::slug($producto->categoria->nombre) }}"
                             class="catalog-product flex flex-col overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
-                            <img src="{{ $producto['imagen'] }}" alt="Imagen de referencia: {{ $producto['nombre'] }}"
+                            <img src="{{ $producto->imagen_url ?: asset('images/branding/finora-icono.png') }}" alt="Imagen de referencia: {{ $producto->nombre }}"
                                 loading="lazy" class="aspect-square w-full object-cover bg-surface-container-low">
                             <div class="p-space-md flex flex-col gap-space-xs flex-1">
-                                <span class="text-secondary font-label-sm uppercase tracking-wider">Natura · {{ $producto['categoria'] }}</span>
-                                <h2 class="font-title-lg text-title-lg text-primary-container">{{ $producto['nombre'] }}</h2>
-                                <p class="text-on-surface-variant font-body-md">{{ $producto['descripcion'] }}</p>
-                                <span class="mt-auto pt-space-md text-on-surface-variant font-label-sm">Información y precio por confirmar</span>
+                                <span class="text-secondary font-label-sm uppercase tracking-wider">Natura · {{ $producto->categoria->nombre }}</span>
+                                <h2 class="font-title-lg text-title-lg text-primary-container">{{ $producto->nombre }}</h2>
+                                <p class="text-on-surface-variant font-body-md">{{ $producto->descripcion ?: 'Producto del catálogo comercial.' }}</p>
+                                <div class="mt-auto pt-space-md flex items-center justify-between">
+                                    <span class="text-secondary font-bold font-title-md">${{ number_format($producto->precio_venta_actual, 2) }} USD</span>
+                                    <span class="text-[10px] text-on-surface-variant font-label-sm bg-surface-container-low px-2 py-0.5 rounded">Ejemplo</span>
+                                </div>
                             </div>
                         </article>
                     @endforeach
                 </div>
 
                 <!-- Mensaje de estado cuando no hay resultados de búsqueda -->
-                <div id="emptyCatalog" class="rounded-xl bg-surface-container-lowest p-space-2xl text-center shadow-sm" style="display: none" role="status">
+                <div id="emptyCatalog" class="rounded-xl bg-surface-container-lowest p-space-2xl text-center shadow-sm" style="display: {{ count($productos) === 0 ? 'block' : 'none' }}" role="status">
                     <span class="material-symbols-outlined text-secondary text-[32px]" aria-hidden="true">search_off</span>
                     <h2 class="font-headline-sm text-headline-sm text-primary-container mt-2">No hay resultados</h2>
-                    <p class="text-on-surface-variant mt-1">Prueba otra palabra o selecciona «Todas».</p>
+                    <p class="text-on-surface-variant mt-1">No se encontraron productos disponibles en esta categoría.</p>
                 </div>
             </section>
         </div>
