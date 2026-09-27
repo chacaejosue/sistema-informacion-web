@@ -229,4 +229,26 @@ class AuthAndPanelTest extends TestCase
         $response->assertSee('Mi Cuenta');
         $response->assertSee('Portal de Cliente en Desarrollo');
     }
+
+    /**
+     * Un colaborador autenticado que accede a /login es redirigido a las operaciones de catálogo /panel/productos.
+     */
+    public function test_colaborador_visitando_login_es_redirigido_a_panel_productos(): void
+    {
+        $persona = Persona::create([
+            'nombre' => 'Colaborador',
+            'email' => 'colab_redirect@finora.test',
+        ]);
+
+        $usuario = Usuario::create([
+            'persona_id' => $persona->id,
+            'password' => Hash::make('Password123!@#'),
+            'rol' => 'COLABORADOR',
+            'activo' => true,
+        ]);
+
+        $response = $this->actingAs($usuario)->get('/login');
+
+        $response->assertRedirect(route('panel.productos.index'));
+    }
 }

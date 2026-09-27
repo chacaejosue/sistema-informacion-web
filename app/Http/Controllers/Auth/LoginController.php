@@ -53,6 +53,10 @@ class LoginController extends Controller
             return redirect()->intended(route('mi-cuenta'));
         }
 
+        if ($usuario->rol === 'COLABORADOR') {
+            return redirect()->intended(route('panel.productos.index'));
+        }
+
         return redirect()->intended(route('panel'));
     }
 
