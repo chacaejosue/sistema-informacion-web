@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectTo(
             guests: '/login',
-            users: '/panel'
+            users: fn (Request $request) => $request->user()?->rol === 'CLIENTE' ? '/mi-cuenta' : '/panel'
         );
         $middleware->alias([
             'rol.consultor' => \App\Http\Middleware\EnsureConsultorRole::class,
