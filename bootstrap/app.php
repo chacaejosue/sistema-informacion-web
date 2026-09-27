@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         );
         $middleware->alias([
             'rol.consultor' => \App\Http\Middleware\EnsureConsultorRole::class,
+            'rol.operativo' => \App\Http\Middleware\EnsureOperativoRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

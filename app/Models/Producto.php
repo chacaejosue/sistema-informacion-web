@@ -83,4 +83,33 @@ class Producto extends Model
     {
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
+
+    public function movimientosInventario()
+    {
+        return $this->hasMany(MovimientoInventario::class, 'producto_id');
+    }
+
+    public function detallesPedido()
+    {
+        return $this->hasMany(DetallePedido::class, 'producto_id');
+    }
+
+    public function getStockFisicoAttribute(): int
+    {
+        return (int) $this->movimientosInventario()->sum('cantidad');
+    }
+
+    public function getCantidadReservadaAttribute(): int
+    {
+        return (int) DetallePedido::where('producto_id', $this->id)
+            ->whereHas('pedido', function ($q) {
+                $q->whereIn('estado', ['PENDIENTE', 'RESERVADO', 'PENDIENTE_ABASTECIMIENTO', 'LISTO_ENTREGA']);
+            })
+            ->sum('cantidad_reservada');
+    }
+
+    public function getStockDisponibleAttribute(): int
+    {
+        return max(0, $this->stock_fisico - $this->cantidad_reservada);
+    }
 }
