@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html class="h-full" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Finora - Editar Cliente | Panel del Consultor</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/branding/finora-icono.png') }}"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Outfit:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="h-full font-sans bg-finora-surface text-finora-navy antialiased selection:bg-finora-cyan selection:text-finora-navy flex flex-col min-h-screen">
+
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 backdrop-blur-md bg-white/90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+            <a class="inline-flex items-center gap-3.5 group" href="{{ route('panel.index') }}">
+                <div class="relative w-10 h-10 flex items-center justify-center shrink-0">
+                    <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-9 w-auto object-contain group-hover:scale-105 transition-transform"/>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading text-xl font-extrabold tracking-tight text-finora-navy">Finora</span>
+                    <span class="text-[10px] font-medium text-finora-subtle -mt-1 tracking-wide">Editar Cliente</span>
+                </div>
+            </a>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('panel.clientes.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-finora-blue hover:text-finora-deepBlue">
+                    <span class="material-symbols-outlined text-sm">arrow_back</span>
+                    Volver a clientes
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-sm">
+            <h1 class="font-heading text-xl font-extrabold text-finora-navy mb-6">Editar Información del Cliente</h1>
+
+            <form action="{{ route('panel.clientes.update', $cliente) }}" method="POST" class="space-y-5">
+                @csrf
+                @method('PUT')
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nombre" class="block text-xs font-bold text-finora-navy mb-1">Nombre *</label>
+                        <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $cliente->persona->nombre) }}" required class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                        @error('nombre') <span class="text-red-600 text-[11px] mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label for="apellido" class="block text-xs font-bold text-finora-navy mb-1">Apellido</label>
+                        <input type="text" id="apellido" name="apellido" value="{{ old('apellido', $cliente->persona->apellido) }}" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                        @error('apellido') <span class="text-red-600 text-[11px] mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="telefono" class="block text-xs font-bold text-finora-navy mb-1">Teléfono</label>
+                        <input type="text" id="telefono" name="telefono" value="{{ old('telefono', $cliente->persona->telefono) }}" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                        @error('telefono') <span class="text-red-600 text-[11px] mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label for="email" class="block text-xs font-bold text-finora-navy mb-1">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" value="{{ old('email', $cliente->persona->email) }}" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                        @error('email') <span class="text-red-600 text-[11px] mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div>
+                    <label for="direccion" class="block text-xs font-bold text-finora-navy mb-1">Dirección</label>
+                    <input type="text" id="direccion" name="direccion" value="{{ old('direccion', $cliente->persona->direccion) }}" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                    @error('direccion') <span class="text-red-600 text-[11px] mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label for="observaciones" class="block text-xs font-bold text-finora-navy mb-1">Observaciones</label>
+                    <textarea id="observaciones" name="observaciones" rows="3" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">{{ old('observaciones', $cliente->observaciones) }}</textarea>
+                    @error('observaciones') <span class="text-red-600 text-[11px] mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
+                    <a href="{{ route('panel.clientes.index') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="finora-gradient-btn px-5 py-2 rounded-xl text-white font-heading font-semibold text-xs shadow-finora-btn">
+                        Actualizar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
