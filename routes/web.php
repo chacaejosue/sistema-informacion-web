@@ -7,7 +7,13 @@ use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\ProveedorController;
 use App\Http\Controllers\Admin\CategoriaController;
-use App\Http\Controllers\Admin\LineaController;
+use App\Http\Controllers\Admin\ClienteController;
+use App\Http\Controllers\Admin\UsuarioController;
+use App\Http\Controllers\Admin\CompraController;
+use App\Http\Controllers\Admin\InventarioController;
+use App\Http\Controllers\Admin\PedidoController;
+use App\Http\Controllers\Admin\VentaController;
+use App\Http\Controllers\Admin\PagoController;
 
 // Landing pública
 Route::get('/', function () {
@@ -33,14 +39,23 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-// Panel privado exclusivo para el rol CONSULTOR
-Route::middleware(['auth', 'rol.consultor'])->prefix('panel')->group(function () {
-    Route::get('/', [PanelController::class, 'index'])->name('panel');
+// Panel privado para usuarios autenticados
+Route::middleware('auth')->prefix('panel')->group(function () {
 
-    // Subrutas de gestión del panel
-    Route::name('panel.')->group(function () {
-        Route::get('/index', [PanelController::class, 'index'])->name('index');
+    // Rutas exclusivas del CONSULTOR
+    Route::middleware('rol.consultor')->group(function () {
+        Route::get('/', [PanelController::class, 'index'])->name('panel');
+        Route::name('panel.')->group(function () {
+            Route::get('/index', [PanelController::class, 'index'])->name('index');
 
+            // Usuarios (Reservado exclusivamente a CONSULTOR)
+            Route::patch('usuarios/{usuario}/toggle', [UsuarioController::class, 'toggleStatus'])->name('usuarios.toggle');
+            Route::resource('usuarios', UsuarioController::class)->except(['destroy', 'show']);
+        });
+    });
+
+    // Rutas para roles operativos (CONSULTOR / COLABORADOR)
+    Route::middleware('rol.operativo')->name('panel.')->group(function () {
         // CRUD de Productos
         Route::patch('productos/{producto}/toggle', [ProductoController::class, 'toggleStatus'])->name('productos.toggle');
         Route::resource('productos', ProductoController::class);
@@ -49,5 +64,31 @@ Route::middleware(['auth', 'rol.consultor'])->prefix('panel')->group(function ()
         Route::resource('proveedores', ProveedorController::class)->except(['create', 'show', 'edit']);
         Route::resource('categorias', CategoriaController::class)->except(['create', 'show', 'edit']);
         Route::resource('lineas', LineaController::class)->except(['create', 'show', 'edit']);
+
+        // Clientes
+        Route::patch('clientes/{cliente}/toggle', [ClienteController::class, 'toggleStatus'])->name('clientes.toggle');
+        Route::resource('clientes', ClienteController::class);
+
+        // Compras / Abastecimiento
+        Route::patch('compras/{compra}/estado', [CompraController::class, 'cambiarEstado'])->name('compras.estado');
+        Route::resource('compras', CompraController::class)->except(['destroy', 'edit', 'update']);
+
+        // Inventario
+        Route::get('inventario', [InventarioController::class, 'index'])->name('inventario.index');
+        Route::get('inventario/movimientos', [InventarioController::class, 'movimientos'])->name('inventario.movimientos');
+        Route::post('inventario/ajuste', [InventarioController::class, 'ajuste'])->name('inventario.ajuste');
+
+        // Pedidos
+        Route::post('pedidos/{pedido}/reservar', [PedidoController::class, 'reservarStock'])->name('pedidos.reservar');
+        Route::patch('pedidos/{pedido}/estado', [PedidoController::class, 'cambiarEstado'])->name('pedidos.estado');
+        Route::resource('pedidos', PedidoController::class)->except(['destroy', 'edit', 'update']);
+
+        // Ventas
+        Route::patch('ventas/{venta}/confirmar', [VentaController::class, 'confirmar'])->name('ventas.confirmar');
+        Route::patch('ventas/{venta}/anular', [VentaController::class, 'anular'])->name('ventas.anular');
+        Route::resource('ventas', VentaController::class)->except(['destroy', 'edit', 'update']);
+
+        // Pagos
+        Route::resource('pagos', PagoController::class)->only(['index', 'create', 'store']);
     });
 });
