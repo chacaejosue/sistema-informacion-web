@@ -39,6 +39,12 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
+// Mi Cuenta / Portal de Cliente (para usuarios autenticados)
+Route::middleware('auth')->get('/mi-cuenta', function () {
+    $usuario = auth()->user()->load('persona');
+    return view('cliente.index', compact('usuario'));
+})->name('mi-cuenta');
+
 // Panel privado para usuarios autenticados
 Route::middleware('auth')->prefix('panel')->group(function () {
 
