@@ -48,7 +48,15 @@ class LoginController extends Controller
         // Regenerar la sesión por seguridad.
         $request->session()->regenerate();
 
-        // Redirigir al panel del consultor.
+        // Redirigir según el rol del usuario.
+        if ($usuario->rol === 'CLIENTE') {
+            return redirect()->intended(route('mi-cuenta'));
+        }
+
+        if ($usuario->rol === 'COLABORADOR') {
+            return redirect()->intended(route('panel.productos.index'));
+        }
+
         return redirect()->intended(route('panel'));
     }
 

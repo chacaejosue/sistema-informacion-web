@@ -181,4 +181,74 @@ class AuthAndPanelTest extends TestCase
 
         $response->assertRedirect('/panel');
     }
+
+    /**
+     * Un cliente autenticado que accede a /login es redirigido a su portal /mi-cuenta.
+     */
+    public function test_cliente_visitando_login_es_redirigido_a_mi_cuenta(): void
+    {
+        $persona = Persona::create([
+            'nombre' => 'Cliente',
+            'email' => 'cliente_redirect@finora.test',
+        ]);
+
+        $usuario = Usuario::create([
+            'persona_id' => $persona->id,
+            'password' => Hash::make('Password123!@#'),
+            'rol' => 'CLIENTE',
+            'activo' => true,
+        ]);
+
+        $response = $this->actingAs($usuario)->get('/login');
+
+        $response->assertRedirect(route('mi-cuenta'));
+    }
+
+    /**
+     * Un cliente puede acceder a su portal personal /mi-cuenta.
+     */
+    public function test_cliente_puede_acceder_a_su_portal_mi_cuenta(): void
+    {
+        $persona = Persona::create([
+            'nombre' => 'Ana',
+            'apellido' => 'Ríos',
+            'email' => 'ana_portal@finora.test',
+        ]);
+
+        $usuario = Usuario::create([
+            'persona_id' => $persona->id,
+            'password' => Hash::make('Password123!@#'),
+            'rol' => 'CLIENTE',
+            'activo' => true,
+        ]);
+
+        $response = $this->actingAs($usuario)->get(route('mi-cuenta'));
+
+        $response->assertStatus(200);
+        $response->assertSee('¡Bienvenido, Ana!');
+        $response->assertSee('Mi Cuenta');
+        $response->assertSee('Portal de Cliente en Desarrollo');
+    }
+
+    /**
+     * Un colaborador autenticado que accede a /login es redirigido a las operaciones de catálogo /panel/productos.
+     */
+    public function test_colaborador_visitando_login_es_redirigido_a_panel_productos(): void
+    {
+        $persona = Persona::create([
+            'nombre' => 'Colaborador',
+            'email' => 'colab_redirect@finora.test',
+        ]);
+
+        $usuario = Usuario::create([
+            'persona_id' => $persona->id,
+            'password' => Hash::make('Password123!@#'),
+            'rol' => 'COLABORADOR',
+            'activo' => true,
+        ]);
+
+        $response = $this->actingAs($usuario)->get('/login');
+
+        $response->assertRedirect(route('panel.productos.index'));
+    }
 }
