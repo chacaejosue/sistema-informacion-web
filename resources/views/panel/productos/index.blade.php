@@ -136,6 +136,7 @@
                             <th class="py-3.5 px-4">Categoría / Línea</th>
                             <th class="py-3.5 px-4">Proveedor</th>
                             <th class="py-3.5 px-4">Precio Venta</th>
+                            <th class="py-3.5 px-4 text-center">Stock</th>
                             <th class="py-3.5 px-4 text-center">Publicado</th>
                             <th class="py-3.5 px-4 text-center">Estado</th>
                             <th class="py-3.5 px-4 text-right">Acciones</th>
@@ -173,6 +174,9 @@
                                 </td>
                                 <td class="py-3 px-4 font-bold text-finora-navy">
                                     ${{ number_format($prod->precio_venta_actual, 2) }} USD
+                                </td>
+                                <td class="py-3 px-4 text-center font-bold {{ $prod->stock_disponible > 0 ? 'text-emerald-700' : 'text-slate-400' }}">
+                                    {{ $prod->stock_disponible }}
                                 </td>
                                 <td class="py-3 px-4 text-center">
                                     <form action="{{ route('panel.productos.toggle', $prod) }}" method="POST" class="inline">

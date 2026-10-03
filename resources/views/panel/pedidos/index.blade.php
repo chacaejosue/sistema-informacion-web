@@ -98,6 +98,7 @@
                             <th class="py-3.5 px-4">Cliente</th>
                             <th class="py-3.5 px-4">Fecha</th>
                             <th class="py-3.5 px-4 text-center">Estado</th>
+                            <th class="py-3.5 px-4 text-center">Reserva Stock</th>
                             <th class="py-3.5 px-4 text-right">Total</th>
                             <th class="py-3.5 px-4 text-right">Acciones</th>
                         </tr>
@@ -130,6 +131,31 @@
                                     <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border {{ $badgeStyle }}">
                                         {{ $ped->estado }}
                                     </span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    @php
+                                        $totalItems = $ped->detalles->sum('cantidad');
+                                        $totalReservado = $ped->detalles->sum('cantidad_reservada');
+                                    @endphp
+                                    @if ($ped->estado === 'COMPLETADO')
+                                        <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700">
+                                            <span class="material-symbols-outlined text-xs">check_circle</span> Entregado
+                                        </span>
+                                    @elseif ($ped->estado === 'CANCELADO')
+                                        <span class="text-[11px] text-slate-400">Liberado</span>
+                                    @elseif ($totalReservado >= $totalItems && $totalItems > 0)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-50 border border-cyan-200 text-cyan-800">
+                                            <span class="material-symbols-outlined text-xs">done_all</span> 100% ({{ $totalReservado }}/{{ $totalItems }})
+                                        </span>
+                                    @elseif ($totalReservado > 0)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-800">
+                                            <span class="material-symbols-outlined text-xs">hourglass_top</span> Parcial ({{ $totalReservado }}/{{ $totalItems }})
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 border border-red-200 text-red-700">
+                                            <span class="material-symbols-outlined text-xs">block</span> Sin stock (0/{{ $totalItems }})
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="py-3 px-4 text-right font-bold text-finora-navy">
                                     ${{ number_format($ped->total, 2) }}

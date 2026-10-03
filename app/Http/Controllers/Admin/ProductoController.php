@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductoRequest;
 use App\Models\Categoria;
 use App\Models\Linea;
+use App\Models\MovimientoInventario;
 use App\Models\Producto;
 use App\Models\Proveedor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
@@ -24,7 +24,7 @@ class ProductoController extends Controller
         if ($search = trim((string) $request->input('search', ''))) {
             $query->where(function ($q) use ($search) {
                 $q->where('nombre', 'like', "%{$search}%")
-                  ->orWhere('codigo', 'like', "%{$search}%");
+                    ->orWhere('codigo', 'like', "%{$search}%");
             });
         }
 
@@ -49,7 +49,6 @@ class ProductoController extends Controller
         }
 
         $productos = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
 
         $categorias = Categoria::orderBy('nombre')->get();
         $lineas = Linea::orderBy('nombre')->get();
@@ -85,6 +84,8 @@ class ProductoController extends Controller
     public function store(ProductoRequest $request)
     {
         $datos = $request->validated();
+        $stockInicial = (int) ($datos['stock_inicial'] ?? 0);
+        unset($datos['stock_inicial']);
 
         // Manejo de la carga de imagen en almacenamiento público local (guardando ruta relativa)
         if ($request->hasFile('imagen')) {
@@ -97,7 +98,18 @@ class ProductoController extends Controller
         $datos['publicado'] = $request->boolean('publicado');
         $datos['activo'] = $request->boolean('activo', true);
 
-        Producto::create($datos);
+        $producto = Producto::create($datos);
+
+        if ($stockInicial > 0) {
+            MovimientoInventario::create([
+                'producto_id' => $producto->id,
+                'registrado_por_usuario_id' => $request->user()?->id,
+                'tipo' => 'AJUSTE_ENTRADA',
+                'cantidad' => $stockInicial,
+                'fecha' => now(),
+                'observacion' => 'Stock inicial al registrar producto',
+            ]);
+        }
 
         return redirect()->route('panel.productos.index')
             ->with('exito', 'Producto registrado correctamente.');
@@ -128,7 +140,7 @@ class ProductoController extends Controller
         $datos = $request->validated();
 
         // Eliminar campos que no son columnas de la tabla
-        unset($datos['imagen'], $datos['imagen_url']);
+        unset($datos['imagen'], $datos['imagen_url'], $datos['stock_inicial']);
 
         if ($request->hasFile('imagen')) {
             // Nuevo archivo subido: reemplazar imagen

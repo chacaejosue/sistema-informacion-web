@@ -61,23 +61,38 @@
                     </div>
 
                     <div id="items-container" class="space-y-3">
-                        <div class="item-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <div class="sm:col-span-6">
-                                <label class="block text-[10px] font-bold text-finora-subtle mb-1">Producto</label>
-                                <select name="detalles[0][producto_id]" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
-                                    <option value="">-- Seleccionar Producto --</option>
-                                    @foreach ($productos as $prod)
-                                        <option value="{{ $prod->id }}">{{ $prod->codigo }} - {{ $prod->nombre }}</option>
-                                    @endforeach
-                                </select>
+                        <div class="item-row bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-finora-subtle uppercase">Ítem de Compra</span>
+                                <button type="button" class="btn-toggle-nuevo-prod text-[11px] font-semibold text-finora-blue hover:underline">
+                                    + Escribir producto no registrado
+                                </button>
                             </div>
-                            <div class="sm:col-span-3">
-                                <label class="block text-[10px] font-bold text-finora-subtle mb-1">Cantidad</label>
-                                <input type="number" min="1" name="detalles[0][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
-                            </div>
-                            <div class="sm:col-span-3">
-                                <label class="block text-[10px] font-bold text-finora-subtle mb-1">Costo Unitario ($)</label>
-                                <input type="number" step="0.01" min="0" name="detalles[0][costo_unitario]" value="0.00" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
+                                <div class="sm:col-span-6 campo-prod-existente">
+                                    <label class="block text-[10px] font-bold text-finora-subtle mb-1">Producto</label>
+                                    <select name="detalles[0][producto_id]" required class="select-prod w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                        <option value="">-- Seleccionar Producto --</option>
+                                        @foreach ($productos as $prod)
+                                            <option value="{{ $prod->id }}">{{ $prod->codigo }} - {{ $prod->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="sm:col-span-6 campo-prod-nuevo hidden space-y-1">
+                                    <label class="block text-[10px] font-bold text-finora-subtle">Nombre del Producto Nuevo / No Registrado *</label>
+                                    <div class="grid grid-cols-2 gap-1">
+                                        <input type="text" name="detalles[0][nuevo_producto_nombre]" placeholder="Nombre comercial" class="input-nombre-nuevo w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-finora-navy outline-none">
+                                        <input type="text" name="detalles[0][nuevo_producto_codigo]" placeholder="Código (Opcional)" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-finora-navy outline-none">
+                                    </div>
+                                </div>
+                                <div class="sm:col-span-3">
+                                    <label class="block text-[10px] font-bold text-finora-subtle mb-1">Cantidad</label>
+                                    <input type="number" min="1" name="detalles[0][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                </div>
+                                <div class="sm:col-span-3">
+                                    <label class="block text-[10px] font-bold text-finora-subtle mb-1">Costo Unitario ($)</label>
+                                    <input type="number" step="0.01" min="0" name="detalles[0][costo_unitario]" value="0.00" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -86,6 +101,15 @@
                 <div>
                     <label for="observaciones" class="block text-xs font-bold text-finora-navy mb-1">Observaciones / Notas</label>
                     <textarea id="observaciones" name="observaciones" rows="2" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none" placeholder="Instrucciones de entrega, número de pedido externo, etc.">{{ old('observaciones') }}</textarea>
+                </div>
+
+                <!-- Alerta interactiva de validación (2.9) -->
+                <div id="form-validation-alert" class="hidden rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-900">
+                    <div class="flex items-center gap-2 font-bold mb-1">
+                        <span class="material-symbols-outlined text-amber-600 text-sm">warning</span>
+                        <span>Por favor completa los siguientes campos obligatorios antes de continuar:</span>
+                    </div>
+                    <ul id="missing-fields-list" class="list-disc list-inside space-y-0.5 text-amber-800"></ul>
                 </div>
 
                 <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
@@ -105,40 +129,124 @@
             let itemIdx = 1;
             const container = document.getElementById('items-container');
             const btnAdd = document.getElementById('btn-add-item');
+            const form = document.querySelector('form');
+            const alertBox = document.getElementById('form-validation-alert');
+            const list = document.getElementById('missing-fields-list');
 
             const productsOptions = `@foreach ($productos as $prod)<option value="{{ $prod->id }}">{{ $prod->codigo }} - {{ $prod->nombre }}</option>@endforeach`;
 
+            function attachRowToggle(row) {
+                const btnToggle = row.querySelector('.btn-toggle-nuevo-prod');
+                const campoExistente = row.querySelector('.campo-prod-existente');
+                const campoNuevo = row.querySelector('.campo-prod-nuevo');
+                const selectProd = row.querySelector('.select-prod');
+                const inputNombreNuevo = row.querySelector('.input-nombre-nuevo');
+
+                if (btnToggle && campoExistente && campoNuevo) {
+                    btnToggle.addEventListener('click', () => {
+                        const esNuevo = campoNuevo.classList.contains('hidden');
+                        if (esNuevo) {
+                            campoNuevo.classList.remove('hidden');
+                            campoExistente.classList.add('hidden');
+                            selectProd.removeAttribute('required');
+                            selectProd.value = '';
+                            inputNombreNuevo.setAttribute('required', 'required');
+                            btnToggle.textContent = '← Elegir de catálogo existente';
+                        } else {
+                            campoNuevo.classList.add('hidden');
+                            campoExistente.classList.remove('hidden');
+                            selectProd.setAttribute('required', 'required');
+                            inputNombreNuevo.removeAttribute('required');
+                            inputNombreNuevo.value = '';
+                            btnToggle.textContent = '+ Escribir producto no registrado';
+                        }
+                    });
+                }
+            }
+
+            container.querySelectorAll('.item-row').forEach(row => attachRowToggle(row));
+
             btnAdd.addEventListener('click', () => {
                 const div = document.createElement('div');
-                div.className = 'item-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-slate-50 p-3 rounded-xl border border-slate-200 relative';
+                div.className = 'item-row bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 relative';
                 div.innerHTML = `
-                    <div class="sm:col-span-5">
-                        <label class="block text-[10px] font-bold text-finora-subtle mb-1">Producto</label>
-                        <select name="detalles[${itemIdx}][producto_id]" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
-                            <option value="">-- Seleccionar Producto --</option>
-                            ${productsOptions}
-                        </select>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-finora-subtle uppercase">Ítem de Compra</span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" class="btn-toggle-nuevo-prod text-[11px] font-semibold text-finora-blue hover:underline">
+                                + Escribir producto no registrado
+                            </button>
+                            <button type="button" class="btn-remove-row text-red-500 hover:text-red-700 p-0.5" title="Eliminar fila">
+                                <span class="material-symbols-outlined text-base">delete</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="sm:col-span-3">
-                        <label class="block text-[10px] font-bold text-finora-subtle mb-1">Cantidad</label>
-                        <input type="number" min="1" name="detalles[${itemIdx}][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
-                    </div>
-                    <div class="sm:col-span-3">
-                        <label class="block text-[10px] font-bold text-finora-subtle mb-1">Costo Unitario ($)</label>
-                        <input type="number" step="0.01" min="0" name="detalles[${itemIdx}][costo_unitario]" value="0.00" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
-                    </div>
-                    <div class="sm:col-span-1 text-right pt-3 sm:pt-0">
-                        <button type="button" class="btn-remove-row text-red-500 hover:text-red-700 p-1" title="Eliminar fila">
-                            <span class="material-symbols-outlined text-base">delete</span>
-                        </button>
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
+                        <div class="sm:col-span-6 campo-prod-existente">
+                            <label class="block text-[10px] font-bold text-finora-subtle mb-1">Producto</label>
+                            <select name="detalles[${itemIdx}][producto_id]" required class="select-prod w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                <option value="">-- Seleccionar Producto --</option>
+                                ${productsOptions}
+                            </select>
+                        </div>
+                        <div class="sm:col-span-6 campo-prod-nuevo hidden space-y-1">
+                            <label class="block text-[10px] font-bold text-finora-subtle">Nombre del Producto Nuevo / No Registrado *</label>
+                            <div class="grid grid-cols-2 gap-1">
+                                <input type="text" name="detalles[${itemIdx}][nuevo_producto_nombre]" placeholder="Nombre comercial" class="input-nombre-nuevo w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-finora-navy outline-none">
+                                <input type="text" name="detalles[${itemIdx}][nuevo_producto_codigo]" placeholder="Código (Opcional)" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-finora-navy outline-none">
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label class="block text-[10px] font-bold text-finora-subtle mb-1">Cantidad</label>
+                            <input type="number" min="1" name="detalles[${itemIdx}][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label class="block text-[10px] font-bold text-finora-subtle mb-1">Costo Unitario ($)</label>
+                            <input type="number" step="0.01" min="0" name="detalles[${itemIdx}][costo_unitario]" value="0.00" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                        </div>
                     </div>
                 `;
                 container.appendChild(div);
+                attachRowToggle(div);
                 itemIdx++;
 
                 div.querySelector('.btn-remove-row').addEventListener('click', () => {
                     div.remove();
                 });
+            });
+
+            // Validación interactiva de campos vacíos (2.9)
+            form.addEventListener('submit', (e) => {
+                const requiredInputs = form.querySelectorAll('[required]');
+                const missing = [];
+
+                requiredInputs.forEach(input => {
+                    if (input.closest('.hidden')) return;
+
+                    const val = input.value ? input.value.trim() : '';
+                    if (!val) {
+                        const label = form.querySelector(`label[for="${input.id}"]`) || input.closest('div')?.querySelector('label');
+                        const fieldName = label ? label.textContent.replace('*', '').trim() : (input.name || 'Campo');
+                        missing.push(fieldName);
+                        input.classList.add('ring-2', 'ring-amber-500', 'border-amber-500');
+                    } else {
+                        input.classList.remove('ring-2', 'ring-amber-500', 'border-amber-500');
+                    }
+                });
+
+                if (missing.length > 0) {
+                    e.preventDefault();
+                    list.innerHTML = '';
+                    missing.forEach(name => {
+                        const li = document.createElement('li');
+                        li.textContent = name;
+                        list.appendChild(li);
+                    });
+                    alertBox.classList.remove('hidden');
+                    alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    alertBox.classList.add('hidden');
+                }
             });
         });
     </script>

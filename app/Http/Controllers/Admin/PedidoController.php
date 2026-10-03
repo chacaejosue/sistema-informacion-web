@@ -7,6 +7,7 @@ use App\Http\Requests\PedidoRequest;
 use App\Models\Cliente;
 use App\Models\DetallePedido;
 use App\Models\Pedido;
+use App\Models\Persona;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class PedidoController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pedido::with(['cliente.persona', 'registradoPor.persona']);
+        $query = Pedido::with(['cliente.persona', 'registradoPor.persona', 'detalles']);
 
         if ($request->filled('estado')) {
             $query->where('estado', $request->input('estado'));
@@ -44,8 +45,26 @@ class PedidoController extends Controller
         $validated = $request->validated();
 
         $pedido = DB::transaction(function () use ($validated, $request) {
+            $clienteId = $validated['cliente_id'] ?? null;
+
+            if (! $clienteId && ! empty($validated['nuevo_cliente_nombre'])) {
+                $persona = Persona::create([
+                    'nombre' => mb_strtoupper(trim($validated['nuevo_cliente_nombre']), 'UTF-8'),
+                    'apellido' => ! empty($validated['nuevo_cliente_apellido']) ? mb_strtoupper(trim($validated['nuevo_cliente_apellido']), 'UTF-8') : null,
+                    'telefono' => $validated['nuevo_cliente_telefono'] ?? null,
+                ]);
+
+                $nuevoCliente = Cliente::create([
+                    'persona_id' => $persona->id,
+                    'activo' => true,
+                    'observaciones' => 'Registrado automáticamente desde pedido',
+                ]);
+
+                $clienteId = $nuevoCliente->id;
+            }
+
             $pedido = Pedido::create([
-                'cliente_id' => $validated['cliente_id'],
+                'cliente_id' => $clienteId,
                 'registrado_por_usuario_id' => $request->user()->id,
                 'fecha' => now(),
                 'estado' => 'PENDIENTE',

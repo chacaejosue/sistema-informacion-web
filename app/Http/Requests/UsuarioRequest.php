@@ -31,6 +31,7 @@ class UsuarioRequest extends FormRequest
                 Rule::unique('personas', 'email')->ignore($personaId),
             ],
             'direccion' => ['nullable', 'string', 'max:255'],
+            'genero' => ['nullable', 'string', Rule::in(['MASCULINO', 'FEMENINO', 'OTRO'])],
             'rol' => ['required', 'string', Rule::in(['CONSULTOR', 'COLABORADOR', 'CLIENTE'])],
             'password' => [$isCreate ? 'required' : 'nullable', 'string', 'min:6'],
             'activo' => ['sometimes', 'boolean'],

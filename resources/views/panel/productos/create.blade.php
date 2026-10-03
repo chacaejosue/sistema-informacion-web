@@ -83,7 +83,10 @@
                     <select id="proveedor_id" name="proveedor_id" required class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
                         <option value="">Seleccionar...</option>
                         @foreach ($proveedores as $prov)
-                            <option value="{{ $prov->id }}" {{ old('proveedor_id') == $prov->id ? 'selected' : '' }}>{{ $prov->nombre }}</option>
+                            @php
+                                $isSelected = old('proveedor_id') ? (old('proveedor_id') == $prov->id) : (stripos($prov->nombre, 'natura') !== false);
+                            @endphp
+                            <option value="{{ $prov->id }}" {{ $isSelected ? 'selected' : '' }}>{{ $prov->nombre }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -118,17 +121,25 @@
                     <input type="number" step="0.01" min="0" id="precio_venta_actual" name="precio_venta_actual" value="{{ old('precio_venta_actual') }}" required placeholder="19990.00" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
                 </div>
 
-                <!-- Carga de Imagen (Archivo o URL) -->
+                <!-- Stock Inicial (Opcional) -->
+                <div>
+                    <label for="stock_inicial" class="block text-xs font-bold text-finora-navy mb-1.5">Stock Inicial (Unidades en Almacén)</label>
+                    <input type="number" min="0" id="stock_inicial" name="stock_inicial" value="{{ old('stock_inicial', 0) }}" placeholder="0" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Carga de Imagen (Archivo) -->
                 <div>
                     <label for="imagen" class="block text-xs font-bold text-finora-navy mb-1.5">Imagen Principal (Archivo)</label>
                     <input type="file" id="imagen" name="imagen" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-finora-blue hover:file:bg-blue-100 cursor-pointer">
                 </div>
-            </div>
 
-            <!-- URL de Imagen alternativa -->
-            <div>
-                <label for="imagen_url" class="block text-xs font-bold text-finora-navy mb-1.5">O bien, URL de imagen externa</label>
-                <input type="url" id="imagen_url" name="imagen_url" value="{{ old('imagen_url') }}" placeholder="https://..." class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                <!-- URL de Imagen alternativa -->
+                <div>
+                    <label for="imagen_url" class="block text-xs font-bold text-finora-navy mb-1.5">O bien, URL de imagen externa</label>
+                    <input type="url" id="imagen_url" name="imagen_url" value="{{ old('imagen_url') }}" placeholder="https://..." class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                </div>
             </div>
 
             <!-- Interruptores de Publicado y Activo -->
@@ -144,6 +155,15 @@
                 </label>
             </div>
 
+            <!-- Alerta interactiva de campos vacíos (2.9) -->
+            <div id="form-validation-alert" class="hidden rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-900">
+                <div class="flex items-center gap-2 font-bold mb-1">
+                    <span class="material-symbols-outlined text-amber-600 text-sm">warning</span>
+                    <span>Por favor completa los siguientes campos obligatorios antes de continuar:</span>
+                </div>
+                <ul id="missing-fields-list" class="list-disc list-inside space-y-0.5 text-amber-800"></ul>
+            </div>
+
             <!-- Botones -->
             <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
                 <a href="{{ route('panel.productos.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
@@ -156,5 +176,45 @@
         </form>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            const alertBox = document.getElementById('form-validation-alert');
+            const list = document.getElementById('missing-fields-list');
+
+            if (form && alertBox && list) {
+                form.addEventListener('submit', (e) => {
+                    const requiredInputs = form.querySelectorAll('[required]');
+                    const missing = [];
+
+                    requiredInputs.forEach(input => {
+                        const val = input.value ? input.value.trim() : '';
+                        if (!val) {
+                            const label = form.querySelector(`label[for="${input.id}"]`);
+                            const fieldName = label ? label.textContent.replace('*', '').trim() : (input.name || 'Campo');
+                            missing.push(fieldName);
+                            input.classList.add('ring-2', 'ring-amber-500', 'border-amber-500');
+                        } else {
+                            input.classList.remove('ring-2', 'ring-amber-500', 'border-amber-500');
+                        }
+                    });
+
+                    if (missing.length > 0) {
+                        e.preventDefault();
+                        list.innerHTML = '';
+                        missing.forEach(name => {
+                            const li = document.createElement('li');
+                            li.textContent = name;
+                            list.appendChild(li);
+                        });
+                        alertBox.classList.remove('hidden');
+                        alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        alertBox.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

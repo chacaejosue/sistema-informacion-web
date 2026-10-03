@@ -67,7 +67,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label for="rol" class="block text-xs font-bold text-finora-navy mb-1">Rol de Usuario *</label>
                         <select id="rol" name="rol" required class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
@@ -76,6 +76,15 @@
                             <option value="CLIENTE" {{ old('rol', $usuario->rol) === 'CLIENTE' ? 'selected' : '' }}>CLIENTE</option>
                         </select>
                         @error('rol') <span class="text-red-600 text-[11px] mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label for="genero" class="block text-xs font-bold text-finora-navy mb-1">Género / Trato</label>
+                        <select id="genero" name="genero" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                            <option value="MASCULINO" {{ old('genero', $usuario->persona->genero) === 'MASCULINO' ? 'selected' : '' }}>Masculino (Bienvenido)</option>
+                            <option value="FEMENINO" {{ old('genero', $usuario->persona->genero) === 'FEMENINO' ? 'selected' : '' }}>Femenino (Bienvenida)</option>
+                            <option value="OTRO" {{ old('genero', $usuario->persona->genero) === 'OTRO' ? 'selected' : '' }}>Otro</option>
+                        </select>
+                        @error('genero') <span class="text-red-600 text-[11px] mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="password" class="block text-xs font-bold text-finora-navy mb-1">Nueva Contraseña (Opcional)</label>

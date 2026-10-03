@@ -37,8 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (count) {
-                count.textContent = `${visible} producto${visible === 1 ? '' : 's'} demostrativo${visible === 1 ? '' : 's'}`;
-            }
+                    // 1.13: Texto correcto: "disponibles" en vez de "demostrativos"
+                    count.textContent = `${visible} producto${visible === 1 ? '' : 's'} disponible${visible === 1 ? '' : 's'}`;
+                }
             if (empty) {
                 empty.style.display = visible ? 'none' : 'block';
             }

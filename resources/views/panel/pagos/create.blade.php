@@ -78,6 +78,15 @@
                     <input type="text" id="observacion" name="observacion" value="{{ old('observacion') }}" placeholder="Nro de transferencia, recibo, etc." class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
                 </div>
 
+                <!-- Alerta interactiva de validación (2.9) -->
+                <div id="form-validation-alert" class="hidden rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-900">
+                    <div class="flex items-center gap-2 font-bold mb-1">
+                        <span class="material-symbols-outlined text-amber-600 text-sm">warning</span>
+                        <span>Por favor completa los siguientes campos obligatorios antes de continuar:</span>
+                    </div>
+                    <ul id="missing-fields-list" class="list-disc list-inside space-y-0.5 text-amber-800"></ul>
+                </div>
+
                 <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
                     <a href="{{ route('panel.pagos.index') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
                         Cancelar
@@ -89,5 +98,46 @@
             </form>
         </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            const alertBox = document.getElementById('form-validation-alert');
+            const list = document.getElementById('missing-fields-list');
+
+            if (form && alertBox && list) {
+                form.addEventListener('submit', (e) => {
+                    const requiredInputs = form.querySelectorAll('[required]');
+                    const missing = [];
+
+                    requiredInputs.forEach(input => {
+                        const val = input.value ? input.value.trim() : '';
+                        if (!val) {
+                            const label = form.querySelector(`label[for="${input.id}"]`) || input.closest('div')?.querySelector('label');
+                            const fieldName = label ? label.textContent.replace('*', '').trim() : (input.name || 'Campo');
+                            missing.push(fieldName);
+                            input.classList.add('ring-2', 'ring-amber-500', 'border-amber-500');
+                        } else {
+                            input.classList.remove('ring-2', 'ring-amber-500', 'border-amber-500');
+                        }
+                    });
+
+                    if (missing.length > 0) {
+                        e.preventDefault();
+                        list.innerHTML = '';
+                        missing.forEach(name => {
+                            const li = document.createElement('li');
+                            li.textContent = name;
+                            list.appendChild(li);
+                        });
+                        alertBox.classList.remove('hidden');
+                        alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        alertBox.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -66,11 +66,11 @@
                 </div>
 
                 <h1 id="welcome-title" class="font-heading text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                    ¡Bienvenido, {{ $usuario->persona->nombre }}!
+                    ¡{{ $usuario->persona->saludo }}, {{ $usuario->persona->nombre }}!
                 </h1>
 
                 <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
-                    Bienvenido a Finora. Gestiona el flujo comercial completo de tu negocio: catálogo de productos, clientes, pedidos, compras, inventario, ventas y cobranzas.
+                    {{ $usuario->persona->saludo }} a Finora. Gestiona el flujo comercial completo de tu negocio: catálogo de productos, clientes, pedidos, compras, inventario, ventas y cobranzas.
                 </p>
             </div>
         </section>

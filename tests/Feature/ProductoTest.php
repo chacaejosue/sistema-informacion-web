@@ -121,9 +121,10 @@ class ProductoTest extends TestCase
         $response = $this->actingAs($consultor)->post('/panel/productos', $datos);
 
         $response->assertRedirect('/panel/productos');
+        // 2.8: El nombre se convierte a mayúsculas antes de guardarse
         $this->assertDatabaseHas('productos', [
             'codigo' => 'PROD-002',
-            'nombre' => 'Nuevo Producto Natura',
+            'nombre' => 'NUEVO PRODUCTO NATURA',
             'precio_venta_actual' => 18990.00,
             'publicado' => true,
             'activo' => true,
@@ -188,9 +189,10 @@ class ProductoTest extends TestCase
         ]);
 
         $response->assertRedirect('/panel/productos');
+        // 2.8: El nombre se convierte a mayúsculas antes de guardarse
         $this->assertDatabaseHas('productos', [
             'id' => $producto->id,
-            'nombre' => 'Nombre Editado',
+            'nombre' => 'NOMBRE EDITADO',
             'precio_venta_actual' => 12500.00,
         ]);
     }
@@ -545,9 +547,10 @@ class ProductoTest extends TestCase
         ]);
 
         $response->assertRedirect('/panel/productos');
+        // 2.8: El nombre se convierte a mayúsculas antes de guardarse
         $this->assertDatabaseHas('productos', [
             'id'               => $producto->id,
-            'nombre'           => 'Nombre Actualizado',
+            'nombre'           => 'NOMBRE ACTUALIZADO',
             'imagen_principal' => 'demo/productos/ilia.jpg', // debe conservarse
         ]);
     }

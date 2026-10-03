@@ -16,11 +16,12 @@
             <!-- Columna 2: Accesos directos a categorías del catálogo -->
             <div class="lg:col-span-3 flex flex-col gap-space-sm">
                 <h3 class="font-title-md text-title-md text-on-surface">Categorías</h3>
+                {{-- 1.3: Cada enlace lleva a la categoría específica, no a /categorias genérico --}}
                 <ul class="flex flex-col gap-space-xs font-body-md text-body-md text-on-surface-variant">
-                    <li><a class="hover:text-secondary transition-colors" data-path="categorias" href="{{ route('categorias') }}">Perfumería</a></li>
-                    <li><a class="hover:text-secondary transition-colors" data-path="categorias" href="{{ route('categorias') }}">Cuidado Facial</a></li>
-                    <li><a class="hover:text-secondary transition-colors" data-path="categorias" href="{{ route('categorias') }}">Maquillaje</a></li>
-                    <li><a class="hover:text-secondary transition-colors" data-path="categorias" href="{{ route('categorias') }}">Cuidado Corporal</a></li>
+                    <li><a class="hover:text-secondary transition-colors" href="{{ route('categorias', ['categoria' => 'perfumeria']) }}">Perfumería</a></li>
+                    <li><a class="hover:text-secondary transition-colors" href="{{ route('categorias', ['categoria' => 'cuidado-facial']) }}">Cuidado Facial</a></li>
+                    <li><a class="hover:text-secondary transition-colors" href="{{ route('categorias', ['categoria' => 'maquillaje']) }}">Maquillaje</a></li>
+                    <li><a class="hover:text-secondary transition-colors" href="{{ route('categorias', ['categoria' => 'cuidado-corporal']) }}">Cuidado Corporal</a></li>
                 </ul>
             </div>
 
@@ -28,7 +29,8 @@
             <div class="lg:col-span-4 flex flex-col gap-space-sm">
                 <h3 class="font-title-md text-title-md text-on-surface">Asistencia Directa</h3>
                 <p class="font-body-md text-body-md text-on-surface-variant">¿Tienes dudas sobre algún producto? Chatea directamente con tu consultor.</p>
-                <a class="inline-flex items-center justify-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container hover:text-on-surface font-title-md text-title-md shadow-[0_2px_8px_-2px_rgba(11,25,44,0.04)] transition-all" data-path="contacto-consultor" href="https://wa.me/?text=Hola%20deseo%20consultar%20el%20cat%C3%A1logo%20Finora" target="_blank" rel="noopener noreferrer">
+                {{-- 1.2: Número real de WhatsApp del consultor --}}
+                <a class="inline-flex items-center justify-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container hover:text-on-surface font-title-md text-title-md shadow-[0_2px_8px_-2px_rgba(11,25,44,0.04)] transition-all" href="https://wa.me/59167673537?text=Hola%20deseo%20consultar%20el%20cat%C3%A1logo%20Finora" target="_blank" rel="noopener noreferrer">
                     <span class="w-2 h-2 rounded-full bg-secondary-container"></span>
                     WhatsApp Consultor
                 </a>

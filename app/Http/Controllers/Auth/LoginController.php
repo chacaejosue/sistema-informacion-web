@@ -27,11 +27,11 @@ class LoginController extends Controller
         $usuario = Usuario::whereHas('persona', function ($query) use ($datos) {
             $query->where('email', $datos['identity']);
         })
-        ->where('activo', true)
-        ->first();
+            ->where('activo', true)
+            ->first();
 
         // Comprobar que existe y que la contraseña es correcta.
-        if (!$usuario || !Hash::check($datos['password'], $usuario->password)) {
+        if (! $usuario || ! Hash::check($datos['password'], $usuario->password)) {
             throw ValidationException::withMessages([
                 'identity' => 'Las credenciales proporcionadas son incorrectas.',
             ]);
@@ -48,16 +48,21 @@ class LoginController extends Controller
         // Regenerar la sesión por seguridad.
         $request->session()->regenerate();
 
-        // Redirigir según el rol del usuario.
-        if ($usuario->rol === 'CLIENTE') {
-            return redirect()->intended(route('mi-cuenta'));
+        // Redirigir según el rol del usuario o responder JSON si es petición AJAX.
+        $targetUrl = match ($usuario->rol) {
+            'CLIENTE' => route('mi-cuenta'),
+            'COLABORADOR' => route('panel.productos.index'),
+            default => route('panel'),
+        };
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'redirect' => session()->pull('url.intended', $targetUrl),
+            ]);
         }
 
-        if ($usuario->rol === 'COLABORADOR') {
-            return redirect()->intended(route('panel.productos.index'));
-        }
-
-        return redirect()->intended(route('panel'));
+        return redirect()->intended($targetUrl);
     }
 
     /**

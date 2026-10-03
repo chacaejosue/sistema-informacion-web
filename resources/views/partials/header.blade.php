@@ -3,21 +3,22 @@
     <div class="h-20 max-w-7xl mx-auto px-space-md lg:px-margin flex items-center justify-between">
         <!-- Logotipo e identidad de marca -->
         <div class="flex items-center gap-space-lg">
-            <a class="flex items-center gap-space-sm group" data-path="inicio" href="{{ route('landing') }}">
+            <a class="flex items-center gap-space-sm group" data-path="inicio" href="{{ route('landing') }}" id="nav-inicio">
                 <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-10 w-auto object-contain group-hover:scale-105 transition-transform"/>
-                <div class="flex flex-col">
-                    <div class="flex items-center gap-space-xs">
-                        <span class="font-headline-md text-headline-md text-primary-container tracking-tight">Finora</span>
-                        <span class="px-space-xs py-[2px] rounded-lg bg-surface-container-low text-secondary font-label-sm text-label-sm uppercase tracking-wider">Catálogo Online</span>
-                    </div>
+                <div class="flex flex-col leading-none">
+                    {{-- 1.6: "Catálogo Online" ahora debajo de "Finora" para alinear correctamente --}}
+                    <span class="font-headline-md text-headline-md text-primary-container tracking-tight">Finora</span>
+                    <span class="text-[10px] font-medium text-on-surface-variant tracking-wide mt-0.5">Catálogo Online</span>
                 </div>
             </a>
 
             <!-- Navegación principal del sitio -->
             <nav class="hidden lg:flex items-center gap-space-lg pl-space-md">
-                <a class="transition-colors {{ request()->routeIs('landing') ? 'text-secondary font-title-md' : 'text-on-surface-variant hover:text-on-surface font-title-md text-title-md' }}" data-path="inicio" href="{{ route('landing') }}">Inicio</a>
-                <a class="text-on-surface-variant hover:text-on-surface font-title-md text-title-md transition-colors" data-path="catalogo" href="{{ route('landing') }}#catalogo-destacados">Catálogo</a>
-                <a class="transition-colors {{ request()->routeIs('categorias') ? 'text-secondary font-title-md' : 'text-on-surface-variant hover:text-on-surface font-title-md text-title-md' }}" data-path="categorias" href="{{ route('categorias') }}">Categorías</a>
+                {{-- 1.4: Mismo tamaño (font-title-md text-title-md) en activo e inactivo --}}
+                <a id="nav-inicio-link" class="font-title-md text-title-md transition-colors {{ request()->routeIs('landing') ? 'text-secondary' : 'text-on-surface-variant hover:text-on-surface' }}" data-path="inicio" href="{{ route('landing') }}">Inicio</a>
+                {{-- 1.12: Cambiado de "Catálogo" a "Destacados" | 1.5: estado hover igual a los otros --}}
+                <a id="nav-destacados" class="font-title-md text-title-md transition-colors text-on-surface-variant hover:text-secondary" data-path="destacados" href="{{ route('landing') }}#catalogo-destacados">Destacados</a>
+                <a class="font-title-md text-title-md transition-colors {{ request()->routeIs('categorias') ? 'text-secondary' : 'text-on-surface-variant hover:text-on-surface' }}" data-path="categorias" href="{{ route('categorias') }}">Categorías</a>
             </nav>
         </div>
 
@@ -27,3 +28,35 @@
         </div>
     </div>
 </header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1.7: "Inicio" hace scroll suave al top si ya estamos en la landing, sin recargar
+        const navInicio = document.getElementById('nav-inicio');
+        const navInicioLink = document.getElementById('nav-inicio-link');
+        [navInicio, navInicioLink].forEach(el => {
+            if (!el) return;
+            el.addEventListener('click', (e) => {
+                if (window.location.pathname === '/' || window.location.pathname === '') {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // 1.5: Iluminar "Destacados" cuando el hash es #catalogo-destacados
+        const navDestacados = document.getElementById('nav-destacados');
+        function updateDestacadosState() {
+            if (!navDestacados) return;
+            if (window.location.hash === '#catalogo-destacados') {
+                navDestacados.classList.add('text-secondary');
+                navDestacados.classList.remove('text-on-surface-variant', 'hover:text-secondary');
+            } else {
+                navDestacados.classList.remove('text-secondary');
+                navDestacados.classList.add('text-on-surface-variant', 'hover:text-secondary');
+            }
+        }
+        updateDestacadosState();
+        window.addEventListener('hashchange', updateDestacadosState);
+    });
+</script>

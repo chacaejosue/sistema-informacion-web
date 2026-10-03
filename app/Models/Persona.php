@@ -14,8 +14,19 @@ class Persona extends Model
         'apellido',
         'telefono',
         'email',
+        'genero',
         'direccion',
     ];
+
+    public function getSaludoAttribute(): string
+    {
+        $gen = strtoupper(trim((string) $this->genero));
+        if ($gen === 'FEMENINO' || $gen === 'F' || $gen === 'MUJER') {
+            return 'Bienvenida';
+        }
+
+        return 'Bienvenido';
+    }
 
     public function usuario(): HasOne
     {

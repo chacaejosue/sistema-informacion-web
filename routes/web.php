@@ -1,19 +1,20 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\PanelController;
-use App\Http\Controllers\CatalogoController;
-use App\Http\Controllers\Admin\ProductoController;
-use App\Http\Controllers\Admin\ProveedorController;
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\ClienteController;
-use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Admin\CompraController;
 use App\Http\Controllers\Admin\InventarioController;
-use App\Http\Controllers\Admin\PedidoController;
-use App\Http\Controllers\Admin\VentaController;
+use App\Http\Controllers\Admin\LineaController;
 use App\Http\Controllers\Admin\PagoController;
+use App\Http\Controllers\Admin\PedidoController;
+use App\Http\Controllers\Admin\ProductoController;
+use App\Http\Controllers\Admin\ProveedorController;
+use App\Http\Controllers\Admin\UsuarioController;
+use App\Http\Controllers\Admin\VentaController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\PanelController;
+use Illuminate\Support\Facades\Route;
 
 // Landing pública
 Route::get('/', function () {
@@ -42,6 +43,7 @@ Route::post('/logout', [LoginController::class, 'logout'])
 // Mi Cuenta / Portal de Cliente (para usuarios autenticados)
 Route::middleware('auth')->get('/mi-cuenta', function () {
     $usuario = auth()->user()->load('persona');
+
     return view('cliente.index', compact('usuario'));
 })->name('mi-cuenta');
 

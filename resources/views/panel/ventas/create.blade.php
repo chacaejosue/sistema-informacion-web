@@ -115,10 +115,10 @@
                             <div class="item-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                                 <div class="sm:col-span-6">
                                     <label class="block text-[10px] font-bold text-finora-subtle mb-1">Producto</label>
-                                    <select name="detalles[0][producto_id]" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                    <select name="detalles[0][producto_id]" required class="product-select w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                                         <option value="">-- Seleccionar Producto --</option>
                                         @foreach ($productos as $prod)
-                                            <option value="{{ $prod->id }}">{{ $prod->codigo }} - {{ $prod->nombre }} ($ {{ $prod->precio_venta_actual }})</option>
+                                            <option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}">{{ $prod->codigo }} - {{ $prod->nombre }} ($ {{ $prod->precio_venta_actual }})</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -128,11 +128,20 @@
                                 </div>
                                 <div class="sm:col-span-3">
                                     <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Unitario ($)</label>
-                                    <input type="number" step="0.01" min="0" name="detalles[0][precio_unitario]" value="0.00" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                    <input type="number" step="0.01" min="0" name="detalles[0][precio_unitario]" value="0.00" required class="precio-unitario-input w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                                 </div>
                             </div>
                         @endif
                     </div>
+                </div>
+
+                <!-- Alerta interactiva de validación (2.9) -->
+                <div id="form-validation-alert" class="hidden rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-900">
+                    <div class="flex items-center gap-2 font-bold mb-1">
+                        <span class="material-symbols-outlined text-amber-600 text-sm">warning</span>
+                        <span>Por favor completa los siguientes campos obligatorios antes de continuar:</span>
+                    </div>
+                    <ul id="missing-fields-list" class="list-disc list-inside space-y-0.5 text-amber-800"></ul>
                 </div>
 
                 <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
@@ -147,49 +156,108 @@
         </div>
     </main>
 
-    @if (! $pedido)
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                let itemIdx = 1;
-                const container = document.getElementById('items-container');
-                const btnAdd = document.getElementById('btn-add-item');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            const alertBox = document.getElementById('form-validation-alert');
+            const list = document.getElementById('missing-fields-list');
 
-                const productsOptions = `@foreach ($productos as $prod)<option value="{{ $prod->id }}">{{ $prod->codigo }} - {{ $prod->nombre }} ($ {{ $prod->precio_venta_actual }})</option>@endforeach`;
-
-                btnAdd.addEventListener('click', () => {
-                    const div = document.createElement('div');
-                    div.className = 'item-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-slate-50 p-3 rounded-xl border border-slate-200 relative';
-                    div.innerHTML = `
-                        <div class="sm:col-span-5">
-                            <label class="block text-[10px] font-bold text-finora-subtle mb-1">Producto</label>
-                            <select name="detalles[${itemIdx}][producto_id]" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
-                                <option value="">-- Seleccionar Producto --</option>
-                                ${productsOptions}
-                            </select>
-                        </div>
-                        <div class="sm:col-span-3">
-                            <label class="block text-[10px] font-bold text-finora-subtle mb-1">Cantidad</label>
-                            <input type="number" min="1" name="detalles[${itemIdx}][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
-                        </div>
-                        <div class="sm:col-span-3">
-                            <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Unitario ($)</label>
-                            <input type="number" step="0.01" min="0" name="detalles[${itemIdx}][precio_unitario]" value="0.00" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
-                        </div>
-                        <div class="sm:col-span-1 text-right pt-3 sm:pt-0">
-                            <button type="button" class="btn-remove-row text-red-500 hover:text-red-700 p-1" title="Eliminar fila">
-                                <span class="material-symbols-outlined text-base">delete</span>
-                            </button>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                    itemIdx++;
-
-                    div.querySelector('.btn-remove-row').addEventListener('click', () => {
-                        div.remove();
+            // Auto-asignación de precio unitario (3.1)
+            function attachAutoPriceListener(row) {
+                const select = row.querySelector('.product-select');
+                const inputPrecio = row.querySelector('.precio-unitario-input');
+                if (select && inputPrecio) {
+                    select.addEventListener('change', () => {
+                        const opt = select.options[select.selectedIndex];
+                        const precio = opt ? opt.dataset.precio : 0;
+                        if (precio) {
+                            inputPrecio.value = parseFloat(precio).toFixed(2);
+                        }
                     });
+                }
+            }
+
+            const container = document.getElementById('items-container');
+            if (container) {
+                container.querySelectorAll('.item-row').forEach(row => attachAutoPriceListener(row));
+            }
+
+            @if (! $pedido)
+                let itemIdx = 1;
+                const btnAdd = document.getElementById('btn-add-item');
+                const productsOptions = `@foreach ($productos as $prod)<option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}">{{ $prod->codigo }} - {{ $prod->nombre }} ($ {{ $prod->precio_venta_actual }})</option>@endforeach`;
+
+                if (btnAdd) {
+                    btnAdd.addEventListener('click', () => {
+                        const div = document.createElement('div');
+                        div.className = 'item-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-slate-50 p-3 rounded-xl border border-slate-200 relative';
+                        div.innerHTML = `
+                            <div class="sm:col-span-5">
+                                <label class="block text-[10px] font-bold text-finora-subtle mb-1">Producto</label>
+                                <select name="detalles[${itemIdx}][producto_id]" required class="product-select w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                    <option value="">-- Seleccionar Producto --</option>
+                                    ${productsOptions}
+                                </select>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <label class="block text-[10px] font-bold text-finora-subtle mb-1">Cantidad</label>
+                                <input type="number" min="1" name="detalles[${itemIdx}][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                            </div>
+                            <div class="sm:col-span-3">
+                                <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Unitario ($)</label>
+                                <input type="number" step="0.01" min="0" name="detalles[${itemIdx}][precio_unitario]" value="0.00" required class="precio-unitario-input w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                            </div>
+                            <div class="sm:col-span-1 text-right pt-3 sm:pt-0">
+                                <button type="button" class="btn-remove-row text-red-500 hover:text-red-700 p-1" title="Eliminar fila">
+                                    <span class="material-symbols-outlined text-base">delete</span>
+                                </button>
+                            </div>
+                        `;
+                        container.appendChild(div);
+                        attachAutoPriceListener(div);
+                        itemIdx++;
+
+                        div.querySelector('.btn-remove-row').addEventListener('click', () => {
+                            div.remove();
+                        });
+                    });
+                }
+            @endif
+
+            // Validación interactiva de campos requeridos (2.9)
+            if (form && alertBox && list) {
+                form.addEventListener('submit', (e) => {
+                    const requiredInputs = form.querySelectorAll('[required]');
+                    const missing = [];
+
+                    requiredInputs.forEach(input => {
+                        const val = input.value ? input.value.trim() : '';
+                        if (!val) {
+                            const label = form.querySelector(`label[for="${input.id}"]`) || input.closest('div')?.querySelector('label');
+                            const fieldName = label ? label.textContent.replace('*', '').trim() : (input.name || 'Campo');
+                            missing.push(fieldName);
+                            input.classList.add('ring-2', 'ring-amber-500', 'border-amber-500');
+                        } else {
+                            input.classList.remove('ring-2', 'ring-amber-500', 'border-amber-500');
+                        }
+                    });
+
+                    if (missing.length > 0) {
+                        e.preventDefault();
+                        list.innerHTML = '';
+                        missing.forEach(name => {
+                            const li = document.createElement('li');
+                            li.textContent = name;
+                            list.appendChild(li);
+                        });
+                        alertBox.classList.remove('hidden');
+                        alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        alertBox.classList.add('hidden');
+                    }
                 });
-            });
-        </script>
-    @endif
+            }
+        });
+    </script>
 </body>
 </html>

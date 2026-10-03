@@ -11,7 +11,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- 1.8: Animaciones suaves de entrada --}}
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.55s ease both;
+        }
+        .animate-fade-in-up-d1 { animation-delay: 0.1s; }
+        .animate-fade-in-up-d2 { animation-delay: 0.2s; }
+        .animate-fade-in-up-d3 { animation-delay: 0.3s; }
+        .animate-fade-in-up-d4 { animation-delay: 0.4s; }
+        html { scroll-behavior: smooth; }
+    </style>
 </head>
+{{-- 1.17: Fondo más contrastado con border entre secciones --}}
 <body class="bg-background font-body-md text-body-md text-on-surface min-h-screen relative selection:bg-secondary selection:text-on-secondary">
     <div class="pointer-events-none fixed inset-0 overflow-hidden z-0">
         <svg class="absolute -right-24 top-16 w-[620px] h-[620px] text-secondary opacity-[0.035]" fill="currentColor" viewBox="0 0 200 200">
@@ -28,68 +45,72 @@
     @php
     $categorias = [
         [
-            'id' => 'perfumeria',
+            'id'     => 'perfumeria',
             'nombre' => 'Perfumería Femenina & Masculina',
-            'desc' => 'Eau de Parfum, colonias y aromas icónicos Natura.',
+            'desc'   => 'Eau de Parfum, colonias y aromas icónicos Natura.',
             'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuBxcMsNQZSIsdb4okFDAE0gH6L38ZSmYwnegAajpDZkU3wNTEecLWFDF5s8kwxoRvoSEJ8FU61o3Z3keP8EV3jHh_ZW3UimcmZEmALLpBHlxNy_SwUfo0AVJP9LJ_5rYRCyFCncW6Ih7w2V6col1QZKy4RKFAf74WgzZ5ycjd7gtjWuCYaqfmXmIpLlF-bWIrS4BVHJa8rKqKy1BvdFOIASHO5fkGj6n7I-Lcz11Y31dHFmZ-TcEYaZ',
-            'badge' => 'Perfumería'
+            'badge'  => 'Perfumería',
+            'slug'   => 'perfumeria',
         ],
         [
-            'id' => 'facial',
+            'id'     => 'facial',
             'nombre' => 'Cuidado Facial & Antiedad',
-            'desc' => 'Tratamientos concentrados y soluciones Chronos.',
-            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfzFhlpmnUmECDoLj3Sx2gh1Sb7o8VHuaTUknOb-uYYl3tgyRfp36zOh6B8rv3YYSCZ4Gj_EuqXb4SmQH_dSNX0w0eP8cX_b3SL3dS7sOzMkGZGYUkKud7xcXTSOLVRTy910YDZzwFY16dKstT8ekXktw-xSY5TyZfJRLVRCdRZcBawTx53cC9r1amTXBxu5CIf-Sa-tT-aeO-v4pss9sErJYo2NhYIVvLcZh_X_wKBT947W37tGoa',
-            'badge' => 'Chronos'
+            'desc'   => 'Tratamientos concentrados y soluciones Chronos.',
+            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfzFhlpmnUmECDoLj3Sx2gh1Sb7o8VHuaTUknOb-uYYl3tgyRfp36zOh6B8rv3YYSCZ4Gj_EuqXb4SmQH_dSNX0w0eP8cX_b3SL3dS7sOzMkGZGYUkKud7xcXTSOLVRTy910YDZzwFY16dKstT8ekXktw-xSY5TyZfJRLVRcdRZcBawTx53cC9r1amTXBxu5CIf-Sa-tT-aeO-v4pss9sErJYo2NhYIVvLcZh_X_wKBT947W37tGoa',
+            'badge'  => 'Chronos',
+            'slug'   => 'cuidado-facial',
         ],
         [
-            'id' => 'maquillaje',
+            'id'     => 'maquillaje',
             'nombre' => 'Maquillaje & Belleza',
-            'desc' => 'Bases, labiales y máscaras de pestañas.',
+            'desc'   => 'Bases, labiales y máscaras de pestañas.',
             'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuBKPr7vwaXaN_76XxZd9Uw90OQibqotJwPA83NEt2kG1tWJR6sqbZJZ_OMxvBFn9xgqQfhMDKtOKacZVVTRkqPzP37sfHcZyOJOBwcvx3VZd3UZgxhvGtDQYI2efmeOvuuoxot1z8XJocfYjDjFIlokdd1awwqALXqnATQUbNqFLIoBd-n0CPMZk7JjQjWcJzWTHDcJ7CYcwBo1OwOqksWhlmeSCX1865nad6W4kFHsEhgILALWlNHg',
-            'badge' => 'Una & Faces'
+            'badge'  => 'Una & Faces',
+            'slug'   => 'maquillaje',
         ],
         [
-            'id' => 'corporal',
+            'id'     => 'corporal',
             'nombre' => 'Cuidado Corporal & Baño',
-            'desc' => 'Jabones, cremas Tododia y aceites Ekos.',
+            'desc'   => 'Jabones, cremas Tododia y aceites Ekos.',
             'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCW-t4D8b-e08Wp--r_kFgodviBu3FXXd9lRfxRXMHqgAKTYNLIjdBGpdmIeosVIjZvqhLg4ol61ibFrDC2QUKOQMLVSc_SpixPw_GxqsVpl0bK1zDlzGZefPjDc7QxCZgimSLep795dwU5qx9e1beoylRxdCJ7-pl0GKDmCwy-6R1-i4-wBfWgivRQgdodmrOD7OXGj_PGZSd8MvIJboIT9wxDtmG_ZJnJktm4laAn0FKnWH6GnxL5',
-            'badge' => 'Tododia & Ekos'
-        ]
+            'badge'  => 'Tododia & Ekos',
+            'slug'   => 'cuidado-corporal',
+        ],
     ];
 
     $productos = [
         [
-            'nombre' => 'Kaiak Océano Desodorante Colonia 100ml',
-            'linea' => 'Perfumería Masculina',
+            'nombre'    => 'Kaiak Océano Desodorante Colonia 100ml',
+            'linea'     => 'Perfumería Masculina',
             'categoria' => 'perfumeria',
-            'desc' => 'Notas acuáticas frescas y maderas nobles. Envase con plástico reciclado.',
-            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCk__CamhCJuxGhETjCqsE2JudDCh8CN_iwlinQiN3aIIOplZeRcRlNrMOLe-f0-2QSymYReONH8aMIB68TEKqyIZ_XVP2Ozi0hXDonhJ_7I2vLQThNCLzSHG2LG9ksIbA1hJUM5kRX08tbCrV9y1sf15OdFM_cj9LhcmaFux2q1S1SV-CY87BnZIWmZR_E4K1nwk74OsCqFXfIxc5vChNgEDSF4An75eZDS6qpoJp3nQ5ujqNCMloY',
-            'tag' => 'Natura'
+            'desc'      => 'Notas acuáticas frescas y maderas nobles. Envase con plástico reciclado.',
+            'imagen'    => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCk__CamhCJuxGhETjCqsE2JudDCh8CN_iwlinQiN3aIIOplZeRcRlNrMOLe-f0-2QSymYReONH8aMIB68TEKqyIZ_XVP2Ozi0hXDonhJ_7I2vLQThNCLzSHG2LG9ksIbA1hJUM5kRX08tbCrV9y1sf15OdFM_cj9LhcmaFux2q1S1SV-CY87BnZIWmZR_E4K1nwk74OsCqFXfIxc5vChNgEDSF4An75eZDS6qpoJp3nQ5ujqNCMloY',
+            'tag'       => 'Natura',
         ],
         [
-            'nombre' => 'Ilía Secreto Feminino 50ml',
-            'linea' => 'Perfumería Femenina',
+            'nombre'    => 'Ilía Secreto Feminino 50ml',
+            'linea'     => 'Perfumería Femenina',
             'categoria' => 'perfumeria',
-            'desc' => 'Flor de azahar, uva silvestre y notas amaderadas de alta fijación.',
-            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuBGQDcagPGRPv26ZXYqBUpy1xtl8i8sQOw0jULAVrNGr5bfvBityPnrSyoQ2P_hIX7hSgUH3gMioOjQA2jfC-TGFjHYSh_ZglEcKpRZ8ejSfiTMBAfq7ImNd1RcZvOphZJuf3Qd6BRSsqUQgLmD6mgbx6AUFzRqwHFiONXmpAa-cbvOxkiZkaEG9_bYmHPS2CRFghGZ08peALOG0Qm4Vmelh6hwy0sqJ-W53L-nyYLMN2UoewIEDnLp',
-            'tag' => 'Natura'
+            'desc'      => 'Flor de azahar, uva silvestre y notas amaderadas de alta fijación.',
+            'imagen'    => 'https://lh3.googleusercontent.com/aida-public/AB6AXuBGQDcagPGRPv26ZXYqBUpy1xtl8i8sQOw0jULAVrNGr5bfvBityPnrSyoQ2P_hIX7hSgUH3gMioOjQA2jfC-TGFjHYSh_ZglEcKpRZ8ejSfiTMBAfq7ImNd1RcZvOphZJuf3Qd6BRSsqUQgLmD6mgbx6AUFzRqwHFiONXmpAa-cbvOxkiZkaEG9_bYmHPS2CRFghGZ08peALOG0Qm4Vmelh6hwy0sqJ-W53L-nyYLMN2UoewIEDnLp',
+            'tag'       => 'Natura',
         ],
         [
-            'nombre' => 'Chronos Suero Reductor de Arrugas 30ml',
-            'linea' => 'Cuidado Facial',
+            'nombre'    => 'Chronos Suero Reductor de Arrugas 30ml',
+            'linea'     => 'Cuidado Facial',
             'categoria' => 'facial',
-            'desc' => 'Triple acción restauradora con prebióticos de jatobá y biosacáridos.',
-            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4Vt2uuv1rAezUkBlX2gIWPSLv5ll-AvG2axrBg6GGyfrh01MQoymj7KQj_J3LK9k3wJTeDMak0tdPmM35h2psxAomfjlwpi7jJNl6TcwE91DOz0htAKRz2hjVy9JOu_iQz75xHAqbkKy_Px2jUwJwAvlOPmE1JsHOb_BlnXUhyNrByuBDAoIflaRsI93_wME_ZtZtytjIYXgIgCvVX12yvbPXTOCkVLCLziM7MXaTfw5XwnGBOTAU',
-            'tag' => 'Natura Chronos'
+            'desc'      => 'Triple acción restauradora con prebióticos de jatobá y biosacáridos.',
+            'imagen'    => 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4Vt2uuv1rAezUkBlX2gIWPSLv5ll-AvG2axrBg6GGyfrh01MQoymj7KQj_J3LK9k3wJTeDMak0tdPmM35h2psxAomfjlwpi7jJNl6TcwE91DOz0htAKRz2hjVy9JOu_iQz75xHAqbkKy_Px2jUwJwAvlOPmE1JsHOb_BlnXUhyNrByuBDAoIflaRsI93_wME_ZtZtytjIYXgIgCvVX12yvbPXTOCkVLCLziM7MXaTfw5XwnGBOTAU',
+            'tag'       => 'Natura Chronos',
         ],
         [
-            'nombre' => 'Tododia Crema Nutritiva Corporal 400ml',
-            'linea' => 'Cuidado Corporal',
+            'nombre'    => 'Tododia Crema Nutritiva Corporal 400ml',
+            'linea'     => 'Cuidado Corporal',
             'categoria' => 'corporal',
-            'desc' => 'Nutrición prebiótica con aceite de linaza y manteca de cacao pura.',
-            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuD2ewDuGKijoiEOiuHiIBxb7zF6rG3_F-H9yoE5uNk1TpRmKtNeO8x5MZax3Awol8sWTIU_cc3JmU3SR7sJ1wSJb9l3R-1FDGNIm_qh5hzfp8KsSOj0VftJT0AJ6mLcKM7Upr5znkMBl5hFz43WgjLiVkRIP0Gzmt3txvE-GcakDYlKigiI49wJiIN9lksUeV_LUb_iOL18ADb3CKZee36WhO8ei6mC_3wgoLTuAUirPyRsdO2knW7c',
-            'tag' => 'Natura Tododia'
-        ]
+            'desc'      => 'Nutrición prebiótica con aceite de linaza y manteca de cacao pura.',
+            'imagen'    => 'https://lh3.googleusercontent.com/aida-public/AB6AXuD2ewDuGKijoiEOiuHiIBxb7zF6rG3_F-H9yoE5uNk1TpRmKtNeO8x5MZax3Awol8sWTIU_cc3JmU3SR7sJ1wSJb9l3R-1FDGNIm_qh5hzfp8KsSOj0VftJT0AJ6mLcKM7Upr5znkMBl5hFz43WgjLiVkRIP0Gzmt3txvE-GcakDYlKigiI49wJiIN9lksUeV_LUb_iOL18ADb3CKZee36WhO8ei6mC_3wgoLTuAUirPyRsdO2knW7c',
+            'tag'       => 'Natura Tododia',
+        ],
     ];
     @endphp
 
@@ -103,11 +124,11 @@
                 <div class="absolute bottom-20 right-[-5%] w-[680px] h-[680px] rounded-full bg-gradient-to-tl from-[#00D2DF]/8 via-secondary-container/5 to-transparent blur-[130px]"></div>
             </div>
 
-            <!-- Presentación principal -->
+            <!-- Presentación principal (1.8: con animación fade-in-up) -->
             <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin pt-space-xl lg:pt-space-2xl pb-space-2xl w-full">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
                     <!-- Texto e información principal -->
-                    <div class="lg:col-span-6 flex flex-col gap-space-md">
+                    <div class="lg:col-span-6 flex flex-col gap-space-md animate-fade-in-up">
                         <div class="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-lowest shadow-sm w-fit">
                             <span class="w-2 h-2 rounded-full bg-gradient-to-r from-secondary to-[#00D2DF] animate-pulse"></span>
                             <span class="font-label-md text-label-md text-primary-container tracking-tight">Productos Natura • Atención de un consultor independiente</span>
@@ -128,8 +149,8 @@
                             </a>
                         </div>
                     </div>
-                    <!-- Producto destacado en tarjeta -->
-                    <div class="lg:col-span-6 relative mt-space-lg lg:mt-0">
+                    <!-- Producto destacado en tarjeta (1.8: con animación retrasada) -->
+                    <div class="lg:col-span-6 relative mt-space-lg lg:mt-0 animate-fade-in-up animate-fade-in-up-d2">
                         <div class="absolute inset-0 bg-gradient-to-tr from-secondary-container/20 via-[#00D2DF]/15 to-transparent rounded-full filter blur-3xl scale-95 pointer-events-none"></div>
                         <div class="relative w-full rounded-2xl bg-surface-container-lowest/80 backdrop-blur-md shadow-xl p-space-lg">
                             <div class="flex flex-col justify-between p-space-lg rounded-xl bg-gradient-to-b from-surface-container-low to-surface-container-lowest shadow-sm relative overflow-hidden group">
@@ -139,8 +160,9 @@
                                         Destacado
                                     </span>
                                 </div>
+                                {{-- 1.14: draggable=false + select-none --}}
                                 <div class="relative h-64 w-full flex items-center justify-center my-space-xs overflow-hidden rounded-lg bg-surface-container-lowest">
-                                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Natura Ilía Secreto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGQDcagPGRPv26ZXYqBUpy1xtl8i8sQOw0jULAVrNGr5bfvBityPnrSyoQ2P_hIX7hSgUH3gMioOjQA2jfC-TGFjHYSh_ZglEcKpRZ8ejSfiTMBAfq7ImNd1RcZvOphZJuf3Qd6BRSsqUQgLmD6mgbx6AUFzRqwHFiONXmpAa-cbvOxkiZkaEG9_bYmHPS2CRFghGZ08peALOG0Qm4Vmelh6hwy0sqJ-W53L-nyYLMN2UoewIEDnLp"/>
+                                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 select-none" draggable="false" alt="Natura Ilía Secreto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGQDcagPGRPv26ZXYqBUpy1xtl8i8sQOw0jULAVrNGr5bfvBityPnrSyoQ2P_hIX7hSgUH3gMioOjQA2jfC-TGFjHYSh_ZglEcKpRZ8ejSfiTMBAfq7ImNd1RcZvOphZJuf3Qd6BRSsqUQgLmD6mgbx6AUFzRqwHFiONXmpAa-cbvOxkiZkaEG9_bYmHPS2CRFghGZ08peALOG0Qm4Vmelh6hwy0sqJ-W53L-nyYLMN2UoewIEDnLp"/>
                                 </div>
                                 <div class="z-10 mt-space-sm">
                                     <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Perfumería Femenina</span>
@@ -155,9 +177,12 @@
                 </div>
             </section>
 
+            {{-- 1.16: Sección de productos destacados AHORA está DEBAJO del buscador --}}
+
             <!-- Buscador y filtro por categoría -->
-            <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin -mt-space-sm mb-space-2xl w-full">
-                <div class="p-space-lg rounded-2xl bg-surface-container-lowest shadow-md flex flex-col gap-space-md">
+            <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin -mt-space-sm mb-space-xl w-full">
+                {{-- 1.17: Borde y sombra más marcada para separar secciones --}}
+                <div class="p-space-lg rounded-2xl bg-surface-container-lowest shadow-md border border-surface-container-high/60 flex flex-col gap-space-md">
                     <div class="relative flex items-center w-full">
                         <span class="material-symbols-outlined absolute left-4 text-on-surface-variant text-[24px]">search</span>
                         <input class="w-full h-14 pl-14 pr-32 rounded-xl bg-surface-container-low text-primary-container placeholder:text-on-surface-variant font-body-lg text-body-lg focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_#0266ff] transition-all" id="catalog-search" placeholder="Buscar por producto o categoría (ej. Ilía, Chronos, Kaiak)..." type="text"/>
@@ -183,8 +208,52 @@
                 </div>
             </section>
 
-            <!-- Sección de categorías -->
-            <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin mb-space-2xl w-full" id="categorias">
+            {{-- 1.16: Sección de productos destacados movida aquí (antes estaba después de categorías) --}}
+            <!-- Sección de productos disponibles -->
+            <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin mb-space-2xl w-full" id="catalogo-destacados">
+                <div class="mb-space-lg">
+                    <span class="text-secondary font-label-sm text-label-sm uppercase tracking-wider">Catálogo Natura</span>
+                    {{-- 1.17: Borde inferior en título para separación visual --}}
+                    <h2 class="font-headline-lg text-headline-lg text-primary-container pb-2 border-b border-surface-container-high/50 mt-1">Productos disponibles:</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md" id="products-container">
+                    @foreach($productos as $prod)
+                    {{-- 1.1: Cada tarjeta es clickable y abre el modal de detalles --}}
+                    <div class="product-item rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group border border-surface-container-high/30 hover:border-secondary/30 cursor-pointer"
+                        data-cat="{{ $prod['categoria'] }}"
+                        data-nombre="{{ $prod['nombre'] }}"
+                        data-linea="{{ $prod['linea'] }}"
+                        data-desc="{{ $prod['desc'] }}"
+                        data-imagen="{{ $prod['imagen'] }}"
+                        data-tag="{{ $prod['tag'] }}"
+                        onclick="openProductModal(this)">
+                        <div>
+                            <div class="relative h-56 w-full rounded-xl overflow-hidden bg-surface-container-low mb-space-sm flex items-center justify-center">
+                                {{-- 1.14: No arrastrable --}}
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 select-none" draggable="false" alt="{{ $prod['nombre'] }}" src="{{ $prod['imagen'] }}"/>
+                                <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-surface-container-lowest text-primary-container font-label-sm text-label-sm uppercase">{{ $prod['tag'] }}</span>
+                            </div>
+                            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">{{ $prod['linea'] }}</span>
+                            <h3 class="font-title-lg text-title-lg text-primary-container mt-1 line-clamp-1">{{ $prod['nombre'] }}</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">{{ $prod['desc'] }}</p>
+                        </div>
+                        <div class="pt-space-md mt-space-sm border-t border-surface-container">
+                            <div class="flex items-baseline gap-space-xs mb-space-sm">
+                                <span class="font-headline-sm text-headline-sm text-primary-container font-bold">Precio a consultar</span>
+                            </div>
+                            {{-- 1.15: Botón WhatsApp con número real --}}
+                            <a href="https://wa.me/59167673537?text=Hola%20deseo%20consultar%20por%20{{ urlencode($prod['nombre']) }}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="w-full py-2.5 rounded-lg bg-surface-container text-primary-container hover:bg-secondary hover:text-on-secondary font-title-md text-title-md flex items-center justify-center gap-space-xs transition-all">
+                                <span class="material-symbols-outlined text-[18px]">chat</span>
+                                <span>Consultar por WhatsApp</span>
+                            </a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </section>
+
+            <!-- Sección de categorías (1.17: bordes más marcados) -->
+            <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin mb-space-2xl w-full border-t border-surface-container-high/50 pt-space-2xl" id="categorias">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-space-lg gap-space-xs">
                     <div>
                         <div class="inline-flex items-center gap-space-xs text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-1">
@@ -198,9 +267,11 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
                     @foreach($categorias as $cat)
-                    <a class="group relative rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden" href="#catalogo-destacados">
+                    {{-- 1.11: Cada categoría envía a /categorias?categoria=<slug> --}}
+                    <a class="group relative rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden border border-surface-container-high/40 hover:border-secondary/40" href="{{ route('categorias', ['categoria' => $cat['slug']]) }}">
                         <div class="relative h-44 w-full rounded-xl overflow-hidden bg-surface-container-low mb-space-md">
-                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $cat['nombre'] }}" src="{{ $cat['imagen'] }}"/>
+                            {{-- 1.14: No arrastrable --}}
+                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 select-none" draggable="false" alt="{{ $cat['nombre'] }}" src="{{ $cat['imagen'] }}"/>
                             <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-surface-container-lowest/90 backdrop-blur-sm text-secondary font-label-sm text-label-sm">{{ $cat['badge'] }}</span>
                         </div>
                         <div>
@@ -215,43 +286,95 @@
                     @endforeach
                 </div>
             </section>
-
-            <!-- Sección de productos destacados -->
-            <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin mb-space-2xl w-full" id="catalogo-destacados">
-                <div class="mb-space-lg">
-                    <span class="text-secondary font-label-sm text-label-sm uppercase tracking-wider">Catálogo Natura</span>
-                    <h2 class="font-headline-lg text-headline-lg text-primary-container">Productos destacados</h2>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md" id="products-container">
-                    @foreach($productos as $prod)
-                    <div class="product-item rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between group" data-cat="{{ $prod['categoria'] }}">
-                        <div>
-                            <div class="relative h-56 w-full rounded-xl overflow-hidden bg-surface-container-low mb-space-sm flex items-center justify-center">
-                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="{{ $prod['nombre'] }}" src="{{ $prod['imagen'] }}"/>
-                                <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-surface-container-lowest text-primary-container font-label-sm text-label-sm uppercase">{{ $prod['tag'] }}</span>
-                            </div>
-                            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">{{ $prod['linea'] }}</span>
-                            <h3 class="font-title-lg text-title-lg text-primary-container mt-1 line-clamp-1">{{ $prod['nombre'] }}</h3>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">{{ $prod['desc'] }}</p>
-                        </div>
-                        <div class="pt-space-md mt-space-sm border-t border-surface-container">
-                            <div class="flex items-baseline gap-space-xs mb-space-sm">
-                                <span class="font-headline-sm text-headline-sm text-primary-container font-bold">Precio a consultar</span>
-                            </div>
-                            <a href="https://wa.me/?text=Hola%20deseo%20consultar%20por%20{{ urlencode($prod['nombre']) }}" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 rounded-lg bg-surface-container text-primary-container hover:bg-secondary hover:text-on-secondary font-title-md text-title-md flex items-center justify-center gap-space-xs transition-all">
-                                <span class="material-symbols-outlined text-[18px]">chat</span>
-                                <span>Consultar por WhatsApp</span>
-                            </a>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </section>
         </div>
     </main>
 
     <!-- Pie de página -->
     @include('partials.footer')
 
+    {{-- 1.1: Modal de detalles de producto --}}
+    <dialog id="productModal" class="fixed inset-0 m-auto w-full max-w-lg rounded-2xl bg-surface-container-lowest shadow-2xl p-0 border border-surface-container-high/40 backdrop:bg-black/50">
+        <div class="flex flex-col max-h-[90vh]">
+            <div class="relative h-72 w-full rounded-t-2xl overflow-hidden bg-surface-container-low shrink-0">
+                <img id="modalImage" src="" alt="" class="w-full h-full object-cover select-none" draggable="false"/>
+                <button onclick="document.getElementById('productModal').close()" class="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface hover:bg-surface-container transition-colors" aria-label="Cerrar">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+                <span id="modalTag" class="absolute top-3 left-3 px-2 py-0.5 rounded-md bg-surface-container-lowest/90 backdrop-blur-sm text-secondary font-label-sm text-label-sm uppercase"></span>
+            </div>
+            <div class="p-6 flex flex-col gap-4 overflow-y-auto">
+                <div>
+                    <span id="modalLinea" class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider"></span>
+                    <h3 id="modalNombre" class="font-headline-sm text-headline-sm text-primary-container mt-1"></h3>
+                    <p id="modalDesc" class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed"></p>
+                </div>
+                <div class="flex items-center justify-between border-t border-surface-container-high/40 pt-4">
+                    <span class="font-headline-sm text-headline-sm text-secondary font-bold">Precio a consultar</span>
+                    <a id="modalWaLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-on-secondary font-title-md text-title-md hover:bg-secondary-container transition-all shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">chat</span>
+                        <span>Consultar por WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    {{-- 1.9 + 1.10: Botones flotantes (Back to top + Chat IA) --}}
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3" id="floating-buttons" style="display:none!important">
+        {{-- Back to top --}}
+        <button id="backToTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+            class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-lowest shadow-lg border border-surface-container-high/40 text-secondary hover:bg-secondary hover:text-on-secondary transition-all hover:shadow-xl"
+            aria-label="Volver arriba" title="Volver arriba">
+            <span class="material-symbols-outlined text-[22px]">arrow_upward</span>
+        </button>
+        {{-- Chat IA --}}
+        <button id="aiChatBtn"
+            class="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-secondary to-[#00B4D8] shadow-lg text-on-secondary hover:opacity-90 transition-all hover:shadow-xl"
+            aria-label="Chat de IA" title="Asistente IA"
+            onclick="window.open('https://wa.me/59167673537?text=Hola%2C%20necesito%20ayuda%20con%20un%20producto%20Natura','_blank')">
+            <span class="material-symbols-outlined text-[22px]">auto_awesome</span>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1.9 + 1.10: Mostrar botones flotantes al hacer scroll
+            const floatingBtns = document.getElementById('floating-buttons');
+            if (floatingBtns) {
+                floatingBtns.style.cssText = 'display:flex!important;flex-direction:column;gap:0.75rem;';
+                floatingBtns.style.display = 'none';
+                window.addEventListener('scroll', () => {
+                    floatingBtns.style.display = window.scrollY > 200 ? 'flex' : 'none';
+                }, { passive: true });
+            }
+
+            // 1.1: Modal de producto
+            window.openProductModal = function(card) {
+                const modal = document.getElementById('productModal');
+                if (!modal) return;
+                document.getElementById('modalImage').src    = card.dataset.imagen;
+                document.getElementById('modalImage').alt    = card.dataset.nombre;
+                document.getElementById('modalTag').textContent    = card.dataset.tag;
+                document.getElementById('modalLinea').textContent  = card.dataset.linea;
+                document.getElementById('modalNombre').textContent = card.dataset.nombre;
+                document.getElementById('modalDesc').textContent   = card.dataset.desc;
+                document.getElementById('modalWaLink').href =
+                    'https://wa.me/59167673537?text=Hola%20deseo%20consultar%20por%20' + encodeURIComponent(card.dataset.nombre);
+                modal.showModal();
+            };
+
+            // Cerrar modal al clicar backdrop
+            const productModal = document.getElementById('productModal');
+            if (productModal) {
+                productModal.addEventListener('click', (e) => {
+                    const rect = productModal.getBoundingClientRect();
+                    if (e.clientX < rect.left || e.clientX > rect.right ||
+                        e.clientY < rect.top  || e.clientY > rect.bottom) {
+                        productModal.close();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
