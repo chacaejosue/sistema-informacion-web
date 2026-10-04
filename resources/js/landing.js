@@ -42,5 +42,20 @@ document.addEventListener('DOMContentLoaded', () => {
             searchQuery = e.target.value.toLowerCase().trim();
             updateVisibility();
         });
+
+        // Al presionar Enter en el buscador, hacer scroll a la sección de catálogo
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('catalogo-destacados')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+
+    const searchBtn = document.getElementById('search-btn');
+    if (searchBtn) {
+        searchBtn.addEventListener('click', () => {
+            document.getElementById('catalogo-destacados')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
     }
 });

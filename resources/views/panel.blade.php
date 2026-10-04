@@ -55,23 +55,41 @@
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
 
-        <section aria-labelledby="welcome-title" class="bg-gradient-to-r from-finora-navy via-finora-dark to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden mb-10">
+        <section aria-labelledby="welcome-title" class="admin-welcome-card bg-gradient-to-r from-finora-navy via-finora-dark to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden mb-10 animate-fade-in-down">
             <div aria-hidden="true" class="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
             <div aria-hidden="true" class="absolute right-32 -bottom-20 w-72 h-72 rounded-full bg-blue-500/15 blur-3xl pointer-events-none"></div>
 
-            <div class="relative z-10 max-w-2xl">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-cyan-300 text-xs font-bold tracking-wide uppercase mb-4">
-                    <span class="material-symbols-outlined text-sm">verified_user</span>
-                    Sesión Activa
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-cyan-300 text-xs font-bold tracking-wide uppercase mb-4">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Sesión Activa &bull; <span id="currentDateText">Panel Comercial</span>
+                    </div>
+
+                    <h1 id="welcome-title" class="font-heading text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                        ¡{{ $usuario->persona->saludo }}, {{ $usuario->persona->nombre }}!
+                    </h1>
+
+                    <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+                        Bienvenido a Finora. Gestiona el flujo comercial completo de tu negocio: catálogo, clientes, pedidos, compras, inventario, ventas y cobranzas.
+                    </p>
                 </div>
 
-                <h1 id="welcome-title" class="font-heading text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                    ¡{{ $usuario->persona->saludo }}, {{ $usuario->persona->nombre }}!
-                </h1>
-
-                <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
-                    {{ $usuario->persona->saludo }} a Finora. Gestiona el flujo comercial completo de tu negocio: catálogo de productos, clientes, pedidos, compras, inventario, ventas y cobranzas.
-                </p>
+                {{-- Accesos rápidos de alta frecuencia para el consultor --}}
+                <div class="flex flex-wrap lg:flex-col gap-2.5 shrink-0">
+                    <a href="{{ route('panel.ventas.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-secondary to-finora-sky text-white text-xs font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer">
+                        <span class="material-symbols-outlined text-sm">point_of_sale</span>
+                        <span>Nueva Venta</span>
+                    </a>
+                    <a href="{{ route('panel.pedidos.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs font-bold backdrop-blur-md hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer">
+                        <span class="material-symbols-outlined text-sm">shopping_cart</span>
+                        <span>Nuevo Pedido</span>
+                    </a>
+                    <a href="{{ route('panel.productos.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs font-bold backdrop-blur-md hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer">
+                        <span class="material-symbols-outlined text-sm">add_box</span>
+                        <span>Nuevo Producto</span>
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -90,14 +108,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
                 <!-- 1. Productos -->
-                <a href="{{ route('panel.productos.index') }}" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-finora-blue transition-all flex flex-col justify-between group">
+                <a href="{{ route('panel.productos.index') }}" class="finora-card-interactive animate-fade-in-up delay-75 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-finora-blue transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-finora-blue group-hover:bg-finora-blue group-hover:text-white transition-colors flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-finora-blue group-hover:bg-finora-blue group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">package_2</span>
                         </div>
-                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-finora-blue transition-colors flex items-center gap-1">
+                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-finora-blue transition-colors flex items-center justify-between">
                             <span>Productos</span>
-                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </h3>
                         <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
                             Catálogo de productos, precios y publicación.
@@ -106,14 +124,14 @@
                 </a>
 
                 <!-- 2. Clientes -->
-                <a href="{{ route('panel.clientes.index') }}" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-finora-blue transition-all flex flex-col justify-between group">
+                <a href="{{ route('panel.clientes.index') }}" class="finora-card-interactive animate-fade-in-up delay-100 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-emerald-600 transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">group</span>
                         </div>
-                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-emerald-600 transition-colors flex items-center gap-1">
+                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-emerald-600 transition-colors flex items-center justify-between">
                             <span>Clientes</span>
-                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </h3>
                         <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
                             Directorio de clientes y personas de contacto.
@@ -122,14 +140,14 @@
                 </a>
 
                 <!-- 3. Pedidos -->
-                <a href="{{ route('panel.pedidos.index') }}" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-finora-blue transition-all flex flex-col justify-between group">
+                <a href="{{ route('panel.pedidos.index') }}" class="finora-card-interactive animate-fade-in-up delay-150 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-purple-600 transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">shopping_cart</span>
                         </div>
-                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-purple-600 transition-colors flex items-center gap-1">
+                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-purple-600 transition-colors flex items-center justify-between">
                             <span>Pedidos</span>
-                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </h3>
                         <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
                             Solicitudes de clientes y reservas de stock.
@@ -138,14 +156,14 @@
                 </a>
 
                 <!-- 4. Compras -->
-                <a href="{{ route('panel.compras.index') }}" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-finora-blue transition-all flex flex-col justify-between group">
+                <a href="{{ route('panel.compras.index') }}" class="finora-card-interactive animate-fade-in-up delay-200 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-cyan-700 transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white transition-colors flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-700 group-hover:bg-cyan-700 group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">shopping_bag</span>
                         </div>
-                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-cyan-700 transition-colors flex items-center gap-1">
+                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-cyan-700 transition-colors flex items-center justify-between">
                             <span>Compras</span>
-                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </h3>
                         <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
                             Reabastecimiento y recepción de mercadería.
@@ -154,14 +172,14 @@
                 </a>
 
                 <!-- 5. Inventario -->
-                <a href="{{ route('panel.inventario.index') }}" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-finora-blue transition-all flex flex-col justify-between group">
+                <a href="{{ route('panel.inventario.index') }}" class="finora-card-interactive animate-fade-in-up delay-250 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-amber-600 transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-colors flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">inventory_2</span>
                         </div>
-                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-amber-600 transition-colors flex items-center gap-1">
+                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-amber-600 transition-colors flex items-center justify-between">
                             <span>Inventario</span>
-                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </h3>
                         <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
                             Existencias, reservaciones y kárdex de almacén.
@@ -170,14 +188,14 @@
                 </a>
 
                 <!-- 6. Ventas -->
-                <a href="{{ route('panel.ventas.index') }}" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-finora-blue transition-all flex flex-col justify-between group">
+                <a href="{{ route('panel.ventas.index') }}" class="finora-card-interactive animate-fade-in-up delay-300 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-rose-600 transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition-colors flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">point_of_sale</span>
                         </div>
-                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-rose-600 transition-colors flex items-center gap-1">
+                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-rose-600 transition-colors flex items-center justify-between">
                             <span>Ventas</span>
-                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </h3>
                         <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
                             Facturación, salidas de stock y cobro directo.
@@ -186,14 +204,14 @@
                 </a>
 
                 <!-- 7. Créditos y Pagos -->
-                <a href="{{ route('panel.pagos.index') }}" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-finora-blue transition-all flex flex-col justify-between group">
+                <a href="{{ route('panel.pagos.index') }}" class="finora-card-interactive animate-fade-in-up delay-400 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-indigo-600 transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">account_balance</span>
                         </div>
-                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-indigo-600 transition-colors flex items-center gap-1">
+                        <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-indigo-600 transition-colors flex items-center justify-between">
                             <span>Créditos / Pagos</span>
-                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </h3>
                         <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
                             Cuentas por cobrar y registro de abonos.
@@ -203,14 +221,14 @@
 
                 <!-- 8. Usuarios -->
                 @if ($usuario->rol === 'CONSULTOR')
-                    <a href="{{ route('panel.usuarios.index') }}" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-finora-blue transition-all flex flex-col justify-between group">
+                    <a href="{{ route('panel.usuarios.index') }}" class="finora-card-interactive animate-fade-in-up delay-400 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-slate-800 transition-all flex flex-col justify-between group">
                         <div>
-                            <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-slate-800 group-hover:text-white transition-colors flex items-center justify-center mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-slate-800 group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
                                 <span class="material-symbols-outlined text-2xl">manage_accounts</span>
                             </div>
-                            <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-slate-800 transition-colors flex items-center gap-1">
+                            <h3 class="font-heading text-lg font-bold text-finora-navy group-hover:text-slate-800 transition-colors flex items-center justify-between">
                                 <span>Usuarios</span>
-                                <span class="material-symbols-outlined text-base">arrow_forward</span>
+                                <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </h3>
                             <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
                                 Administración de cuentas de acceso y roles.
@@ -225,16 +243,27 @@
     </main>
 
     <footer class="bg-white border-t border-slate-200/80 py-6 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-finora-subtle">
-            <div class="flex items-center gap-2">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs text-finora-subtle text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 sm:gap-2">
                 <span class="font-bold text-finora-navy">Finora</span>
-                <span>&mdash; Sistema de gestión comercial y financiera para consultores independientes</span>
+                <span class="max-w-[19rem] sm:max-w-none">&mdash; Sistema de gestión comercial y financiera para consultores independientes</span>
             </div>
-            <div>
+            <div class="shrink-0">
                 &copy; {{ date('Y') }} Finora. Todos los derechos reservados.
             </div>
         </div>
     </footer>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dateEl = document.getElementById('currentDateText');
+            if (dateEl) {
+                const now = new Date();
+                const options = { weekday: 'long', day: 'numeric', month: 'long' };
+                const formatted = now.toLocaleDateString('es-ES', options);
+                dateEl.textContent = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+            }
+        });
+    </script>
 </body>
 </html>

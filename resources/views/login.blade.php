@@ -20,7 +20,7 @@
     <!-- Carga de estilos y scripts del proyecto mediante Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="h-full font-sans bg-finora-surface text-finora-navy antialiased selection:bg-finora-cyan selection:text-finora-navy overflow-hidden">
+<body class="login-page h-full font-sans bg-finora-surface text-finora-navy antialiased selection:bg-finora-cyan selection:text-finora-navy overflow-hidden">
     <!-- Contenedor principal de pantalla dividida (2.3: Ajustado para vista fija sin scroll innecesario) -->
     <div class="h-screen w-full flex flex-col lg:flex-row overflow-hidden">
 
@@ -40,8 +40,8 @@
                 </a>
             </header>
 
-            <!-- Contenedor central del formulario -->
-            <section aria-labelledby="login-title" class="my-auto py-2 max-w-md w-full mx-auto">
+            <!-- Contenedor central del formulario con animación de entrada -->
+            <section aria-labelledby="login-title" class="my-auto py-2 max-w-md w-full mx-auto animate-fade-in-up">
                 <div class="mb-4 text-left">
                     <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-finora-navy tracking-tight" id="login-title">
                         Bienvenido a Finora
@@ -52,7 +52,7 @@
                 </div>
 
                 <!-- Formulario de autenticación (2.5: manejado para evitar duplicar entradas en historial del navegador) -->
-                <form id="loginForm" action="{{ route('login.authenticate') }}" class="space-y-4" method="POST">
+                <form id="loginForm" action="{{ route('login.authenticate') }}" class="space-y-4" method="POST" data-prevent-submit-feedback="true">
                     @csrf
 
                     <!-- Campo: Correo electrónico -->
@@ -113,9 +113,9 @@
                 </form>
 
                 <!-- Enlace secundario: Volver al catálogo público (2.4: alineado con flex) -->
-                <div class="mt-6 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-center gap-1.5 text-xs text-finora-subtle">
+                <div class="mt-6 flex flex-wrap items-center justify-center gap-1.5 text-xs text-finora-subtle">
                     <span>¿Solo quieres explorar productos?</span>
-                    <a class="font-bold text-finora-blue hover:text-finora-deepBlue transition-colors underline decoration-slate-300 underline-offset-4 inline-flex items-center gap-1 group" href="{{ route('landing') }}">
+                    <a class="font-bold text-finora-blue hover:text-finora-deep-blue transition-colors inline-flex items-center gap-1 group" href="{{ route('landing') }}">
                         <span class="material-symbols-outlined text-sm transition-transform group-hover:-translate-x-0.5">arrow_back</span>
                         <span>Volver al catálogo</span>
                     </a>
@@ -188,7 +188,7 @@
                     <div class="mt-8 pt-6 border-t border-slate-100 grid grid-cols-2 gap-3">
 
                         <!-- Módulo: Ventas -->
-                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/60 border border-slate-100">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-slate-100 shadow-xs hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all">
                             <div class="w-9 h-9 rounded-xl bg-blue-50 text-finora-blue flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">point_of_sale</span>
                             </div>
@@ -196,7 +196,7 @@
                         </div>
 
                         <!-- Módulo: Pedidos -->
-                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/60 border border-slate-100">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-slate-100 shadow-xs hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all">
                             <div class="w-9 h-9 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">inventory_2</span>
                             </div>
@@ -204,7 +204,7 @@
                         </div>
 
                         <!-- Módulo: Clientes -->
-                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/60 border border-slate-100">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-slate-100 shadow-xs hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all">
                             <div class="w-9 h-9 rounded-xl bg-sky-50 text-finora-sky flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">group</span>
                             </div>
@@ -212,7 +212,7 @@
                         </div>
 
                         <!-- Módulo: Finanzas -->
-                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/60 border border-slate-100">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-slate-100 shadow-xs hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all">
                             <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">account_balance</span>
                             </div>

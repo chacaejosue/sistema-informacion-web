@@ -107,6 +107,7 @@
         </section>
 
         <!-- Secciones Próximas (Tarjetas de vista previa) -->
+        <!-- Secciones Próximas (Tarjetas de vista previa) -->
         <section aria-labelledby="upcoming-title" class="space-y-4">
             <h3 id="upcoming-title" class="font-heading text-lg font-bold text-finora-navy">
                 Funcionalidades Próximas
@@ -115,14 +116,14 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 <!-- Próxima 1: Mis Pedidos -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                <div class="finora-card-interactive bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md flex flex-col justify-between">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">shopping_bag</span>
                         </div>
                         <h4 class="font-heading text-base font-bold text-finora-navy flex items-center justify-between">
                             <span>Mis Pedidos</span>
-                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Próximamente</span>
+                            <span class="text-[10px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-full">Próximamente</span>
                         </h4>
                         <p class="text-xs text-finora-subtle mt-2 leading-relaxed">
                             Consulta el estado en tiempo real de tus solicitudes y fechas estimadas de entrega.
@@ -131,14 +132,14 @@
                 </div>
 
                 <!-- Próxima 2: Estado de Cuenta -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                <div class="finora-card-interactive bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md flex flex-col justify-between">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
                         </div>
                         <h4 class="font-heading text-base font-bold text-finora-navy flex items-center justify-between">
                             <span>Estado de Cuenta</span>
-                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Próximamente</span>
+                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Próximamente</span>
                         </h4>
                         <p class="text-xs text-finora-subtle mt-2 leading-relaxed">
                             Historial de compras a crédito, saldos pendientes y comprobantes de abonos.
@@ -147,17 +148,17 @@
                 </div>
 
                 <!-- Próxima 3: Promociones Natura -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                <div class="finora-card-interactive bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md flex flex-col justify-between">
                     <div>
-                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">local_offer</span>
                         </div>
                         <h4 class="font-heading text-base font-bold text-finora-navy flex items-center justify-between">
                             <span>Promociones</span>
-                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Próximamente</span>
+                            <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">Próximamente</span>
                         </h4>
                         <p class="text-xs text-finora-subtle mt-2 leading-relaxed">
-                            Ofertas exclusivas y descuentos recomendados por tu consultor.
+                            Ofertas exclusivas y descuentos recomendados por tu consultor independiente.
                         </p>
                     </div>
                 </div>

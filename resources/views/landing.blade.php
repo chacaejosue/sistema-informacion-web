@@ -29,15 +29,7 @@
     </style>
 </head>
 {{-- 1.17: Fondo más contrastado con border entre secciones --}}
-<body class="bg-background font-body-md text-body-md text-on-surface min-h-screen relative selection:bg-secondary selection:text-on-secondary">
-    <div class="pointer-events-none fixed inset-0 overflow-hidden z-0">
-        <svg class="absolute -right-24 top-16 w-[620px] h-[620px] text-secondary opacity-[0.035]" fill="currentColor" viewBox="0 0 200 200">
-            <path d="M45,20 C85,15 160,25 155,65 C152,90 120,95 105,96 L105,120 C125,119 140,126 138,145 C136,165 110,175 75,178 L45,180 Z M65,45 L65,80 L115,80 C128,80 135,74 135,62 C135,50 125,45 112,45 Z M65,108 L65,155 L100,154 C115,153 122,148 122,135 C122,122 112,110 95,108 Z"></path>
-        </svg>
-        <svg class="absolute -left-36 bottom-32 w-[540px] h-[540px] text-secondary-container opacity-[0.03]" fill="currentColor" viewBox="0 0 200 200">
-            <path d="M50,15 L160,15 L160,50 L95,50 L95,85 L145,85 L145,120 L95,120 L95,185 L50,185 Z"></path>
-        </svg>
-    </div>
+<body class="bg-[#F4F7FB] font-body-md text-body-md text-on-surface min-h-screen relative selection:bg-secondary selection:text-on-secondary">
 
     <!-- Encabezado -->
     @include('partials.header')
@@ -48,7 +40,7 @@
             'id'     => 'perfumeria',
             'nombre' => 'Perfumería Femenina & Masculina',
             'desc'   => 'Eau de Parfum, colonias y aromas icónicos Natura.',
-            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuBxcMsNQZSIsdb4okFDAE0gH6L38ZSmYwnegAajpDZkU3wNTEecLWFDF5s8kwxoRvoSEJ8FU61o3Z3keP8EV3jHh_ZW3UimcmZEmALLpBHlxNy_SwUfo0AVJP9LJ_5rYRCyFCncW6Ih7w2V6col1QZKy4RKFAf74WgzZ5ycjd7gtjWuCYaqfmXmIpLlF-bWIrS4BVHJa8rKqKy1BvdFOIASHO5fkGj6n7I-Lcz11Y31dHFmZ-TcEYaZ',
+            'imagen' => asset('images/demo/productos/kaiak.jpg'),
             'badge'  => 'Perfumería',
             'slug'   => 'perfumeria',
         ],
@@ -56,7 +48,7 @@
             'id'     => 'facial',
             'nombre' => 'Cuidado Facial & Antiedad',
             'desc'   => 'Tratamientos concentrados y soluciones Chronos.',
-            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfzFhlpmnUmECDoLj3Sx2gh1Sb7o8VHuaTUknOb-uYYl3tgyRfp36zOh6B8rv3YYSCZ4Gj_EuqXb4SmQH_dSNX0w0eP8cX_b3SL3dS7sOzMkGZGYUkKud7xcXTSOLVRTy910YDZzwFY16dKstT8ekXktw-xSY5TyZfJRLVRcdRZcBawTx53cC9r1amTXBxu5CIf-Sa-tT-aeO-v4pss9sErJYo2NhYIVvLcZh_X_wKBT947W37tGoa',
+            'imagen' => asset('images/demo/productos/chronos.jpg'),
             'badge'  => 'Chronos',
             'slug'   => 'cuidado-facial',
         ],
@@ -64,7 +56,7 @@
             'id'     => 'maquillaje',
             'nombre' => 'Maquillaje & Belleza',
             'desc'   => 'Bases, labiales y máscaras de pestañas.',
-            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuBKPr7vwaXaN_76XxZd9Uw90OQibqotJwPA83NEt2kG1tWJR6sqbZJZ_OMxvBFn9xgqQfhMDKtOKacZVVTRkqPzP37sfHcZyOJOBwcvx3VZd3UZgxhvGtDQYI2efmeOvuuoxot1z8XJocfYjDjFIlokdd1awwqALXqnATQUbNqFLIoBd-n0CPMZk7JjQjWcJzWTHDcJ7CYcwBo1OwOqksWhlmeSCX1865nad6W4kFHsEhgILALWlNHg',
+            'imagen' => asset('images/demo/productos/ilia.jpg'),
             'badge'  => 'Una & Faces',
             'slug'   => 'maquillaje',
         ],
@@ -72,7 +64,7 @@
             'id'     => 'corporal',
             'nombre' => 'Cuidado Corporal & Baño',
             'desc'   => 'Jabones, cremas Tododia y aceites Ekos.',
-            'imagen' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCW-t4D8b-e08Wp--r_kFgodviBu3FXXd9lRfxRXMHqgAKTYNLIjdBGpdmIeosVIjZvqhLg4ol61ibFrDC2QUKOQMLVSc_SpixPw_GxqsVpl0bK1zDlzGZefPjDc7QxCZgimSLep795dwU5qx9e1beoylRxdCJ7-pl0GKDmCwy-6R1-i4-wBfWgivRQgdodmrOD7OXGj_PGZSd8MvIJboIT9wxDtmG_ZJnJktm4laAn0FKnWH6GnxL5',
+            'imagen' => asset('images/demo/productos/tododia.jpg'),
             'badge'  => 'Tododia & Ekos',
             'slug'   => 'cuidado-corporal',
         ],
@@ -84,7 +76,7 @@
             'linea'     => 'Perfumería Masculina',
             'categoria' => 'perfumeria',
             'desc'      => 'Notas acuáticas frescas y maderas nobles. Envase con plástico reciclado.',
-            'imagen'    => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCk__CamhCJuxGhETjCqsE2JudDCh8CN_iwlinQiN3aIIOplZeRcRlNrMOLe-f0-2QSymYReONH8aMIB68TEKqyIZ_XVP2Ozi0hXDonhJ_7I2vLQThNCLzSHG2LG9ksIbA1hJUM5kRX08tbCrV9y1sf15OdFM_cj9LhcmaFux2q1S1SV-CY87BnZIWmZR_E4K1nwk74OsCqFXfIxc5vChNgEDSF4An75eZDS6qpoJp3nQ5ujqNCMloY',
+            'imagen'    => asset('images/demo/productos/kaiak.jpg'),
             'tag'       => 'Natura',
         ],
         [
@@ -92,7 +84,7 @@
             'linea'     => 'Perfumería Femenina',
             'categoria' => 'perfumeria',
             'desc'      => 'Flor de azahar, uva silvestre y notas amaderadas de alta fijación.',
-            'imagen'    => 'https://lh3.googleusercontent.com/aida-public/AB6AXuBGQDcagPGRPv26ZXYqBUpy1xtl8i8sQOw0jULAVrNGr5bfvBityPnrSyoQ2P_hIX7hSgUH3gMioOjQA2jfC-TGFjHYSh_ZglEcKpRZ8ejSfiTMBAfq7ImNd1RcZvOphZJuf3Qd6BRSsqUQgLmD6mgbx6AUFzRqwHFiONXmpAa-cbvOxkiZkaEG9_bYmHPS2CRFghGZ08peALOG0Qm4Vmelh6hwy0sqJ-W53L-nyYLMN2UoewIEDnLp',
+            'imagen'    => asset('images/demo/productos/ilia.jpg'),
             'tag'       => 'Natura',
         ],
         [
@@ -100,7 +92,7 @@
             'linea'     => 'Cuidado Facial',
             'categoria' => 'facial',
             'desc'      => 'Triple acción restauradora con prebióticos de jatobá y biosacáridos.',
-            'imagen'    => 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4Vt2uuv1rAezUkBlX2gIWPSLv5ll-AvG2axrBg6GGyfrh01MQoymj7KQj_J3LK9k3wJTeDMak0tdPmM35h2psxAomfjlwpi7jJNl6TcwE91DOz0htAKRz2hjVy9JOu_iQz75xHAqbkKy_Px2jUwJwAvlOPmE1JsHOb_BlnXUhyNrByuBDAoIflaRsI93_wME_ZtZtytjIYXgIgCvVX12yvbPXTOCkVLCLziM7MXaTfw5XwnGBOTAU',
+            'imagen'    => asset('images/demo/productos/chronos.jpg'),
             'tag'       => 'Natura Chronos',
         ],
         [
@@ -108,7 +100,7 @@
             'linea'     => 'Cuidado Corporal',
             'categoria' => 'corporal',
             'desc'      => 'Nutrición prebiótica con aceite de linaza y manteca de cacao pura.',
-            'imagen'    => 'https://lh3.googleusercontent.com/aida-public/AB6AXuD2ewDuGKijoiEOiuHiIBxb7zF6rG3_F-H9yoE5uNk1TpRmKtNeO8x5MZax3Awol8sWTIU_cc3JmU3SR7sJ1wSJb9l3R-1FDGNIm_qh5hzfp8KsSOj0VftJT0AJ6mLcKM7Upr5znkMBl5hFz43WgjLiVkRIP0Gzmt3txvE-GcakDYlKigiI49wJiIN9lksUeV_LUb_iOL18ADb3CKZee36WhO8ei6mC_3wgoLTuAUirPyRsdO2knW7c',
+            'imagen'    => asset('images/demo/productos/tododia.jpg'),
             'tag'       => 'Natura Tododia',
         ],
     ];
@@ -117,13 +109,6 @@
     <!-- Contenido principal -->
     <main class="relative z-10 w-full pt-20 bg-transparent min-h-[calc(100vh-320px)]">
         <div class="flex flex-col w-full overflow-hidden relative">
-            <!-- Fondos decorativos -->
-            <div class="pointer-events-none absolute inset-0 overflow-hidden z-0">
-                <div class="absolute -top-40 right-[-10%] w-[820px] h-[820px] rounded-full bg-gradient-to-br from-secondary-container/10 via-[#00D2DF]/10 to-transparent blur-[140px]"></div>
-                <div class="absolute top-[45%] -left-48 w-[640px] h-[640px] rounded-full bg-gradient-to-tr from-secondary/5 via-primary-fixed/30 to-transparent blur-[120px]"></div>
-                <div class="absolute bottom-20 right-[-5%] w-[680px] h-[680px] rounded-full bg-gradient-to-tl from-[#00D2DF]/8 via-secondary-container/5 to-transparent blur-[130px]"></div>
-            </div>
-
             <!-- Presentación principal (1.8: con animación fade-in-up) -->
             <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin pt-space-xl lg:pt-space-2xl pb-space-2xl w-full">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
@@ -131,11 +116,12 @@
                     <div class="lg:col-span-6 flex flex-col gap-space-md animate-fade-in-up">
                         <div class="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-lowest shadow-sm w-fit">
                             <span class="w-2 h-2 rounded-full bg-gradient-to-r from-secondary to-[#00D2DF] animate-pulse"></span>
-                            <span class="font-label-md text-label-md text-primary-container tracking-tight">Productos Natura • Atención de un consultor independiente</span>
+                            <span class="font-label-md text-label-md text-primary-container tracking-tight whitespace-nowrap sm:hidden">Productos Natura · Consultor</span>
+                            <span class="hidden sm:inline font-label-md text-label-md text-primary-container tracking-tight whitespace-nowrap">Productos Natura • Atención de un consultor independiente</span>
                         </div>
                         <h1 class="font-display-lg text-display-lg text-primary-container leading-[1.08] tracking-tight">
                             Encuentra lo que buscas. <br class="hidden sm:inline"/>
-                            <span class="bg-gradient-to-r from-secondary via-secondary-container to-[#00B4D8] bg-clip-text text-transparent">
+                            <span class="hero-gradient-text bg-clip-text text-transparent" aria-live="polite">
                                 Descubre algo que te guste.
                             </span>
                         </h1>
@@ -162,7 +148,7 @@
                                 </div>
                                 {{-- 1.14: draggable=false + select-none --}}
                                 <div class="relative h-64 w-full flex items-center justify-center my-space-xs overflow-hidden rounded-lg bg-surface-container-lowest">
-                                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 select-none" draggable="false" alt="Natura Ilía Secreto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGQDcagPGRPv26ZXYqBUpy1xtl8i8sQOw0jULAVrNGr5bfvBityPnrSyoQ2P_hIX7hSgUH3gMioOjQA2jfC-TGFjHYSh_ZglEcKpRZ8ejSfiTMBAfq7ImNd1RcZvOphZJuf3Qd6BRSsqUQgLmD6mgbx6AUFzRqwHFiONXmpAa-cbvOxkiZkaEG9_bYmHPS2CRFghGZ08peALOG0Qm4Vmelh6hwy0sqJ-W53L-nyYLMN2UoewIEDnLp"/>
+                                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 select-none" draggable="false" alt="Natura Ilía Secreto" src="{{ asset('images/demo/productos/ilia.jpg') }}"/>
                                 </div>
                                 <div class="z-10 mt-space-sm">
                                     <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Perfumería Femenina</span>
@@ -211,39 +197,49 @@
             {{-- 1.16: Sección de productos destacados movida aquí (antes estaba después de categorías) --}}
             <!-- Sección de productos disponibles -->
             <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin mb-space-2xl w-full" id="catalogo-destacados">
-                <div class="mb-space-lg">
-                    <span class="text-secondary font-label-sm text-label-sm uppercase tracking-wider">Catálogo Natura</span>
-                    {{-- 1.17: Borde inferior en título para separación visual --}}
-                    <h2 class="font-headline-lg text-headline-lg text-primary-container pb-2 border-b border-surface-container-high/50 mt-1">Productos disponibles:</h2>
+                <div class="mb-space-lg flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-2 border-b border-surface-container-high/50">
+                    <div>
+                        <span class="text-secondary font-label-sm text-label-sm uppercase tracking-wider font-semibold">Catálogo Natura</span>
+                        <h2 class="font-headline-lg text-headline-lg text-primary-container mt-1">Productos destacados</h2>
+                    </div>
+                    <span class="text-xs text-on-surface-variant font-medium">Atención y pedidos por WhatsApp</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md" id="products-container">
                     @foreach($productos as $prod)
-                    {{-- 1.1: Cada tarjeta es clickable y abre el modal de detalles --}}
-                    <div class="product-item rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group border border-surface-container-high/30 hover:border-secondary/30 cursor-pointer"
+                    <div class="product-item finora-card-interactive rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group border border-surface-container-high/40 hover:border-secondary/40 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                        role="button"
+                        tabindex="0"
+                        aria-label="Ver detalles de {{ $prod['nombre'] }}"
                         data-cat="{{ $prod['categoria'] }}"
                         data-nombre="{{ $prod['nombre'] }}"
                         data-linea="{{ $prod['linea'] }}"
                         data-desc="{{ $prod['desc'] }}"
                         data-imagen="{{ $prod['imagen'] }}"
                         data-tag="{{ $prod['tag'] }}"
-                        onclick="openProductModal(this)">
+                        onclick="openProductModal(this)"
+                        onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openProductModal(this); }">
                         <div>
                             <div class="relative h-56 w-full rounded-xl overflow-hidden bg-surface-container-low mb-space-sm flex items-center justify-center">
-                                {{-- 1.14: No arrastrable --}}
-                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 select-none" draggable="false" alt="{{ $prod['nombre'] }}" src="{{ $prod['imagen'] }}"/>
-                                <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-surface-container-lowest text-primary-container font-label-sm text-label-sm uppercase">{{ $prod['tag'] }}</span>
+                                <img class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 select-none" draggable="false" alt="{{ $prod['nombre'] }}" src="{{ $prod['imagen'] }}" onerror="this.onerror=null; this.src='{{ asset('images/branding/finora-icono.png') }}';"/>
+                                <span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-surface-container-lowest/95 backdrop-blur-sm text-primary-container font-label-sm text-label-sm uppercase font-semibold shadow-xs">{{ $prod['tag'] }}</span>
+                                <div class="absolute inset-0 bg-gradient-to-t from-primary-container/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-3">
+                                    <span class="text-[11px] font-bold text-white bg-black/60 px-3 py-1 rounded-full backdrop-blur-xs flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">visibility</span> Ver detalle
+                                    </span>
+                                </div>
                             </div>
-                            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">{{ $prod['linea'] }}</span>
-                            <h3 class="font-title-lg text-title-lg text-primary-container mt-1 line-clamp-1">{{ $prod['nombre'] }}</h3>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">{{ $prod['desc'] }}</p>
+                            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-medium">{{ $prod['linea'] }}</span>
+                            <h3 class="font-title-lg text-title-lg text-primary-container mt-1 line-clamp-1 group-hover:text-secondary transition-colors">{{ $prod['nombre'] }}</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2 leading-relaxed">{{ $prod['desc'] }}</p>
                         </div>
                         <div class="pt-space-md mt-space-sm border-t border-surface-container">
                             <div class="flex items-baseline gap-space-xs mb-space-sm">
                                 <span class="font-headline-sm text-headline-sm text-primary-container font-bold">Precio a consultar</span>
                             </div>
-                            {{-- 1.15: Botón WhatsApp con número real --}}
-                            <a href="https://wa.me/59167673537?text=Hola%20deseo%20consultar%20por%20{{ urlencode($prod['nombre']) }}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="w-full py-2.5 rounded-lg bg-surface-container text-primary-container hover:bg-secondary hover:text-on-secondary font-title-md text-title-md flex items-center justify-center gap-space-xs transition-all">
-                                <span class="material-symbols-outlined text-[18px]">chat</span>
+                            <a href="https://wa.me/59167673537?text=Hola%20deseo%20consultar%20por%20{{ urlencode($prod['nombre']) }}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="w-full py-2.5 rounded-xl bg-surface-container-low text-primary-container hover:bg-emerald-600 hover:text-white font-title-md text-sm flex items-center justify-center gap-2 transition-all shadow-xs hover:shadow-md cursor-pointer group/wa">
+                                <svg class="w-4 h-4 text-emerald-600 group-hover/wa:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.995.545 1.761.791 2.796.791 3.182 0 5.768-2.587 5.768-5.766.001-3.182-2.585-5.778-5.768-5.778zm0-2c4.28 0 7.768 3.488 7.768 7.778 0 4.281-3.487 7.766-7.768 7.766-1.328 0-2.597-.336-3.716-.941l-4.315 1.131 1.152-4.212c-.7-1.189-1.089-2.56-1.089-3.744 0-4.29 3.488-7.778 7.768-7.778z"/>
+                                </svg>
                                 <span>Consultar por WhatsApp</span>
                             </a>
                         </div>
@@ -252,11 +248,12 @@
                 </div>
             </section>
 
-            <!-- Sección de categorías (1.17: bordes más marcados) -->
+            <!-- Sección de categorías -->
             <section class="relative z-10 max-w-7xl mx-auto px-space-md lg:px-margin mb-space-2xl w-full border-t border-surface-container-high/50 pt-space-2xl" id="categorias">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-space-lg gap-space-xs">
                     <div>
-                        <div class="inline-flex items-center gap-space-xs text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-1">
+                        <div class="inline-flex items-center gap-space-xs text-secondary font-label-sm text-label-sm uppercase tracking-wider font-semibold mb-1">
+                            <span class="material-symbols-outlined text-[16px]">category</span>
                             <span>Líneas de productos</span>
                         </div>
                         <h2 class="font-headline-lg text-headline-lg text-primary-container">Explora por categoría</h2>
@@ -267,20 +264,18 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
                     @foreach($categorias as $cat)
-                    {{-- 1.11: Cada categoría envía a /categorias?categoria=<slug> --}}
-                    <a class="group relative rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden border border-surface-container-high/40 hover:border-secondary/40" href="{{ route('categorias', ['categoria' => $cat['slug']]) }}">
+                    <a class="group finora-card-interactive relative rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-xl transition-all flex flex-col justify-between overflow-hidden border border-surface-container-high/40 hover:border-secondary/40" href="{{ route('categorias', ['categoria' => $cat['slug']]) }}">
                         <div class="relative h-44 w-full rounded-xl overflow-hidden bg-surface-container-low mb-space-md">
-                            {{-- 1.14: No arrastrable --}}
-                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 select-none" draggable="false" alt="{{ $cat['nombre'] }}" src="{{ $cat['imagen'] }}"/>
-                            <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-surface-container-lowest/90 backdrop-blur-sm text-secondary font-label-sm text-label-sm">{{ $cat['badge'] }}</span>
+                            <img class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 select-none" draggable="false" alt="{{ $cat['nombre'] }}" src="{{ $cat['imagen'] }}" onerror="this.onerror=null; this.src='{{ asset('images/branding/finora-icono.png') }}';"/>
+                            <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-surface-container-lowest/90 backdrop-blur-sm text-secondary font-label-sm text-label-sm font-semibold shadow-xs">{{ $cat['badge'] }}</span>
                         </div>
                         <div>
                             <h3 class="font-title-lg text-title-lg text-primary-container group-hover:text-secondary transition-colors">{{ $cat['nombre'] }}</h3>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">{{ $cat['desc'] }}</p>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">{{ $cat['desc'] }}</p>
                         </div>
-                        <div class="mt-space-md flex items-center justify-between text-secondary font-title-md text-title-md">
+                        <div class="mt-space-md flex items-center justify-between text-secondary font-title-md text-sm font-semibold pt-2 border-t border-surface-container/60">
                             <span>Ver catálogo</span>
-                            <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">east</span>
+                            <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
                         </div>
                     </a>
                     @endforeach
@@ -292,26 +287,31 @@
     <!-- Pie de página -->
     @include('partials.footer')
 
-    {{-- 1.1: Modal de detalles de producto --}}
-    <dialog id="productModal" class="fixed inset-0 m-auto w-full max-w-lg rounded-2xl bg-surface-container-lowest shadow-2xl p-0 border border-surface-container-high/40 backdrop:bg-black/50">
+    {{-- Modal de detalles de producto mejorado con animación --}}
+    <dialog id="productModal" aria-labelledby="modalNombre" aria-describedby="modalDesc" class="fixed inset-0 m-auto w-full max-w-lg rounded-3xl bg-surface-container-lowest shadow-2xl p-0 border border-surface-container-high/50 backdrop:bg-black/60 backdrop:backdrop-blur-xs animate-scale-up">
         <div class="flex flex-col max-h-[90vh]">
-            <div class="relative h-72 w-full rounded-t-2xl overflow-hidden bg-surface-container-low shrink-0">
+            <div class="relative h-72 w-full rounded-t-3xl overflow-hidden bg-surface-container-low shrink-0">
                 <img id="modalImage" src="" alt="" class="w-full h-full object-cover select-none" draggable="false"/>
-                <button onclick="document.getElementById('productModal').close()" class="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface hover:bg-surface-container transition-colors" aria-label="Cerrar">
+                <button onclick="document.getElementById('productModal').close()" class="absolute top-3.5 right-3.5 w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-on-surface hover:bg-surface-container hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer" aria-label="Cerrar">
                     <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
-                <span id="modalTag" class="absolute top-3 left-3 px-2 py-0.5 rounded-md bg-surface-container-lowest/90 backdrop-blur-sm text-secondary font-label-sm text-label-sm uppercase"></span>
+                <span id="modalTag" class="absolute top-3.5 left-3.5 px-3 py-1 rounded-lg bg-surface-container-lowest/90 backdrop-blur-md text-secondary font-label-sm text-xs uppercase font-bold shadow-xs"></span>
             </div>
             <div class="p-6 flex flex-col gap-4 overflow-y-auto">
                 <div>
-                    <span id="modalLinea" class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider"></span>
-                    <h3 id="modalNombre" class="font-headline-sm text-headline-sm text-primary-container mt-1"></h3>
+                    <span id="modalLinea" class="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold"></span>
+                    <h3 id="modalNombre" class="font-headline-sm text-headline-sm text-primary-container mt-1 font-bold"></h3>
                     <p id="modalDesc" class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed"></p>
                 </div>
-                <div class="flex items-center justify-between border-t border-surface-container-high/40 pt-4">
-                    <span class="font-headline-sm text-headline-sm text-secondary font-bold">Precio a consultar</span>
-                    <a id="modalWaLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-on-secondary font-title-md text-title-md hover:bg-secondary-container transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">chat</span>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-surface-container-high/40 pt-4 mt-2">
+                    <div>
+                        <span class="text-xs text-on-surface-variant block">Consultar precio actual:</span>
+                        <span class="font-headline-sm text-headline-sm text-primary-container font-extrabold">A consultar</span>
+                    </div>
+                    <a id="modalWaLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-title-md text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer">
+                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.995.545 1.761.791 2.796.791 3.182 0 5.768-2.587 5.768-5.766.001-3.182-2.585-5.778-5.768-5.778zm0-2c4.28 0 7.768 3.488 7.768 7.778 0 4.281-3.487 7.766-7.768 7.766-1.328 0-2.597-.336-3.716-.941l-4.315 1.131 1.152-4.212c-.7-1.189-1.089-2.56-1.089-3.744 0-4.29 3.488-7.778 7.768-7.778z"/>
+                        </svg>
                         <span>Consultar por WhatsApp</span>
                     </a>
                 </div>
@@ -319,51 +319,80 @@
         </div>
     </dialog>
 
-    {{-- 1.9 + 1.10: Botones flotantes (Back to top + Chat IA) --}}
-    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3" id="floating-buttons" style="display:none!important">
+    {{-- Botones flotantes (Back to top + WhatsApp directo) --}}
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none" id="floating-buttons">
         {{-- Back to top --}}
         <button id="backToTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})"
-            class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-lowest shadow-lg border border-surface-container-high/40 text-secondary hover:bg-secondary hover:text-on-secondary transition-all hover:shadow-xl"
+            class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-lowest shadow-lg border border-surface-container-high/60 text-secondary hover:bg-secondary hover:text-on-secondary transition-all hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
             aria-label="Volver arriba" title="Volver arriba">
             <span class="material-symbols-outlined text-[22px]">arrow_upward</span>
         </button>
-        {{-- Chat IA --}}
+        {{-- WhatsApp directo --}}
         <button id="aiChatBtn"
-            class="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-secondary to-[#00B4D8] shadow-lg text-on-secondary hover:opacity-90 transition-all hover:shadow-xl"
-            aria-label="Chat de IA" title="Asistente IA"
-            onclick="window.open('https://wa.me/59167673537?text=Hola%2C%20necesito%20ayuda%20con%20un%20producto%20Natura','_blank')">
-            <span class="material-symbols-outlined text-[22px]">auto_awesome</span>
+            class="w-12 h-12 flex items-center justify-center rounded-full bg-emerald-600 hover:bg-emerald-700 shadow-lg text-white hover:scale-105 active:scale-95 transition-all hover:shadow-xl cursor-pointer"
+            aria-label="WhatsApp Consultor" title="Chatear con el consultor"
+            onclick="window.open('https://wa.me/59167673537?text=Hola%2C%20necesito%20informaci%C3%B3n%20sobre%20productos%20Natura','_blank')">
+            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.995.545 1.761.791 2.796.791 3.182 0 5.768-2.587 5.768-5.766.001-3.182-2.585-5.778-5.768-5.778zm0-2c4.28 0 7.768 3.488 7.768 7.778 0 4.281-3.487 7.766-7.768 7.766-1.328 0-2.597-.336-3.716-.941l-4.315 1.131 1.152-4.212c-.7-1.189-1.089-2.56-1.089-3.744 0-4.29 3.488-7.778 7.768-7.778z"/>
+            </svg>
         </button>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // 1.9 + 1.10: Mostrar botones flotantes al hacer scroll
+            const heroPhrase = document.querySelector('.hero-gradient-text');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+            if (heroPhrase && !reduceMotion.matches) {
+                const phrases = [
+                    'Descubre algo que te guste.',
+                    'Descubre algo que te fascine.',
+                    'Descubre tu fragancia ideal.',
+                    'Encuentra tu próximo favorito.'
+                ];
+                let phraseIndex = 0;
+
+                window.setInterval(() => {
+                    heroPhrase.classList.add('hero-phrase-changing');
+
+                    window.setTimeout(() => {
+                        phraseIndex = (phraseIndex + 1) % phrases.length;
+                        heroPhrase.textContent = phrases[phraseIndex];
+                        heroPhrase.classList.remove('hero-phrase-changing');
+                    }, 280);
+                }, 4800);
+            }
+
+            // Mostrar botones flotantes de forma suave
             const floatingBtns = document.getElementById('floating-buttons');
             if (floatingBtns) {
-                floatingBtns.style.cssText = 'display:flex!important;flex-direction:column;gap:0.75rem;';
-                floatingBtns.style.display = 'none';
                 window.addEventListener('scroll', () => {
-                    floatingBtns.style.display = window.scrollY > 200 ? 'flex' : 'none';
+                    if (window.scrollY > 220) {
+                        floatingBtns.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+                        floatingBtns.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                    } else {
+                        floatingBtns.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                        floatingBtns.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                    }
                 }, { passive: true });
             }
 
-            // 1.1: Modal de producto
+            // Modal de producto
             window.openProductModal = function(card) {
                 const modal = document.getElementById('productModal');
                 if (!modal) return;
-                document.getElementById('modalImage').src    = card.dataset.imagen;
-                document.getElementById('modalImage').alt    = card.dataset.nombre;
-                document.getElementById('modalTag').textContent    = card.dataset.tag;
-                document.getElementById('modalLinea').textContent  = card.dataset.linea;
+                document.getElementById('modalImage').src = card.dataset.imagen;
+                document.getElementById('modalImage').alt = card.dataset.nombre;
+                document.getElementById('modalTag').textContent = card.dataset.tag;
+                document.getElementById('modalLinea').textContent = card.dataset.linea;
                 document.getElementById('modalNombre').textContent = card.dataset.nombre;
-                document.getElementById('modalDesc').textContent   = card.dataset.desc;
+                document.getElementById('modalDesc').textContent = card.dataset.desc;
                 document.getElementById('modalWaLink').href =
                     'https://wa.me/59167673537?text=Hola%20deseo%20consultar%20por%20' + encodeURIComponent(card.dataset.nombre);
                 modal.showModal();
             };
 
-            // Cerrar modal al clicar backdrop
+            // Cerrar modal al clicar en backdrop
             const productModal = document.getElementById('productModal');
             if (productModal) {
                 productModal.addEventListener('click', (e) => {

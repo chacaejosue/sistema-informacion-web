@@ -18,22 +18,28 @@
     <!-- Header -->
     <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 backdrop-blur-md bg-white/90">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-            <a class="inline-flex items-center gap-3.5 group" href="{{ route('panel.productos.index') }}">
-                <div class="relative w-10 h-10 flex items-center justify-center shrink-0">
-                    <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-9 w-auto object-contain group-hover:scale-105 transition-transform"/>
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-heading text-xl font-extrabold tracking-tight text-finora-navy">Finora</span>
-                    <span class="text-[10px] font-medium text-finora-subtle -mt-1 tracking-wide">Editar Producto</span>
-                </div>
-            </a>
+            <div class="flex items-center gap-3">
+                <button id="openPanelDrawerBtn" type="button" class="p-2 rounded-xl text-slate-600 hover:text-finora-navy hover:bg-slate-100 transition-colors cursor-pointer" title="Navegación de módulos">
+                    <span class="material-symbols-outlined text-[24px]">menu</span>
+                </button>
+                <a class="inline-flex items-center gap-3.5 group" href="{{ route('panel.productos.index') }}">
+                    <div class="relative w-10 h-10 flex items-center justify-center shrink-0">
+                        <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-9 w-auto object-contain group-hover:scale-105 transition-transform"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-heading text-xl font-extrabold tracking-tight text-finora-navy">Finora</span>
+                        <span class="text-[10px] font-medium text-finora-subtle -mt-1 tracking-wide">Editar Producto</span>
+                    </div>
+                </a>
+            </div>
 
-            <a href="{{ route('panel.productos.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-finora-subtle hover:text-finora-navy">
+            <a href="{{ route('panel.productos.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-finora-navy hover:bg-slate-100 px-3 py-1.5 rounded-xl transition-colors">
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
-                Volver a la lista
+                <span>Volver a la lista</span>
             </a>
         </div>
     </header>
+    @include('partials.panel-nav')
 
     <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
@@ -172,5 +178,6 @@
         </form>
     </main>
 
+    @include('partials.panel-footer')
 </body>
 </html>

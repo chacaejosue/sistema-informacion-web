@@ -99,8 +99,33 @@
         padding: 0;
     }
 
+    html {
+        scroll-behavior: smooth;
+        text-size-adjust: 100%;
+    }
+
     body {
         overscroll-behavior: none;
+        overflow-x: hidden;
+    }
+
+    button,
+    a,
+    input,
+    select,
+    textarea {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    button,
+    a {
+        touch-action: manipulation;
+    }
+
+    input,
+    select,
+    textarea {
+        color-scheme: light;
     }
 
     main> :first-child {
@@ -110,6 +135,11 @@
     main> :last-child {
         margin-bottom: 0 !important;
     }
+}
+
+*:focus-visible {
+    outline: 3px solid rgba(0, 98, 255, 0.45);
+    outline-offset: 3px;
 }
 
 ::-webkit-scrollbar {
@@ -140,4 +170,661 @@ input::-ms-clear {
         radial-gradient(circle at 85% 20%, rgba(0, 210, 223, 0.18) 0%, rgba(246, 250, 255, 0) 55%),
         radial-gradient(circle at 15% 85%, rgba(0, 98, 255, 0.12) 0%, rgba(246, 250, 255, 0) 50%),
         linear-gradient(180deg, #F6FAFF 0%, #EEF6FF 100%);
+}
+
+/* Animaciones y dinamismo */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes heroGradientShift {
+    from {
+        background-position: 0% 50%;
+    }
+    to {
+        background-position: 200% 50%;
+    }
+}
+
+.hero-gradient-text {
+    display: inline-block;
+    min-height: 1.12em;
+    line-height: 1.12;
+    padding-bottom: 0.04em;
+    background-image: linear-gradient(
+        110deg,
+        #0050cc 0%,
+        #0062ff 16%,
+        #008dff 30%,
+        #00b4d8 44%,
+        #00d2df 50%,
+        #00b4d8 56%,
+        #008dff 70%,
+        #0062ff 84%,
+        #0050cc 100%
+    );
+    background-size: 220% 100%;
+    animation: heroGradientShift 4.5s linear infinite;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.hero-phrase-changing {
+    opacity: 0;
+    transform: translateY(0.18em);
+}
+
+#floating-buttons .finora-theme-toggle {
+    position: static;
+    z-index: auto;
+    flex: 0 0 auto;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in-down {
+    animation: fadeInDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease both;
+}
+
+.animate-scale-up {
+    animation: scaleUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Delays para efecto cascada (stagger) */
+.delay-75  { animation-delay: 75ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-250 { animation-delay: 250ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
+/* Micro-interacciones de tarjetas */
+.finora-card-interactive {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+
+.finora-card-interactive:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px -8px rgba(11, 25, 44, 0.08), 0 4px 12px -2px rgba(0, 98, 255, 0.04);
+}
+
+/* Transición suave para catálogo */
+.catalog-item-transition {
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Notificación flotante / Toast */
+.finora-toast {
+    animation: fadeInDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.finora-toast.hide-toast {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.finora-form-submitting {
+    cursor: wait;
+    opacity: 0.75;
+}
+
+.finora-form-submitting button[type='submit'] {
+    cursor: wait;
+}
+
+@layer components {
+    body.bg-finora-surface main {
+        animation: fadeIn 0.35s ease both;
+    }
+
+    body.bg-finora-surface main > div:first-child:not([role='alert']) {
+        position: relative;
+    }
+
+    body.bg-finora-surface main form[method='GET'] {
+        background:
+            linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 255, 0.96));
+        box-shadow: 0 10px 28px -18px rgba(11, 25, 44, 0.28);
+    }
+
+    body.bg-finora-surface main form[method='GET'] input,
+    body.bg-finora-surface main form[method='GET'] select,
+    body.bg-finora-surface main form[method='GET'] textarea {
+        min-height: 42px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    body.bg-finora-surface main form[method='GET'] input:focus,
+    body.bg-finora-surface main form[method='GET'] select:focus,
+    body.bg-finora-surface main form[method='GET'] textarea:focus {
+        border-color: rgba(0, 98, 255, 0.55);
+        box-shadow: 0 0 0 4px rgba(0, 98, 255, 0.1);
+    }
+
+    body.bg-finora-surface main > div.bg-white,
+    body.bg-finora-surface main > section.bg-white {
+        box-shadow: 0 18px 40px -28px rgba(11, 25, 44, 0.45);
+    }
+
+    body.bg-finora-surface main table thead th {
+        white-space: nowrap;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+    }
+
+    body.bg-finora-surface main table tbody tr {
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    body.bg-finora-surface main table tbody tr:hover {
+        box-shadow: inset 3px 0 0 var(--color-finora-blue);
+    }
+
+    body.bg-finora-surface main input:not([type='hidden']),
+    body.bg-finora-surface main select,
+    body.bg-finora-surface main textarea {
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    body.bg-finora-surface main input:not([type='hidden']):focus,
+    body.bg-finora-surface main select:focus,
+    body.bg-finora-surface main textarea:focus {
+        border-color: rgba(0, 98, 255, 0.55);
+        box-shadow: 0 0 0 4px rgba(0, 98, 255, 0.1);
+    }
+
+    body.bg-finora-surface main button[type='submit'],
+    body.bg-finora-surface main a.finora-gradient-btn {
+        min-height: 42px;
+    }
+
+    body.bg-finora-surface header {
+        box-shadow: 0 8px 24px -22px rgba(11, 25, 44, 0.7);
+    }
+
+    body.bg-finora-surface header a,
+    body.bg-finora-surface header button {
+        min-height: 42px;
+    }
+}
+
+@media (max-width: 640px) {
+    .finora-gradient-btn {
+        min-height: 44px;
+    }
+
+    .public-header-inner {
+        height: 4.5rem;
+        gap: 0.75rem;
+        padding-inline: 0.75rem;
+    }
+
+    .public-header-logo {
+        height: 2.25rem;
+    }
+
+    .public-header-brand {
+        min-width: 0;
+    }
+
+    .public-header-brand > span:first-child {
+        font-size: 1.15rem;
+        line-height: 1.15;
+    }
+
+    .public-header-subtitle {
+        display: none;
+    }
+
+    .public-header-inner > .flex.items-center.gap-space-sm {
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .public-header-login {
+        min-height: 2.75rem;
+        min-width: 2.75rem;
+        width: 2.75rem;
+        padding: 0;
+        border-radius: 0.875rem;
+    }
+
+    .public-header-login-icon {
+        margin-right: 0;
+    }
+
+    .public-header-login-label {
+        display: none;
+    }
+
+    #mobile-menu-toggle {
+        min-height: 2.75rem;
+        min-width: 2.75rem;
+        padding: 0.625rem;
+    }
+
+    body.bg-finora-surface main {
+        padding-top: 1.25rem;
+        padding-bottom: 2rem;
+    }
+
+    body.bg-finora-surface main h1 {
+        font-size: 1.6rem;
+        line-height: 1.15;
+    }
+
+    table {
+        min-width: 680px;
+    }
+
+    .overflow-x-auto {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(82, 95, 117, 0.35) transparent;
+        overscroll-behavior-inline: contain;
+    }
+}
+
+@media (min-width: 641px) {
+    .public-header-login-label {
+        display: none;
+    }
+}
+
+@media (min-width: 641px) {
+    .public-header-login-icon {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Tema oscuro global */
+html.dark {
+    color-scheme: dark;
+    --color-background: #111827;
+    --color-secondary: #66c7ff;
+    --color-secondary-container: #2f8fff;
+    --color-surface: #111827;
+    --color-surface-container-lowest: #182235;
+    --color-surface-container-low: #1d293d;
+    --color-surface-container: #243247;
+    --color-surface-container-high: #2d3b52;
+    --color-surface-container-highest: #394960;
+    --color-surface-variant: #394960;
+    --color-on-surface: #edf4ff;
+    --color-on-surface-variant: #b8c5d8;
+    --color-on-background: #edf4ff;
+    --color-primary-container: #dce9ff;
+    --color-primary-fixed: #233b63;
+    --color-finora-surface: #111827;
+    --color-finora-navy: #edf4ff;
+    --color-finora-dark: #dce9ff;
+    --color-finora-blue: #66b8ff;
+    --color-finora-deep-blue: #72c4ff;
+    --color-finora-subtle: #aebbd0;
+    --color-finora-border: #33445c;
+}
+
+html.dark body,
+html.dark body.bg-finora-surface,
+html.dark body.bg-background {
+    background-color: #111827 !important;
+    color: #edf4ff;
+}
+
+html.dark .bg-white,
+html.dark .bg-surface-container-lowest,
+html.dark .bg-surface-container-lowest\/80,
+html.dark .bg-white\/80,
+html.dark .bg-white\/70,
+html.dark .bg-white\/90 {
+    background-color: #182235 !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-50\/60,
+html.dark .bg-slate-50\/80,
+html.dark .bg-slate-100,
+html.dark .bg-slate-200,
+html.dark .bg-slate-200\/80,
+html.dark .bg-blue-50,
+html.dark .bg-cyan-50,
+html.dark .bg-emerald-50,
+html.dark .bg-purple-50,
+html.dark .bg-amber-50,
+html.dark .bg-rose-50,
+html.dark .bg-indigo-50 {
+    background-color: #1d293d !important;
+}
+
+html.dark [class*="bg-[#F8FAFC]"] {
+    background-color: #1d293d !important;
+}
+
+html.dark .text-finora-navy,
+html.dark .text-primary-container,
+html.dark .text-on-surface,
+html.dark .text-slate-700,
+html.dark .text-slate-600,
+html.dark .text-slate-500,
+html.dark .text-slate-400,
+html.dark .text-on-surface-variant {
+    color: #edf4ff !important;
+}
+
+html.dark .text-finora-subtle,
+html.dark .text-slate-400,
+html.dark .text-slate-500,
+html.dark .text-on-surface-variant {
+    color: #b8c5d8 !important;
+}
+
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-300,
+html.dark .border-blue-200,
+html.dark .border-cyan-200,
+html.dark .border-emerald-200,
+html.dark .border-purple-200,
+html.dark .border-amber-200,
+html.dark .border-rose-200,
+html.dark .border-indigo-200,
+html.dark .border-red-200,
+html.dark .border-surface-container-high\/40,
+html.dark .border-surface-container-high\/60 {
+    border-color: #33445c !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+    background-color: #182235 !important;
+    border-color: #3a4c65 !important;
+    color: #edf4ff !important;
+    color-scheme: dark;
+}
+
+html.dark main form.bg-white,
+html.dark main form[class*="bg-white"] {
+    background-color: #182235 !important;
+    background-image: linear-gradient(135deg, #182235 0%, #1d293d 100%) !important;
+    border-color: #33445c !important;
+}
+
+html.dark body.bg-finora-surface main form[method='GET'] {
+    background-color: #182235 !important;
+    background-image: linear-gradient(135deg, #182235 0%, #1d293d 100%) !important;
+}
+
+html.dark .focus\:bg-white:focus,
+html.dark .focus\:bg-surface-container:focus {
+    background-color: #243247 !important;
+}
+
+html.dark .bg-finora-navy {
+    background-color: #2f8fff !important;
+}
+
+html.dark .hover\:bg-finora-dark:hover {
+    background-color: #66c7ff !important;
+    color: #10233c !important;
+}
+
+html.dark select option {
+    background-color: #182235;
+    color: #edf4ff;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+    color: #91a0b6;
+}
+
+html.dark table thead,
+html.dark .bg-surface-container,
+html.dark .bg-surface-container-high {
+    background-color: #243247 !important;
+}
+
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-50\/80:hover,
+html.dark .hover\:bg-slate-100:hover,
+html.dark .hover\:bg-slate-200:hover,
+html.dark .hover\:bg-white:hover,
+html.dark .hover\:bg-white\/25:hover,
+html.dark .hover\:bg-surface-container:hover {
+    background-color: #2a3a51 !important;
+}
+
+html.dark *:focus-visible {
+    outline-color: rgba(102, 199, 255, 0.72);
+}
+
+html.dark .text-blue-600,
+html.dark .text-blue-700,
+html.dark .text-blue-800,
+html.dark .text-cyan-600,
+html.dark .text-cyan-700,
+html.dark .text-cyan-800,
+html.dark .text-emerald-600,
+html.dark .text-emerald-700,
+html.dark .text-emerald-800,
+html.dark .text-purple-600,
+html.dark .text-purple-700,
+html.dark .text-purple-800,
+html.dark .text-amber-600,
+html.dark .text-amber-700,
+html.dark .text-amber-800,
+html.dark .text-rose-600,
+html.dark .text-rose-700,
+html.dark .text-indigo-600,
+html.dark .text-indigo-700,
+html.dark .text-red-600,
+html.dark .text-red-700,
+html.dark .text-red-800 {
+    color: #8edcff !important;
+}
+
+html.dark .text-emerald-600,
+html.dark .text-emerald-700,
+html.dark .text-emerald-800 {
+    color: #72e0ae !important;
+}
+
+html.dark .text-amber-600,
+html.dark .text-amber-700,
+html.dark .text-amber-800 {
+    color: #ffd27a !important;
+}
+
+html.dark .text-red-600,
+html.dark .text-red-700,
+html.dark .text-red-800 {
+    color: #ff9b9b !important;
+}
+
+html:not(.theme-ready) body {
+    visibility: hidden;
+}
+
+html.dark .finora-card-interactive,
+html.dark .bg-white {
+    border-color: #33445c !important;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+}
+
+html.dark .finora-card-interactive .bg-blue-50,
+html.dark .finora-card-interactive .bg-emerald-50,
+html.dark .finora-card-interactive .bg-purple-50,
+html.dark .finora-card-interactive .bg-cyan-50,
+html.dark .finora-card-interactive .bg-amber-50,
+html.dark .finora-card-interactive .bg-rose-50,
+html.dark .finora-card-interactive .bg-indigo-50,
+html.dark .finora-card-interactive .bg-slate-100 {
+    background-color: #243247 !important;
+}
+
+html.dark .login-page .finora-soft-bg {
+    background: linear-gradient(145deg, #162238 0%, #1b2d47 55%, #203b5b 100%) !important;
+    border-color: #33445c !important;
+}
+
+html.dark .login-page .bg-white\/80,
+html.dark .login-page .bg-white\/70 {
+    background-color: rgba(24, 34, 53, 0.9) !important;
+    border-color: #3a4c65 !important;
+}
+
+html.dark .login-page .bg-blue-50\/80,
+html.dark .login-page .bg-blue-50,
+html.dark .login-page .bg-cyan-50,
+html.dark .login-page .bg-sky-50,
+html.dark .login-page .bg-emerald-50 {
+    background-color: #243247 !important;
+    border-color: #455b77 !important;
+}
+
+html.dark .login-page .border-white,
+html.dark .login-page .border-white\/70,
+html.dark .login-page .border-slate-200\/50 {
+    border-color: #3a4c65 !important;
+}
+
+html.dark .login-page .border-slate-100 {
+    border-color: #33445c !important;
+}
+
+html.dark .login-page .text-cyan-700,
+html.dark .login-page .text-emerald-600 {
+    color: #72d9ff !important;
+}
+
+html.dark .login-page .bg-cyan-200\/35,
+html.dark .login-page .bg-blue-300\/25 {
+    opacity: 0.12;
+}
+
+html.dark .admin-welcome-card {
+    background: linear-gradient(135deg, #17263d 0%, #1d3557 56%, #10233c 100%) !important;
+    border: 1px solid #365274;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
+}
+
+html.dark .admin-welcome-card > .bg-cyan-500\/10 {
+    background-color: rgba(0, 210, 223, 0.08) !important;
+}
+
+html.dark .admin-welcome-card > .bg-blue-500\/15 {
+    background-color: rgba(73, 157, 255, 0.12) !important;
+}
+
+html.dark .admin-welcome-card .bg-white\/15 {
+    background-color: rgba(237, 244, 255, 0.09) !important;
+    border-color: rgba(170, 203, 237, 0.28) !important;
+}
+
+html.dark .admin-welcome-card .hover\:bg-white\/25:hover {
+    background-color: rgba(237, 244, 255, 0.16) !important;
+}
+
+html.dark .admin-welcome-card .text-slate-300 {
+    color: #d1deee !important;
+}
+
+.finora-theme-toggle {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.25rem;
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.875rem;
+    height: 2.875rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #0050cc;
+    box-shadow: 0 8px 24px rgba(11, 25, 44, 0.16);
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.finora-theme-toggle:hover {
+    transform: translateY(-2px);
+}
+
+html.dark .finora-theme-toggle {
+    border-color: #455b77;
+    background: rgba(29, 41, 61, 0.94);
+    color: #8edcff;
+}
+
+@media (max-width: 640px) {
+    .finora-theme-toggle {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .hero-gradient-text {
+        min-height: 2.24em;
+    }
 }
