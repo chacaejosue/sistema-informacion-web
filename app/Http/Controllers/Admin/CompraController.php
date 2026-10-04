@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompraRequest;
+use App\Models\Categoria;
 use App\Models\Compra;
 use App\Models\DetalleCompra;
 use App\Models\MovimientoInventario;
@@ -11,6 +12,7 @@ use App\Models\Producto;
 use App\Models\Proveedor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CompraController extends Controller
 {
@@ -54,9 +56,33 @@ class CompraController extends Controller
             ]);
 
             foreach ($validated['detalles'] as $item) {
+                $productoId = $item['producto_id'] ?? null;
+
+                if (! $productoId && ! empty($item['nuevo_producto_nombre'])) {
+                    $categoriaId = Categoria::first()?->id ?? 1;
+                    $codigo = ! empty($item['nuevo_producto_codigo'])
+                        ? mb_strtoupper(trim($item['nuevo_producto_codigo']), 'UTF-8')
+                        : 'TEMP-'.strtoupper(Str::random(6));
+
+                    $costo = (float) $item['costo_unitario'];
+
+                    $nuevoProducto = Producto::create([
+                        'proveedor_id' => $validated['proveedor_id'],
+                        'categoria_id' => $categoriaId,
+                        'codigo' => $codigo,
+                        'nombre' => mb_strtoupper(trim($item['nuevo_producto_nombre']), 'UTF-8'),
+                        'descripcion' => 'Registrado automáticamente desde Compra #'.$compra->id,
+                        'precio_venta_actual' => $costo > 0 ? round($costo * 1.30, 2) : 0,
+                        'publicado' => false,
+                        'activo' => true,
+                    ]);
+
+                    $productoId = $nuevoProducto->id;
+                }
+
                 DetalleCompra::create([
                     'compra_id' => $compra->id,
-                    'producto_id' => $item['producto_id'],
+                    'producto_id' => $productoId,
                     'cantidad' => $item['cantidad'],
                     'costo_unitario' => $item['costo_unitario'],
                 ]);

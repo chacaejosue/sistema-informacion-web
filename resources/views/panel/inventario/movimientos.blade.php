@@ -26,7 +26,7 @@
                 </div>
             </a>
             <div class="flex items-center gap-3">
-                <a href="{{ route('panel.inventario.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-finora-blue hover:text-finora-deepBlue">
+                <a href="{{ route('panel.inventario.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-finora-blue hover:text-finora-deep-blue">
                     <span class="material-symbols-outlined text-sm">arrow_back</span>
                     Volver a existencias
                 </a>

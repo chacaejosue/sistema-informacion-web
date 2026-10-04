@@ -20,39 +20,39 @@
     <!-- Carga de estilos y scripts del proyecto mediante Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="h-full font-sans bg-finora-surface text-finora-navy antialiased selection:bg-finora-cyan selection:text-finora-navy">
-    <!-- Contenedor principal de pantalla dividida -->
-    <div class="min-h-full flex flex-col lg:flex-row">
+<body class="login-page h-full font-sans bg-finora-surface text-finora-navy antialiased selection:bg-finora-cyan selection:text-finora-navy overflow-hidden">
+    <!-- Contenedor principal de pantalla dividida (2.3: Ajustado para vista fija sin scroll innecesario) -->
+    <div class="h-screen w-full flex flex-col lg:flex-row overflow-hidden">
 
         <!-- Panel izquierdo: Formulario de acceso seguro -->
-        <main class="w-full lg:w-[48%] xl:w-[45%] flex flex-col justify-between px-6 py-8 sm:px-12 md:px-16 lg:px-14 xl:px-20 bg-white z-10 min-h-screen">
+        <main class="w-full lg:w-[48%] xl:w-[45%] flex flex-col justify-between px-6 py-5 sm:px-12 md:px-14 lg:px-12 xl:px-16 bg-white z-10 h-full overflow-y-auto lg:overflow-hidden">
 
             <!-- Logotipo y marca principal -->
             <header class="w-full">
                 <a class="inline-flex items-center gap-3.5 group" href="{{ route('landing') }}" title="Finora - Portal Principal">
-                    <div class="relative w-11 h-11 flex items-center justify-center shrink-0">
-                        <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-10 w-auto object-contain group-hover:scale-105 transition-transform"/>
+                    <div class="relative w-10 h-10 flex items-center justify-center shrink-0">
+                        <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-9 w-auto object-contain group-hover:scale-105 transition-transform"/>
                     </div>
                     <div class="flex flex-col">
-                        <span class="font-heading text-2xl font-extrabold tracking-tight text-finora-navy">Finora</span>
-                        <span class="text-[11px] font-medium text-finora-subtle -mt-1 tracking-wide">Gestión comercial y financiera</span>
+                        <span class="font-heading text-xl font-extrabold tracking-tight text-finora-navy">Finora</span>
+                        <span class="text-[10px] font-medium text-finora-subtle -mt-1 tracking-wide">Gestión comercial y financiera</span>
                     </div>
                 </a>
             </header>
 
-            <!-- Contenedor central del formulario -->
-            <section aria-labelledby="login-title" class="my-auto py-8 max-w-md w-full mx-auto">
-                <div class="mb-8 text-left">
-                    <h1 class="font-heading text-3xl sm:text-4xl font-extrabold text-finora-navy tracking-tight" id="login-title">
+            <!-- Contenedor central del formulario con animación de entrada -->
+            <section aria-labelledby="login-title" class="my-auto py-2 max-w-md w-full mx-auto animate-fade-in-up">
+                <div class="mb-4 text-left">
+                    <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-finora-navy tracking-tight" id="login-title">
                         Bienvenido a Finora
                     </h1>
-                    <p class="mt-2 text-sm text-finora-subtle font-medium">
+                    <p class="mt-1.5 text-sm text-finora-subtle font-medium">
                         Ingresa a tu cuenta para continuar.
                     </p>
                 </div>
 
-                <!-- Formulario de autenticación -->
-                <form action="{{ route('login.authenticate') }}" class="space-y-5" method="POST">
+                <!-- Formulario de autenticación (2.5: manejado para evitar duplicar entradas en historial del navegador) -->
+                <form id="loginForm" action="{{ route('login.authenticate') }}" class="space-y-4" method="POST" data-prevent-submit-feedback="true">
                     @csrf
 
                     <!-- Campo: Correo electrónico -->
@@ -64,7 +64,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <span class="material-symbols-outlined text-[20px]">person</span>
                             </div>
-                            <input autocomplete="username" class="block w-full pl-10 pr-4 py-3 bg-[#F8FAFC] border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 text-finora-navy focus:bg-white focus:outline-none focus:ring-2 focus:ring-finora-blue focus:border-transparent transition-all" id="identity" name="identity" placeholder="tu@email.com" required="" type="email" value="{{ old('identity') }}"/>
+                            <input autocomplete="username" class="block w-full pl-10 pr-4 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 text-finora-navy focus:bg-white focus:outline-none focus:ring-2 focus:ring-finora-blue focus:border-transparent transition-all" id="identity" name="identity" placeholder="tu@email.com" required="" type="email" value="{{ old('identity') }}"/>
                         </div>
                     </div>
 
@@ -79,15 +79,15 @@
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <span class="material-symbols-outlined text-[20px]">lock</span>
                             </div>
-                            <input autocomplete="current-password" class="block w-full pl-10 pr-11 py-3 bg-[#F8FAFC] border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 text-finora-navy focus:bg-white focus:outline-none focus:ring-2 focus:ring-finora-blue focus:border-transparent transition-all" id="password" name="password" placeholder="••••••••••••" required="" type="password"/>
+                            <input autocomplete="current-password" class="block w-full pl-10 pr-11 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 text-finora-navy focus:bg-white focus:outline-none focus:ring-2 focus:ring-finora-blue focus:border-transparent transition-all" id="password" name="password" placeholder="••••••••••••" required="" type="password"/>
                             <button aria-label="Mostrar u ocultar contraseña" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-finora-navy transition-colors focus:outline-none cursor-pointer" id="togglePassword" type="button">
                                 <span class="material-symbols-outlined text-[20px]" id="eyeIcon">visibility</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Opción: Recordar sesión (recuperación de contraseña no implementada aún) -->
-                    <div class="pt-1">
+                    <!-- Opción: Recordar sesión -->
+                    <div class="pt-0.5">
                         <label class="inline-flex items-center cursor-pointer select-none">
                             <input class="h-4 w-4 rounded border-slate-300 text-finora-blue focus:ring-finora-blue cursor-pointer" id="remember-me" name="remember" type="checkbox"/>
                             <span class="ml-2 text-xs font-medium text-finora-subtle">
@@ -97,38 +97,34 @@
                     </div>
 
                     {{-- Mensajes de error de autenticación --}}
-                    @if ($errors->any())
-                        <div role="alert" class="rounded-xl border border-red-200 bg-red-50 p-4">
-                            <p class="text-sm font-medium text-red-700">
-                                {{ $errors->first() }}
-                            </p>
-                        </div>
-                    @endif
+                    <div id="loginErrorBox" class="{{ $errors->any() ? '' : 'hidden' }} rounded-xl border border-red-200 bg-red-50 p-3.5" role="alert">
+                        <p id="loginErrorMessage" class="text-sm font-medium text-red-700">
+                            {{ $errors->first() }}
+                        </p>
+                    </div>
 
                     <!-- Botón principal de acceso -->
-                    <div class="pt-3">
-                        <button class="finora-gradient-btn w-full py-3.5 px-6 rounded-xl text-white font-heading font-semibold text-base shadow-finora-btn flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus:ring-4 focus:ring-cyan-200" type="submit">
-                            <span>Iniciar sesión</span>
-                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                    <div class="pt-2">
+                        <button id="loginSubmitBtn" class="finora-gradient-btn w-full py-3 px-6 rounded-xl text-white font-heading font-semibold text-base shadow-finora-btn flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus:ring-4 focus:ring-cyan-200 transition-all disabled:opacity-70 disabled:cursor-not-allowed" type="submit">
+                            <span id="loginBtnText">Iniciar sesión</span>
+                            <span class="material-symbols-outlined text-lg" id="loginBtnIcon">arrow_forward</span>
                         </button>
                     </div>
                 </form>
 
-                <!-- Enlace secundario: Volver al catálogo público (misma pestaña) -->
-                <div class="mt-8 pt-6 border-t border-slate-100 text-center">
-                    <p class="text-xs text-finora-subtle">
-                        ¿Solo quieres explorar productos?
-                        <a class="font-bold text-finora-blue hover:text-finora-deepBlue transition-colors underline decoration-slate-300 underline-offset-4 ml-1 inline-flex items-center gap-0.5" href="{{ route('landing') }}">
-                            <span class="material-symbols-outlined text-xs">arrow_back</span>
-                            Volver al catálogo
-                        </a>
-                    </p>
+                <!-- Enlace secundario: Volver al catálogo público (2.4: alineado con flex) -->
+                <div class="mt-6 flex flex-wrap items-center justify-center gap-1.5 text-xs text-finora-subtle">
+                    <span>¿Solo quieres explorar productos?</span>
+                    <a class="font-bold text-finora-blue hover:text-finora-deep-blue transition-colors inline-flex items-center gap-1 group" href="{{ route('landing') }}">
+                        <span class="material-symbols-outlined text-sm transition-transform group-hover:-translate-x-0.5">arrow_back</span>
+                        <span>Volver al catálogo</span>
+                    </a>
                 </div>
             </section>
 
-            <!-- Pie del panel de acceso -->
-            <footer class="w-full pt-4 pb-2 border-t border-slate-100 flex items-center justify-center text-xs text-finora-subtle">
-                <span>Finora &mdash; Sistema de gestión para consultores independientes</span>
+            <!-- Pie del panel de acceso (2.2: texto unificado con panel derecho) -->
+            <footer class="w-full pt-3 pb-3 border-t border-slate-100 flex items-center justify-center text-xs text-finora-subtle text-center">
+                <span>Sistema de gestión comercial para consultores independientes</span>
             </footer>
         </main>
 
@@ -192,7 +188,7 @@
                     <div class="mt-8 pt-6 border-t border-slate-100 grid grid-cols-2 gap-3">
 
                         <!-- Módulo: Ventas -->
-                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/60 border border-slate-100">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-slate-100 shadow-xs hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all">
                             <div class="w-9 h-9 rounded-xl bg-blue-50 text-finora-blue flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">point_of_sale</span>
                             </div>
@@ -200,7 +196,7 @@
                         </div>
 
                         <!-- Módulo: Pedidos -->
-                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/60 border border-slate-100">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-slate-100 shadow-xs hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all">
                             <div class="w-9 h-9 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">inventory_2</span>
                             </div>
@@ -208,7 +204,7 @@
                         </div>
 
                         <!-- Módulo: Clientes -->
-                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/60 border border-slate-100">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-slate-100 shadow-xs hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all">
                             <div class="w-9 h-9 rounded-xl bg-sky-50 text-finora-sky flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">group</span>
                             </div>
@@ -216,7 +212,7 @@
                         </div>
 
                         <!-- Módulo: Finanzas -->
-                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/60 border border-slate-100">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-slate-100 shadow-xs hover:bg-white hover:shadow-md hover:-translate-y-0.5 transition-all">
                             <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">account_balance</span>
                             </div>
@@ -234,5 +230,75 @@
     </div>
 
     {{-- La interacción de contraseña se maneja en resources/js/app.js --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 2.5: Guardar el origen previo para evitar bucles de navegación hacia atrás con credenciales inválidas
+            const referrer = document.referrer;
+            if (referrer && !referrer.includes('/login')) {
+                sessionStorage.setItem('finora_login_origin', referrer);
+            } else if (!sessionStorage.getItem('finora_login_origin')) {
+                sessionStorage.setItem('finora_login_origin', "{{ route('landing') }}");
+            }
+
+            // Si se cargó con error HTTP normal, reemplazar la entrada en el historial
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({ page: 'login' }, document.title, window.location.href);
+            }
+
+            // Interceptar envío para no recargar ni ensuciar el historial del navegador
+            const form = document.getElementById('loginForm');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            const btnText = document.getElementById('loginBtnText');
+            const btnIcon = document.getElementById('loginBtnIcon');
+            const errorBox = document.getElementById('loginErrorBox');
+            const errorMessage = document.getElementById('loginErrorMessage');
+
+            if (form && submitBtn) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    if (errorBox) errorBox.classList.add('hidden');
+                    submitBtn.disabled = true;
+                    const originalText = btnText ? btnText.textContent : 'Iniciar sesión';
+                    if (btnText) btnText.textContent = 'Verificando...';
+                    if (btnIcon) {
+                        btnIcon.textContent = 'sync';
+                        btnIcon.classList.add('animate-spin');
+                    }
+
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.redirect) {
+                            window.location.replace(data.redirect);
+                        } else {
+                            const msg = data.errors?.identity?.[0] || data.message || 'Las credenciales proporcionadas son incorrectas.';
+                            if (errorMessage) errorMessage.textContent = msg;
+                            if (errorBox) errorBox.classList.remove('hidden');
+                            submitBtn.disabled = false;
+                            if (btnText) btnText.textContent = originalText;
+                            if (btnIcon) {
+                                btnIcon.textContent = 'arrow_forward';
+                                btnIcon.classList.remove('animate-spin');
+                            }
+                        }
+                    } catch (err) {
+                        // En caso de error inesperado, permitir fallback nativo
+                        form.submit();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

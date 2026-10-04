@@ -15,23 +15,29 @@
 
     <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 backdrop-blur-md bg-white/90">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-            <a class="inline-flex items-center gap-3.5 group" href="{{ route('panel.index') }}">
-                <div class="relative w-10 h-10 flex items-center justify-center shrink-0">
-                    <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-9 w-auto object-contain group-hover:scale-105 transition-transform"/>
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-heading text-xl font-extrabold tracking-tight text-finora-navy">Finora</span>
-                    <span class="text-[10px] font-medium text-finora-subtle -mt-1 tracking-wide">Gestión de Pedidos</span>
-                </div>
-            </a>
             <div class="flex items-center gap-3">
-                <a href="{{ route('panel.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-finora-blue hover:text-finora-deepBlue">
-                    <span class="material-symbols-outlined text-sm">arrow_back</span>
-                    Volver al panel
+                <button id="openPanelDrawerBtn" type="button" class="p-2 rounded-xl text-slate-600 hover:text-finora-navy hover:bg-slate-100 transition-colors cursor-pointer" title="Navegación de módulos">
+                    <span class="material-symbols-outlined text-[24px]">menu</span>
+                </button>
+                <a class="inline-flex items-center gap-3.5 group" href="{{ route('panel.index') }}">
+                    <div class="relative w-10 h-10 flex items-center justify-center shrink-0">
+                        <img src="{{ asset('images/branding/finora-isotipo.png') }}" alt="Finora" class="h-9 w-auto object-contain group-hover:scale-105 transition-transform"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-heading text-xl font-extrabold tracking-tight text-finora-navy">Finora</span>
+                        <span class="text-[10px] font-medium text-finora-subtle -mt-1 tracking-wide">Gestión de Pedidos</span>
+                    </div>
+                </a>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('panel.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-finora-navy hover:bg-slate-100 transition-colors">
+                    <span class="material-symbols-outlined text-sm">dashboard</span>
+                    <span class="hidden sm:inline">Panel Principal</span>
                 </a>
             </div>
         </div>
     </header>
+    @include('partials.panel-nav')
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
@@ -98,6 +104,7 @@
                             <th class="py-3.5 px-4">Cliente</th>
                             <th class="py-3.5 px-4">Fecha</th>
                             <th class="py-3.5 px-4 text-center">Estado</th>
+                            <th class="py-3.5 px-4 text-center">Reserva Stock</th>
                             <th class="py-3.5 px-4 text-right">Total</th>
                             <th class="py-3.5 px-4 text-right">Acciones</th>
                         </tr>
@@ -131,6 +138,31 @@
                                         {{ $ped->estado }}
                                     </span>
                                 </td>
+                                <td class="py-3 px-4 text-center">
+                                    @php
+                                        $totalItems = $ped->detalles->sum('cantidad');
+                                        $totalReservado = $ped->detalles->sum('cantidad_reservada');
+                                    @endphp
+                                    @if ($ped->estado === 'COMPLETADO')
+                                        <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700">
+                                            <span class="material-symbols-outlined text-xs">check_circle</span> Entregado
+                                        </span>
+                                    @elseif ($ped->estado === 'CANCELADO')
+                                        <span class="text-[11px] text-slate-400">Liberado</span>
+                                    @elseif ($totalReservado >= $totalItems && $totalItems > 0)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-50 border border-cyan-200 text-cyan-800">
+                                            <span class="material-symbols-outlined text-xs">done_all</span> 100% ({{ $totalReservado }}/{{ $totalItems }})
+                                        </span>
+                                    @elseif ($totalReservado > 0)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-800">
+                                            <span class="material-symbols-outlined text-xs">hourglass_top</span> Parcial ({{ $totalReservado }}/{{ $totalItems }})
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 border border-red-200 text-red-700">
+                                            <span class="material-symbols-outlined text-xs">block</span> Sin stock (0/{{ $totalItems }})
+                                        </span>
+                                    @endif
+                                </td>
                                 <td class="py-3 px-4 text-right font-bold text-finora-navy">
                                     ${{ number_format($ped->total, 2) }}
                                 </td>
@@ -160,5 +192,6 @@
         </div>
     </main>
 
+    @include('partials.panel-footer')
 </body>
 </html>

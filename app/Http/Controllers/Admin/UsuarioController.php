@@ -20,8 +20,8 @@ class UsuarioController extends Controller
             $search = $request->input('search');
             $query->whereHas('persona', function ($q) use ($search) {
                 $q->where('nombre', 'like', "%{$search}%")
-                  ->orWhere('apellido', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('apellido', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -49,6 +49,7 @@ class UsuarioController extends Controller
                 'apellido' => $validated['apellido'] ?? null,
                 'telefono' => $validated['telefono'] ?? null,
                 'email' => $validated['email'],
+                'genero' => $validated['genero'] ?? null,
                 'direccion' => $validated['direccion'] ?? null,
             ]);
 
@@ -67,6 +68,7 @@ class UsuarioController extends Controller
     public function edit(Usuario $usuario)
     {
         $usuario->load('persona');
+
         return view('panel.usuarios.edit', compact('usuario'));
     }
 
@@ -80,6 +82,7 @@ class UsuarioController extends Controller
                 'apellido' => $validated['apellido'] ?? null,
                 'telefono' => $validated['telefono'] ?? null,
                 'email' => $validated['email'],
+                'genero' => $validated['genero'] ?? null,
                 'direccion' => $validated['direccion'] ?? null,
             ]);
 
@@ -109,6 +112,7 @@ class UsuarioController extends Controller
         $usuario->update(['activo' => ! $usuario->activo]);
 
         $estadoText = $usuario->activo ? 'activado' : 'desactivado';
+
         return redirect()->back()
             ->with('exito', "Usuario {$estadoText} correctamente.");
     }

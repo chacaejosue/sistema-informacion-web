@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class CompraRequest extends FormRequest
 {
@@ -18,7 +17,9 @@ class CompraRequest extends FormRequest
             'proveedor_id' => ['required', 'exists:proveedores,id'],
             'observaciones' => ['nullable', 'string'],
             'detalles' => ['required', 'array', 'min:1'],
-            'detalles.*.producto_id' => ['required', 'exists:productos,id'],
+            'detalles.*.producto_id' => ['nullable', 'exists:productos,id', 'required_without:detalles.*.nuevo_producto_nombre'],
+            'detalles.*.nuevo_producto_nombre' => ['nullable', 'string', 'max:180'],
+            'detalles.*.nuevo_producto_codigo' => ['nullable', 'string', 'max:80'],
             'detalles.*.cantidad' => ['required', 'integer', 'min:1'],
             'detalles.*.costo_unitario' => ['required', 'numeric', 'min:0'],
         ];
