@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Middleware\EnsureClienteRole;
+use App\Http\Middleware\EnsureConsultorRole;
+use App\Http\Middleware\EnsureOperativoRole;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,6 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withSchedule(function (Schedule $schedule): void {
+        $schedule->command('finora:actualizar-tipo-cambio')
+            ->dailyAt('00:05')
+            ->timezone('America/La_Paz')
+            ->withoutOverlapping(30);
+    })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectTo(
             guests: '/login',
@@ -19,14 +29,16 @@ return Application::configure(basePath: dirname(__DIR__))
                     return '/mi-cuenta';
                 }
                 if ($request->user()?->rol === 'COLABORADOR') {
-                    return '/panel/productos';
+                    return '/panel/colaborador';
                 }
+
                 return '/panel';
             }
         );
         $middleware->alias([
-            'rol.consultor' => \App\Http\Middleware\EnsureConsultorRole::class,
-            'rol.operativo' => \App\Http\Middleware\EnsureOperativoRole::class,
+            'rol.consultor' => EnsureConsultorRole::class,
+            'rol.operativo' => EnsureOperativoRole::class,
+            'rol.cliente' => EnsureClienteRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
