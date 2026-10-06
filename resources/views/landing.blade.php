@@ -35,75 +35,26 @@
     @include('partials.header')
 
     @php
-    $categorias = [
-        [
-            'id'     => 'perfumeria',
-            'nombre' => 'Perfumería Femenina & Masculina',
-            'desc'   => 'Eau de Parfum, colonias y aromas icónicos Natura.',
-            'imagen' => asset('images/demo/productos/kaiak.jpg'),
-            'badge'  => 'Perfumería',
-            'slug'   => 'perfumeria',
-        ],
-        [
-            'id'     => 'facial',
-            'nombre' => 'Cuidado Facial & Antiedad',
-            'desc'   => 'Tratamientos concentrados y soluciones Chronos.',
-            'imagen' => asset('images/demo/productos/chronos.jpg'),
-            'badge'  => 'Chronos',
-            'slug'   => 'cuidado-facial',
-        ],
-        [
-            'id'     => 'maquillaje',
-            'nombre' => 'Maquillaje & Belleza',
-            'desc'   => 'Bases, labiales y máscaras de pestañas.',
-            'imagen' => asset('images/demo/productos/ilia.jpg'),
-            'badge'  => 'Una & Faces',
-            'slug'   => 'maquillaje',
-        ],
-        [
-            'id'     => 'corporal',
-            'nombre' => 'Cuidado Corporal & Baño',
-            'desc'   => 'Jabones, cremas Tododia y aceites Ekos.',
-            'imagen' => asset('images/demo/productos/tododia.jpg'),
-            'badge'  => 'Tododia & Ekos',
-            'slug'   => 'cuidado-corporal',
-        ],
-    ];
-
-    $productos = [
-        [
-            'nombre'    => 'Kaiak Océano Desodorante Colonia 100ml',
-            'linea'     => 'Perfumería Masculina',
-            'categoria' => 'perfumeria',
-            'desc'      => 'Notas acuáticas frescas y maderas nobles. Envase con plástico reciclado.',
-            'imagen'    => asset('images/demo/productos/kaiak.jpg'),
-            'tag'       => 'Natura',
-        ],
-        [
-            'nombre'    => 'Ilía Secreto Feminino 50ml',
-            'linea'     => 'Perfumería Femenina',
-            'categoria' => 'perfumeria',
-            'desc'      => 'Flor de azahar, uva silvestre y notas amaderadas de alta fijación.',
-            'imagen'    => asset('images/demo/productos/ilia.jpg'),
-            'tag'       => 'Natura',
-        ],
-        [
-            'nombre'    => 'Chronos Suero Reductor de Arrugas 30ml',
-            'linea'     => 'Cuidado Facial',
-            'categoria' => 'facial',
-            'desc'      => 'Triple acción restauradora con prebióticos de jatobá y biosacáridos.',
-            'imagen'    => asset('images/demo/productos/chronos.jpg'),
-            'tag'       => 'Natura Chronos',
-        ],
-        [
-            'nombre'    => 'Tododia Crema Nutritiva Corporal 400ml',
-            'linea'     => 'Cuidado Corporal',
-            'categoria' => 'corporal',
-            'desc'      => 'Nutrición prebiótica con aceite de linaza y manteca de cacao pura.',
-            'imagen'    => asset('images/demo/productos/tododia.jpg'),
-            'tag'       => 'Natura Tododia',
-        ],
-    ];
+        $productoDestacado = $productos->first();
+        $categoriasLanding = $categorias->map(fn ($categoria) => [
+            'nombre' => $categoria->nombre,
+            'desc' => $categoria->descripcion ?: 'Productos disponibles en nuestro catálogo.',
+            'imagen' => $categoria->productos->first()?->imagen_url ?: asset('images/branding/finora-icono.png'),
+            'badge' => $categoria->nombre,
+            'slug' => \Illuminate\Support\Str::slug($categoria->nombre),
+        ]);
+        $productosLanding = $productos->map(fn ($producto) => [
+            'id' => $producto->id,
+            'codigo' => $producto->codigo,
+            'nombre' => $producto->nombre,
+            'linea' => $producto->linea?->nombre ?: 'Catálogo general',
+            'categoria' => \Illuminate\Support\Str::slug($producto->categoria->nombre),
+            'categoriaNombre' => $producto->categoria->nombre,
+            'desc' => $producto->descripcion ?: 'Producto disponible para consulta.',
+            'imagen' => $producto->imagen_url ?: asset('images/branding/finora-icono.png'),
+            'tag' => $producto->proveedor?->nombre ?: 'Producto',
+            'precio' => $producto->precio_venta_actual,
+        ]);
     @endphp
 
     <!-- Contenido principal -->
@@ -141,20 +92,20 @@
                         <div class="relative w-full rounded-2xl bg-surface-container-lowest/80 backdrop-blur-md shadow-xl p-space-lg">
                             <div class="flex flex-col justify-between p-space-lg rounded-xl bg-gradient-to-b from-surface-container-low to-surface-container-lowest shadow-sm relative overflow-hidden group">
                                 <div class="flex items-center justify-between gap-space-sm z-10 mb-space-sm">
-                                    <span class="px-space-sm py-0.5 rounded-full bg-surface-container-highest text-primary-container font-label-sm text-label-sm uppercase tracking-wider">Natura</span>
+                            <span id="heroProductProvider" class="px-space-sm py-0.5 rounded-full bg-surface-container-highest text-primary-container font-label-sm text-label-sm uppercase tracking-wider">{{ $productoDestacado?->proveedor?->nombre ?? 'Catálogo' }}</span>
                                     <span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm">
                                         Destacado
                                     </span>
                                 </div>
                                 {{-- 1.14: draggable=false + select-none --}}
                                 <div class="relative h-64 w-full flex items-center justify-center my-space-xs overflow-hidden rounded-lg bg-surface-container-lowest">
-                                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 select-none" draggable="false" alt="Natura Ilía Secreto" src="{{ asset('images/demo/productos/ilia.jpg') }}"/>
+                                    <img id="heroProductImage" class="w-full h-full object-cover group-hover:scale-105 active:scale-105 transition-all duration-500 select-none" draggable="false" alt="{{ $productoDestacado?->nombre ?? 'Producto destacado' }}" src="{{ $productoDestacado?->imagen_url ?: asset('images/branding/finora-icono.png') }}"/>
                                 </div>
                                 <div class="z-10 mt-space-sm">
-                                    <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Perfumería Femenina</span>
-                                    <h2 class="font-title-lg text-title-lg text-primary-container mt-0.5">Ilía Secreto Feminino</h2>
+                                    <span id="heroProductLine" class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">{{ $productoDestacado?->linea?->nombre ?? 'Catálogo comercial' }}</span>
+                                    <h2 id="heroProductName" class="font-title-lg text-title-lg text-primary-container mt-0.5">{{ $productoDestacado?->nombre ?? 'Productos registrados por el consultor' }}</h2>
                                     <div class="flex items-baseline gap-space-xs mt-space-xs">
-                                        <span class="font-headline-sm text-headline-sm text-secondary">Precio a consultar</span>
+                                        <span id="heroProductPrice" data-money-bob="{{ $productoDestacado?->precio_venta_actual ?? 0 }}" class="font-headline-sm text-headline-sm text-secondary">@money($productoDestacado?->precio_venta_actual)</span>
                                     </div>
                                 </div>
                             </div>
@@ -181,15 +132,11 @@
                         <button class="filter-chip active px-space-md py-1.5 rounded-full bg-secondary text-on-secondary font-label-md text-label-md whitespace-nowrap shadow-sm transition-colors" data-cat="all">
                             Todas
                         </button>
-                        <button class="filter-chip px-space-md py-1.5 rounded-full bg-surface-container-low text-primary-container hover:bg-surface-container font-label-md text-label-md whitespace-nowrap transition-colors" data-cat="perfumeria">
-                            Perfumería
-                        </button>
-                        <button class="filter-chip px-space-md py-1.5 rounded-full bg-surface-container-low text-primary-container hover:bg-surface-container font-label-md text-label-md whitespace-nowrap transition-colors" data-cat="facial">
-                            Cuidado Facial
-                        </button>
-                        <button class="filter-chip px-space-md py-1.5 rounded-full bg-surface-container-low text-primary-container hover:bg-surface-container font-label-md text-label-md whitespace-nowrap transition-colors" data-cat="corporal">
-                            Cuidado Corporal
-                        </button>
+                        @foreach ($categoriasLanding as $categoria)
+                            <button class="filter-chip px-space-md py-1.5 rounded-full bg-surface-container-low text-primary-container hover:bg-surface-container font-label-md text-label-md whitespace-nowrap transition-colors" data-cat="{{ $categoria['slug'] }}">
+                                {{ $categoria['nombre'] }}
+                            </button>
+                        @endforeach
                     </div>
                 </div>
             </section>
@@ -205,17 +152,20 @@
                     <span class="text-xs text-on-surface-variant font-medium">Atención y pedidos por WhatsApp</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md" id="products-container">
-                    @foreach($productos as $prod)
+                    @foreach($productosLanding as $prod)
                     <div class="product-item finora-card-interactive rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group border border-surface-container-high/40 hover:border-secondary/40 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
                         role="button"
                         tabindex="0"
                         aria-label="Ver detalles de {{ $prod['nombre'] }}"
                         data-cat="{{ $prod['categoria'] }}"
+                        data-codigo="{{ $prod['codigo'] }}"
+                        data-categoria-nombre="{{ $prod['categoriaNombre'] }}"
                         data-nombre="{{ $prod['nombre'] }}"
                         data-linea="{{ $prod['linea'] }}"
                         data-desc="{{ $prod['desc'] }}"
                         data-imagen="{{ $prod['imagen'] }}"
                         data-tag="{{ $prod['tag'] }}"
+                        data-precio="{{ $prod['precio'] }}"
                         onclick="openProductModal(this)"
                         onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openProductModal(this); }">
                         <div>
@@ -234,9 +184,13 @@
                         </div>
                         <div class="pt-space-md mt-space-sm border-t border-surface-container">
                             <div class="flex items-baseline gap-space-xs mb-space-sm">
-                                <span class="font-headline-sm text-headline-sm text-primary-container font-bold">Precio a consultar</span>
+                                <span data-money-bob="{{ $prod['precio'] }}" class="font-headline-sm text-headline-sm text-primary-container font-bold">@money($prod['precio'])</span>
                             </div>
-                            <a href="https://wa.me/59167673537?text=Hola%20deseo%20consultar%20por%20{{ urlencode($prod['nombre']) }}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="w-full py-2.5 rounded-xl bg-surface-container-low text-primary-container hover:bg-emerald-600 hover:text-white font-title-md text-sm flex items-center justify-center gap-2 transition-all shadow-xs hover:shadow-md cursor-pointer group/wa">
+                            <button type="button" data-add-product="{{ $prod['id'] }}" data-cart-url="{{ route('carrito') }}" onclick="event.stopPropagation(); window.finoraAddProduct(this)" class="w-full py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-title-md text-sm flex items-center justify-center gap-2 transition-all shadow-xs hover:shadow-md cursor-pointer">
+                                <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                <span>Agregar al carrito</span>
+                            </button>
+                            <a href="{{ config('services.whatsapp.phone') ? 'https://wa.me/' . preg_replace('/\D+/', '', config('services.whatsapp.phone')) . '?text=' . urlencode('Hola deseo consultar por ' . $prod['nombre']) : '#' }}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="mt-2 w-full py-2.5 rounded-xl bg-surface-container-low text-primary-container hover:bg-emerald-600 hover:text-white font-title-md text-sm flex items-center justify-center gap-2 transition-all shadow-xs hover:shadow-md cursor-pointer group/wa">
                                 <svg class="w-4 h-4 text-emerald-600 group-hover/wa:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.995.545 1.761.791 2.796.791 3.182 0 5.768-2.587 5.768-5.766.001-3.182-2.585-5.778-5.768-5.778zm0-2c4.28 0 7.768 3.488 7.768 7.778 0 4.281-3.487 7.766-7.768 7.766-1.328 0-2.597-.336-3.716-.941l-4.315 1.131 1.152-4.212c-.7-1.189-1.089-2.56-1.089-3.744 0-4.29 3.488-7.778 7.768-7.778z"/>
                                 </svg>
@@ -245,6 +199,13 @@
                         </div>
                     </div>
                     @endforeach
+                    <div id="landingEmptyCatalog" class="hidden col-span-full rounded-2xl bg-surface-container-lowest p-space-2xl text-center shadow-sm border border-surface-container-high/40" role="status">
+                        <div class="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-secondary dark:bg-blue-950/60">
+                            <span class="material-symbols-outlined text-[32px]" aria-hidden="true">search_off</span>
+                        </div>
+                        <h2 class="font-headline-sm text-headline-sm text-primary-container font-bold">No encontramos productos</h2>
+                        <p id="landingEmptyMessage" class="text-on-surface-variant text-sm mt-1 max-w-lg mx-auto">Prueba con otro nombre o selecciona una categoría diferente.</p>
+                    </div>
                 </div>
             </section>
 
@@ -258,12 +219,12 @@
                         </div>
                         <h2 class="font-headline-lg text-headline-lg text-primary-container">Explora por categoría</h2>
                     </div>
-                    <p class="font-body-md text-body-md text-on-surface-variant max-w-md">
-                        Navega entre las principales líneas del catálogo Natura con atención directa de tu consultor.
+                     <p class="font-body-md text-body-md text-on-surface-variant max-w-md sm:max-w-none">
+                        <span class="sm:whitespace-nowrap">Navega entre las principales líneas del catálogo Natura con atención directa de tu consultor.</span>
                     </p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
-                    @foreach($categorias as $cat)
+                    @foreach($categoriasLanding as $cat)
                     <a class="group finora-card-interactive relative rounded-2xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-xl transition-all flex flex-col justify-between overflow-hidden border border-surface-container-high/40 hover:border-secondary/40" href="{{ route('categorias', ['categoria' => $cat['slug']]) }}">
                         <div class="relative h-44 w-full rounded-xl overflow-hidden bg-surface-container-low mb-space-md">
                             <img class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 select-none" draggable="false" alt="{{ $cat['nombre'] }}" src="{{ $cat['imagen'] }}" onerror="this.onerror=null; this.src='{{ asset('images/branding/finora-icono.png') }}';"/>
@@ -291,7 +252,12 @@
     <dialog id="productModal" aria-labelledby="modalNombre" aria-describedby="modalDesc" class="fixed inset-0 m-auto w-full max-w-lg rounded-3xl bg-surface-container-lowest shadow-2xl p-0 border border-surface-container-high/50 backdrop:bg-black/60 backdrop:backdrop-blur-xs animate-scale-up">
         <div class="flex flex-col max-h-[90vh]">
             <div class="relative h-72 w-full rounded-t-3xl overflow-hidden bg-surface-container-low shrink-0">
-                <img id="modalImage" src="" alt="" class="w-full h-full object-cover select-none" draggable="false"/>
+                 <img id="modalImage" src="" alt="" class="w-full h-full object-cover select-none" draggable="false"/>
+                 <div class="absolute bottom-3.5 left-3.5 inline-flex items-center gap-1 rounded-xl bg-surface-container-lowest/90 p-1 shadow-md backdrop-blur-md">
+                     <button id="modalZoomOut" type="button" class="flex h-9 w-9 items-center justify-center rounded-lg text-primary-container hover:bg-surface-container" aria-label="Reducir imagen"><span class="material-symbols-outlined">zoom_out</span></button>
+                     <button id="modalZoomReset" type="button" class="flex h-9 items-center justify-center rounded-lg px-2 text-xs font-bold text-primary-container hover:bg-surface-container" aria-label="Restablecer zoom">100%</button>
+                     <button id="modalZoomIn" type="button" class="flex h-9 w-9 items-center justify-center rounded-lg text-primary-container hover:bg-surface-container" aria-label="Ampliar imagen"><span class="material-symbols-outlined">zoom_in</span></button>
+                 </div>
                 <button onclick="document.getElementById('productModal').close()" class="absolute top-3.5 right-3.5 w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-on-surface hover:bg-surface-container hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer" aria-label="Cerrar">
                     <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
@@ -303,10 +269,16 @@
                     <h3 id="modalNombre" class="font-headline-sm text-headline-sm text-primary-container mt-1 font-bold"></h3>
                     <p id="modalDesc" class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed"></p>
                 </div>
+                <dl class="grid grid-cols-2 gap-3 rounded-2xl bg-surface-container-low p-4 text-sm">
+                    <div><dt class="text-on-surface-variant">Código</dt><dd id="modalCodigo" class="font-bold text-primary-container"></dd></div>
+                    <div><dt class="text-on-surface-variant">Categoría</dt><dd id="modalCategoria" class="font-bold text-primary-container"></dd></div>
+                    <div><dt class="text-on-surface-variant">Proveedor</dt><dd id="modalProveedor" class="font-bold text-primary-container"></dd></div>
+                    <div><dt class="text-on-surface-variant">Precio</dt><dd id="modalPrecio" class="font-bold text-primary-container"></dd></div>
+                </dl>
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-surface-container-high/40 pt-4 mt-2">
                     <div>
-                        <span class="text-xs text-on-surface-variant block">Consultar precio actual:</span>
-                        <span class="font-headline-sm text-headline-sm text-primary-container font-extrabold">A consultar</span>
+                         <span class="text-xs text-on-surface-variant block">Precio de referencia</span>
+                         <span class="font-headline-sm text-headline-sm text-primary-container font-extrabold">Verifica disponibilidad con el consultor</span>
                     </div>
                     <a id="modalWaLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-title-md text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer">
                         <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -319,49 +291,149 @@
         </div>
     </dialog>
 
-    {{-- Botones flotantes (Back to top + WhatsApp directo) --}}
-    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none" id="floating-buttons">
+    {{-- Botón flotante para volver arriba --}}
+    <div class="fixed bottom-24 right-6 z-50 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none" id="floating-buttons">
         {{-- Back to top --}}
         <button id="backToTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})"
             class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-lowest shadow-lg border border-surface-container-high/60 text-secondary hover:bg-secondary hover:text-on-secondary transition-all hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
             aria-label="Volver arriba" title="Volver arriba">
             <span class="material-symbols-outlined text-[22px]">arrow_upward</span>
         </button>
-        {{-- WhatsApp directo --}}
+    </div>
+
+    {{-- Asistente de compra: visible permanentemente y separado de volver arriba --}}
+    <div id="aiChatLauncher" class="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+        <span id="aiChatPrompt" class="inline-flex max-w-[13rem] rounded-2xl border border-secondary/20 bg-surface-container-lowest px-3 py-2 text-xs font-bold text-primary-container shadow-lg transition-all duration-500 sm:max-w-none sm:px-4 sm:py-2.5 sm:text-sm">
+            ¿Necesitas ayuda para elegir?
+        </span>
         <button id="aiChatBtn"
-            class="w-12 h-12 flex items-center justify-center rounded-full bg-emerald-600 hover:bg-emerald-700 shadow-lg text-white hover:scale-105 active:scale-95 transition-all hover:shadow-xl cursor-pointer"
-            aria-label="WhatsApp Consultor" title="Chatear con el consultor"
-            onclick="window.open('https://wa.me/59167673537?text=Hola%2C%20necesito%20informaci%C3%B3n%20sobre%20productos%20Natura','_blank')">
-            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.995.545 1.761.791 2.796.791 3.182 0 5.768-2.587 5.768-5.766.001-3.182-2.585-5.778-5.768-5.778zm0-2c4.28 0 7.768 3.488 7.768 7.778 0 4.281-3.487 7.766-7.768 7.766-1.328 0-2.597-.336-3.716-.941l-4.315 1.131 1.152-4.212c-.7-1.189-1.089-2.56-1.089-3.744 0-4.29 3.488-7.778 7.768-7.778z"/>
-            </svg>
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-white shadow-xl ring-4 ring-secondary/15 hover:bg-secondary-container hover:scale-105 active:scale-95 transition-all cursor-pointer"
+             aria-label="Asistente de compra" title="¿Qué deseas comprar?"
+             onclick="document.getElementById('aiChatDialog').showModal()">
+            <span class="material-symbols-outlined text-2xl">support_agent</span>
         </button>
     </div>
 
+    <dialog id="aiChatDialog" class="fixed inset-0 m-auto w-[min(92vw,28rem)] rounded-3xl bg-surface-container-lowest p-0 shadow-2xl backdrop:bg-black/50">
+        <div class="flex max-h-[80vh] flex-col">
+            <div class="flex items-center justify-between border-b border-surface-container-high p-5">
+                <div><p class="text-xs font-bold uppercase tracking-wider text-secondary">Asistente Finora</p><h2 class="text-lg font-bold text-primary-container">¿Qué deseas comprar?</h2></div>
+                <button type="button" onclick="document.getElementById('aiChatDialog').close()" class="rounded-full p-2 hover:bg-surface-container" aria-label="Cerrar"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div id="aiChatMessages" class="flex flex-col gap-3 overflow-y-auto p-5 text-sm"></div>
+            <div id="aiChatOptions" class="flex flex-wrap gap-2 border-t border-surface-container-high p-5"></div>
+        </div>
+    </dialog>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const heroPhrase = document.querySelector('.hero-gradient-text');
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-            if (heroPhrase && !reduceMotion.matches) {
-                const phrases = [
-                    'Descubre algo que te guste.',
-                    'Descubre algo que te fascine.',
-                    'Descubre tu fragancia ideal.',
-                    'Encuentra tu próximo favorito.'
-                ];
-                let phraseIndex = 0;
-
+            const heroProducts = @json($productosLanding->values());
+            const heroImage = document.getElementById('heroProductImage');
+            if (heroImage && heroProducts.length > 1 && !reduceMotion.matches) {
+                let heroIndex = 0;
                 window.setInterval(() => {
-                    heroPhrase.classList.add('hero-phrase-changing');
-
+                    heroIndex = (heroIndex + 1) % heroProducts.length;
+                    const product = heroProducts[heroIndex];
+                    heroImage.classList.add('opacity-0');
                     window.setTimeout(() => {
-                        phraseIndex = (phraseIndex + 1) % phrases.length;
-                        heroPhrase.textContent = phrases[phraseIndex];
-                        heroPhrase.classList.remove('hero-phrase-changing');
-                    }, 280);
-                }, 4800);
+                        heroImage.src = product.imagen;
+                        heroImage.alt = product.nombre;
+                        document.getElementById('heroProductProvider').textContent = product.tag;
+                        document.getElementById('heroProductLine').textContent = product.linea;
+                        document.getElementById('heroProductName').textContent = product.nombre;
+                        document.getElementById('heroProductPrice').textContent = `Bs ${Number(product.precio).toLocaleString('es-BO', {minimumFractionDigits: 2})}`;
+                        heroImage.classList.remove('opacity-0');
+                    }, 300);
+                }, 4200);
             }
+
+            if (window.matchMedia('(pointer: coarse)').matches) {
+                document.querySelectorAll('.product-item, .catalog-product').forEach(card => {
+                    card.addEventListener('pointerdown', () => {
+                        card.classList.add('touch-zoom');
+                        window.setTimeout(() => card.classList.remove('touch-zoom'), 550);
+                    }, { passive: true });
+                });
+            }
+
+            const chatMessages = document.getElementById('aiChatMessages');
+            const chatOptions = document.getElementById('aiChatOptions');
+            if (chatMessages && chatOptions) {
+                    const categories = [...new Map(heroProducts.map(product => [product.categoria, product.categoriaNombre])).entries()];
+                const addMessage = (text, user = false) => {
+                    const message = document.createElement('p');
+                     message.className = user ? 'finora-chat-message self-end rounded-2xl rounded-br-sm bg-secondary px-4 py-2 text-white' : 'finora-chat-message self-start max-w-[90%] rounded-2xl rounded-bl-sm bg-surface-container-low px-4 py-2 text-primary-container';
+                     message.textContent = text;
+                     chatMessages.appendChild(message);
+                     window.requestAnimationFrame(() => { chatMessages.scrollTo({top: chatMessages.scrollHeight, behavior: 'smooth'}); });
+                };
+                let assistantIsTyping = false;
+                const waitForAssistant = async () => {
+                    assistantIsTyping = true;
+                    chatOptions.innerHTML = '';
+                    const typing = document.createElement('div');
+                    typing.className = 'finora-typing self-start rounded-2xl rounded-bl-sm bg-surface-container-low px-4 py-3';
+                    typing.innerHTML = '<span></span><span></span><span></span>';
+                    chatMessages.appendChild(typing);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    await new Promise(resolve => window.setTimeout(resolve, 1800));
+                    typing.remove();
+                    assistantIsTyping = false;
+                };
+                const options = (items, callback) => {
+                    chatOptions.innerHTML = '';
+                    items.forEach(item => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'rounded-full border border-secondary/30 px-3 py-2 text-xs font-bold text-secondary hover:bg-secondary hover:text-white';
+                        button.textContent = item.label;
+                        button.onclick = async () => {
+                            if (assistantIsTyping) return;
+                            await callback(item.value, item.label);
+                        };
+                        chatOptions.appendChild(button);
+                    });
+                };
+                const startChat = () => {
+                    chatMessages.innerHTML = '';
+                    addMessage('¡Hola! Soy el asistente de Finora. Te ayudaré a encontrar algo ideal. ¿Qué categoría te interesa?');
+                    options(categories.map(([value, label]) => ({value, label})), async (category, label) => {
+                        addMessage(label, true);
+                        await waitForAssistant();
+                        addMessage('¿Tienes algún producto específico en mente?');
+                        const categoryProducts = heroProducts.filter(product => product.categoria === category);
+                        options([{value: '', label: 'Cualquiera'}, ...categoryProducts.slice(0, 8).map(product => ({value: product.nombre, label: product.nombre}))], async (productName, productLabel) => {
+                            addMessage(productLabel, true);
+                            await waitForAssistant();
+                            addMessage('¿Qué rango de precio prefieres?');
+                            options([{value: 20, label: 'Hasta Bs 20'}, {value: 40, label: 'Hasta Bs 40'}, {value: 80, label: 'Hasta Bs 80'}, {value: 9999, label: 'Cualquier precio'}], async (max, priceLabel) => {
+                                addMessage(priceLabel, true);
+                                await waitForAssistant();
+                                const found = heroProducts.filter(product => product.categoria === category && (!productName || product.nombre === productName) && Number(product.precio) <= max).slice(0, 4);
+                                addMessage(found.length ? `Encontré ${found.length} opción(es): ${found.map(product => product.nombre).join(', ')}.` : 'No encontré coincidencias. Puede estar en otra categoría o no estar disponible.');
+                                options([{value: 'restart', label: 'Buscar otra vez'}, {value: 'consultor', label: 'Hablar con el consultor'}], value => {
+                                    if (value === 'restart') startChat();
+                                    else window.open('https://wa.me/{{ preg_replace('/\D+/', '', config('services.whatsapp.phone')) }}?text=Hola%2C%20necesito%20ayuda%20para%20elegir%20un%20producto', '_blank');
+                                });
+                            });
+                        });
+                    });
+                };
+                document.getElementById('aiChatBtn')?.addEventListener('click', startChat);
+            }
+
+            const chatPrompt = document.getElementById('aiChatPrompt');
+            const chatLauncher = document.getElementById('aiChatLauncher');
+            const hidePrompt = () => chatPrompt?.classList.add('pointer-events-none', 'translate-x-3', 'opacity-0');
+            const showPrompt = () => chatPrompt?.classList.remove('pointer-events-none', 'translate-x-3', 'opacity-0');
+            window.setTimeout(hidePrompt, 8000);
+            window.setInterval(() => {
+                showPrompt();
+                window.setTimeout(hidePrompt, 6000);
+            }, 30000);
+            chatLauncher?.querySelector('button')?.addEventListener('click', hidePrompt);
 
             // Mostrar botones flotantes de forma suave
             const floatingBtns = document.getElementById('floating-buttons');
@@ -383,17 +455,49 @@
                 if (!modal) return;
                 document.getElementById('modalImage').src = card.dataset.imagen;
                 document.getElementById('modalImage').alt = card.dataset.nombre;
+                document.getElementById('modalImage').classList.remove('scale-150', 'cursor-zoom-out', 'object-contain');
+                document.getElementById('modalImage').classList.add('cursor-zoom-in', 'object-cover');
+                document.getElementById('modalImage').style.transform = 'scale(1)';
                 document.getElementById('modalTag').textContent = card.dataset.tag;
                 document.getElementById('modalLinea').textContent = card.dataset.linea;
                 document.getElementById('modalNombre').textContent = card.dataset.nombre;
                 document.getElementById('modalDesc').textContent = card.dataset.desc;
+                document.getElementById('modalCodigo').textContent = card.dataset.codigo || 'No registrado';
+                document.getElementById('modalCategoria').textContent = card.dataset.categoriaNombre || 'Catálogo general';
+                document.getElementById('modalProveedor').textContent = card.dataset.tag || 'No registrado';
+                document.getElementById('modalPrecio').textContent = card.dataset.precio ? `Bs ${Number(card.dataset.precio).toLocaleString('es-BO', {minimumFractionDigits: 2})}` : 'A consultar';
                 document.getElementById('modalWaLink').href =
-                    'https://wa.me/59167673537?text=Hola%20deseo%20consultar%20por%20' + encodeURIComponent(card.dataset.nombre);
+                    'https://wa.me/{{ preg_replace('/\D+/', '', config('services.whatsapp.phone')) }}?text=Hola%20deseo%20consultar%20por%20' + encodeURIComponent(card.dataset.nombre);
                 modal.showModal();
             };
 
             // Cerrar modal al clicar en backdrop
             const productModal = document.getElementById('productModal');
+            const modalImage = document.getElementById('modalImage');
+            let modalZoom = 1;
+            const updateModalZoom = () => {
+                modalImage.style.transform = `scale(${modalZoom})`;
+                modalImage.classList.toggle('cursor-zoom-out', modalZoom > 1);
+                modalImage.classList.toggle('cursor-zoom-in', modalZoom === 1);
+                document.getElementById('modalZoomReset').textContent = `${Math.round(modalZoom * 100)}%`;
+            };
+            document.getElementById('modalZoomIn')?.addEventListener('click', () => {
+                modalZoom = Math.min(2.5, modalZoom + 0.25);
+                updateModalZoom();
+            });
+            document.getElementById('modalZoomOut')?.addEventListener('click', () => {
+                modalZoom = Math.max(1, modalZoom - 0.25);
+                updateModalZoom();
+            });
+            document.getElementById('modalZoomReset')?.addEventListener('click', () => {
+                modalZoom = 1;
+                updateModalZoom();
+            });
+            modalImage?.addEventListener('wheel', event => {
+                event.preventDefault();
+                modalZoom = Math.min(2.5, Math.max(1, modalZoom + (event.deltaY < 0 ? 0.25 : -0.25)));
+                updateModalZoom();
+            }, { passive: false });
             if (productModal) {
                 productModal.addEventListener('click', (e) => {
                     const rect = productModal.getBoundingClientRect();

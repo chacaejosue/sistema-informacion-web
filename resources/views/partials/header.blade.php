@@ -29,6 +29,11 @@
 
         <!-- Acciones del header -->
         <div class="flex items-center gap-space-sm">
+            <a href="{{ route('carrito') }}" class="relative inline-flex items-center justify-center rounded-xl p-2.5 text-on-surface-variant hover:bg-surface-container hover:text-secondary" aria-label="Ver carrito" title="Ver carrito">
+                <span class="material-symbols-outlined text-[22px]">shopping_cart</span>
+                <span id="publicCartBadge" class="absolute -right-1 -top-1 hidden min-w-5 rounded-full bg-emerald-600 px-1 text-center text-[10px] font-bold leading-5 text-white">0</span>
+             </a>
+            <span class="theme-toggle-slot"></span>
             <!-- Botón iniciar sesión -->
             <a class="public-header-login inline-flex items-center justify-center px-3 py-2 sm:px-space-lg sm:py-space-sm rounded-xl bg-gradient-to-r from-secondary-container to-secondary text-on-secondary font-title-md text-xs sm:text-title-md whitespace-nowrap shadow-[0_4px_14px_rgba(2,102,255,0.28)] hover:shadow-[0_6px_20px_rgba(2,102,255,0.38)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
                 href="{{ route('login') }}">
@@ -95,6 +100,14 @@
             };
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
+        }
+
+        const cartBadge = document.getElementById('publicCartBadge');
+        if (cartBadge) {
+            const cart = JSON.parse(window.localStorage.getItem('finora-carrito') || '[]');
+            const count = cart.reduce((total, item) => total + Number(item.qty || 0), 0);
+            cartBadge.textContent = count;
+            cartBadge.classList.toggle('hidden', count === 0);
         }
 
         // Toggle del menú móvil

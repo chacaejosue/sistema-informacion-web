@@ -51,7 +51,7 @@ class LoginController extends Controller
         // Redirigir según el rol del usuario o responder JSON si es petición AJAX.
         $targetUrl = match ($usuario->rol) {
             'CLIENTE' => route('mi-cuenta'),
-            'COLABORADOR' => route('panel.productos.index'),
+            'COLABORADOR' => route('panel.colaborador'),
             default => route('panel'),
         };
 
@@ -75,6 +75,11 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('landing');
+        return redirect()
+            ->route('landing')
+            ->withHeaders([
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+                'Pragma' => 'no-cache',
+            ]);
     }
 }

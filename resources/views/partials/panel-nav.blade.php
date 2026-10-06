@@ -64,6 +64,13 @@
             <span>Créditos y Pagos</span>
         </a>
 
+        @if(auth()->check() && auth()->user()->rol === 'CONSULTOR')
+            <a href="{{ route('panel.reportes.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all dark:text-slate-200 {{ request()->routeIs('panel.reportes*') ? 'bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-200 font-extrabold' : 'text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800' }}">
+                <span class="material-symbols-outlined text-lg text-teal-600 dark:text-teal-300">analytics</span>
+                <span>Reportes</span>
+            </a>
+        @endif
+
         <div class="pt-3 pb-1.5 px-3.5">
             <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Configuración</span>
         </div>

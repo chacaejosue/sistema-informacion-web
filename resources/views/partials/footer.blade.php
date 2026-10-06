@@ -18,10 +18,9 @@
                 <h3 class="font-title-md text-title-md text-on-surface">Categorías</h3>
                 {{-- 1.3: Cada enlace lleva a la categoría específica, no a /categorias genérico --}}
                 <ul class="flex flex-col gap-space-xs font-body-md text-body-md text-on-surface-variant">
-                    <li><a class="hover:text-secondary transition-colors" href="{{ route('categorias', ['categoria' => 'perfumeria']) }}">Perfumería</a></li>
-                    <li><a class="hover:text-secondary transition-colors" href="{{ route('categorias', ['categoria' => 'cuidado-facial']) }}">Cuidado Facial</a></li>
-                    <li><a class="hover:text-secondary transition-colors" href="{{ route('categorias', ['categoria' => 'maquillaje']) }}">Maquillaje</a></li>
-                    <li><a class="hover:text-secondary transition-colors" href="{{ route('categorias', ['categoria' => 'cuidado-corporal']) }}">Cuidado Corporal</a></li>
+                    @foreach (($categorias ?? collect())->take(6) as $categoria)
+                        <li><a class="hover:text-secondary transition-colors" href="{{ route('categorias', ['categoria' => \Illuminate\Support\Str::slug($categoria->nombre)]) }}">{{ $categoria->nombre }}</a></li>
+                    @endforeach
                 </ul>
             </div>
 
@@ -30,7 +29,7 @@
                 <h3 class="font-title-md text-title-md text-on-surface">Asistencia Directa</h3>
                 <p class="font-body-md text-body-md text-on-surface-variant">¿Tienes dudas sobre algún producto o pedido? Chatea directamente con tu consultor de confianza.</p>
                 {{-- Botón WhatsApp con icono SVG y efecto interactivo --}}
-                <a class="inline-flex items-center justify-center gap-2 px-space-md py-2.5 rounded-xl bg-surface-container-lowest text-primary-container hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-200 border border-surface-container-high/60 font-title-md text-title-md shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group" href="https://wa.me/59167673537?text=Hola%20deseo%20consultar%20el%20cat%C3%A1logo%20Finora" target="_blank" rel="noopener noreferrer">
+                <a class="inline-flex items-center justify-center gap-2 px-space-md py-2.5 rounded-xl bg-surface-container-lowest text-primary-container hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-200 border border-surface-container-high/60 font-title-md text-title-md shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group" href="https://wa.me/{{ preg_replace('/\D+/', '', config('services.whatsapp.phone')) }}?text=Hola%20deseo%20consultar%20el%20cat%C3%A1logo%20Finora" target="_blank" rel="noopener noreferrer">
                     <svg class="w-5 h-5 text-emerald-600 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.995.545 1.761.791 2.796.791 3.182 0 5.768-2.587 5.768-5.766.001-3.182-2.585-5.778-5.768-5.778zm0-2c4.28 0 7.768 3.488 7.768 7.778 0 4.281-3.487 7.766-7.768 7.766-1.328 0-2.597-.336-3.716-.941l-4.315 1.131 1.152-4.212c-.7-1.189-1.089-2.56-1.089-3.744 0-4.29 3.488-7.778 7.768-7.778z"/>
                     </svg>

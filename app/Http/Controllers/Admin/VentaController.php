@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VentaRequest;
+use App\Models\Auditoria;
 use App\Models\Cliente;
 use App\Models\Credito;
 use App\Models\DetalleVenta;
 use App\Models\MovimientoInventario;
+use App\Models\Pago;
 use App\Models\Pedido;
 use App\Models\Producto;
 use App\Models\Venta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class VentaController extends Controller
 {
@@ -62,6 +65,8 @@ class VentaController extends Controller
                 'registrado_por_usuario_id' => $request->user()->id,
                 'fecha' => now(),
                 'forma_pago' => $validated['forma_pago'],
+                'metodo_pago' => $validated['metodo_pago'] ?? null,
+                'numero_cuotas' => $validated['numero_cuotas'] ?? null,
                 'estado' => 'BORRADOR',
                 'descuento' => $validated['descuento'] ?? 0,
             ]);
@@ -107,7 +112,34 @@ class VentaController extends Controller
             return redirect()->back()->withErrors(['error' => 'Una venta cancelada o anulada no puede ser confirmada.']);
         }
 
-        DB::transaction(function () use ($venta, $request) {
+        DB::transaction(function () use ($venta, $request): void {
+            $venta->load(['detalles', 'pedido']);
+            $productoIds = $venta->detalles->pluck('producto_id')->unique()->values();
+            $productos = Producto::whereKey($productoIds)->lockForUpdate()->get()->keyBy('id');
+            $pedidoId = $venta->pedido_id;
+
+            foreach ($venta->detalles as $detalle) {
+                $producto = $productos->get($detalle->producto_id);
+                $stockFisico = (int) MovimientoInventario::where('producto_id', $detalle->producto_id)->sum('cantidad');
+                $reservasQuery = DB::table('detalle_pedidos')
+                    ->join('pedidos', 'detalle_pedidos.pedido_id', '=', 'pedidos.id')
+                    ->where('detalle_pedidos.producto_id', $detalle->producto_id)
+                    ->whereIn('pedidos.estado', ['PENDIENTE', 'RESERVADO', 'PENDIENTE_ABASTECIMIENTO', 'LISTO_ENTREGA']);
+
+                if ($pedidoId) {
+                    $reservasQuery->where('detalle_pedidos.pedido_id', '!=', $pedidoId);
+                }
+
+                $reservasOtrosPedidos = (int) $reservasQuery->sum('detalle_pedidos.cantidad_reservada');
+                $stockDisponible = $stockFisico - $reservasOtrosPedidos;
+
+                if (! $producto || $stockDisponible < $detalle->cantidad) {
+                    throw ValidationException::withMessages([
+                        'stock' => "No hay stock suficiente para confirmar la venta del producto #{$detalle->producto_id}.",
+                    ]);
+                }
+            }
+
             $venta->update(['estado' => 'CONFIRMADA']);
 
             // Generar salidas de inventario evitando duplicados
@@ -126,27 +158,60 @@ class VentaController extends Controller
                 }
             }
 
-            // Si proviene de un pedido, liberar las reservas y marcar pedido como COMPLETADO
+            // Si proviene de un pedido, liberar las reservas y dejarlo listo para entrega.
             if ($venta->pedido) {
                 foreach ($venta->pedido->detalles as $detPed) {
-                    $detPed->update(['cantidad_reservada' => 0, 'estado' => 'ENTREGADO']);
+                    $detPed->update(['cantidad_reservada' => 0, 'estado' => 'RESERVADO']);
                 }
-                $venta->pedido->update(['estado' => 'COMPLETADO']);
+                $venta->pedido->update(['estado' => 'LISTO_ENTREGA']);
             }
 
-            // Si es a crédito, registrar entrada en la tabla creditos
+            // Si es a crédito, registrar el crédito y sus cuotas.
             if ($venta->forma_pago === 'CREDITO') {
-                Credito::firstOrCreate(
+                $credito = Credito::firstOrCreate(
                     ['venta_id' => $venta->id],
                     [
                         'monto_financiado' => $venta->total,
+                        'numero_cuotas' => $venta->numero_cuotas ?: 1,
                         'interes_porcentaje' => 0,
                         'fecha_inicio' => now(),
-                        'fecha_fin' => now()->addDays(30),
+                        'fecha_fin' => now()->addDays(30 * max(1, (int) ($venta->numero_cuotas ?: 1))),
                         'estado' => 'ACTIVO',
                     ]
                 );
+
+                if ($credito->cuotas()->doesntExist()) {
+                    $numeroCuotas = max(1, (int) $credito->numero_cuotas);
+                    $montoBase = round((float) $credito->monto_financiado / $numeroCuotas, 2);
+                    $totalCuotas = 0;
+
+                    for ($numero = 1; $numero <= $numeroCuotas; $numero++) {
+                        $montoCuota = $numero === $numeroCuotas
+                            ? round((float) $credito->monto_financiado - $totalCuotas, 2)
+                            : $montoBase;
+                        $totalCuotas += $montoCuota;
+
+                        $credito->cuotas()->create([
+                            'numero' => $numero,
+                            'monto' => $montoCuota,
+                            'fecha_vencimiento' => now()->addDays(30 * $numero),
+                            'estado' => 'PENDIENTE',
+                        ]);
+                    }
+                }
+            } else {
+                Pago::create([
+                    'venta_id' => $venta->id,
+                    'registrado_por_usuario_id' => $request->user()->id,
+                    'monto' => $venta->total,
+                    'fecha' => now(),
+                    'metodo' => $venta->metodo_pago ?: 'EFECTIVO',
+                    'estado' => 'REGISTRADO',
+                    'observacion' => 'Pago automático por venta de contado confirmada.',
+                ]);
             }
+
+            Auditoria::registrar('CONFIRMAR_VENTA', $venta, 'Venta confirmada y salida de inventario registrada.');
         });
 
         return redirect()->route('panel.ventas.show', $venta)
@@ -182,6 +247,8 @@ class VentaController extends Controller
                     $venta->credito->update(['estado' => 'ANULADO']);
                 }
             }
+
+            Auditoria::registrar('ANULAR_VENTA', $venta, 'Venta anulada.');
         });
 
         return redirect()->route('panel.ventas.show', $venta)

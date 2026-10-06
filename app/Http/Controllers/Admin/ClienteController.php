@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClienteRequest;
+use App\Http\Requests\CrearAccesoClienteRequest;
+use App\Models\Auditoria;
 use App\Models\Cliente;
 use App\Models\Persona;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class ClienteController extends Controller
 {
@@ -19,9 +23,9 @@ class ClienteController extends Controller
             $search = $request->input('search');
             $query->whereHas('persona', function ($q) use ($search) {
                 $q->where('nombre', 'like', "%{$search}%")
-                  ->orWhere('apellido', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('telefono', 'like', "%{$search}%");
+                    ->orWhere('apellido', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('telefono', 'like', "%{$search}%");
             });
         }
 
@@ -57,6 +61,8 @@ class ClienteController extends Controller
                 'observaciones' => $validated['observaciones'] ?? null,
                 'activo' => $validated['activo'] ?? true,
             ]);
+
+            Auditoria::registrar('CREAR_CLIENTE', $persona, 'Cliente registrado en el sistema.');
         });
 
         return redirect()->route('panel.clientes.index')
@@ -77,6 +83,7 @@ class ClienteController extends Controller
     public function edit(Cliente $cliente)
     {
         $cliente->load('persona');
+
         return view('panel.clientes.edit', compact('cliente'));
     }
 
@@ -97,6 +104,8 @@ class ClienteController extends Controller
                 'observaciones' => $validated['observaciones'] ?? null,
                 'activo' => $request->has('activo') ? (bool) $request->input('activo') : $cliente->activo,
             ]);
+
+            Auditoria::registrar('ACTUALIZAR_CLIENTE', $cliente, 'Datos del cliente actualizados.');
         });
 
         return redirect()->route('panel.clientes.index')
@@ -108,7 +117,30 @@ class ClienteController extends Controller
         $cliente->update(['activo' => ! $cliente->activo]);
 
         $estadoText = $cliente->activo ? 'activado' : 'desactivado';
+
         return redirect()->back()
             ->with('exito', "Cliente {$estadoText} correctamente.");
+    }
+
+    public function crearAcceso(CrearAccesoClienteRequest $request, Cliente $cliente)
+    {
+        if ($cliente->persona->usuario()->exists()) {
+            return redirect()->back()->withErrors(['acceso' => 'Este cliente ya tiene una cuenta de acceso.']);
+        }
+
+        DB::transaction(function () use ($request, $cliente): void {
+            $cliente->persona->update(['email' => $request->validated('email')]);
+
+            Usuario::create([
+                'persona_id' => $cliente->persona_id,
+                'password' => Hash::make($request->validated('password')),
+                'rol' => 'CLIENTE',
+                'activo' => true,
+            ]);
+
+            Auditoria::registrar('CREAR_ACCESO_CLIENTE', $cliente, 'Se creó el acceso al portal del cliente.');
+        });
+
+        return redirect()->back()->with('exito', 'Acceso del cliente creado correctamente.');
     }
 }

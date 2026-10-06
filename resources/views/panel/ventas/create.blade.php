@@ -41,13 +41,18 @@
 
     <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-sm">
-            <h1 class="font-heading text-xl font-extrabold text-finora-navy mb-6">
-                @if ($pedido)
-                    Registrar Venta desde Pedido #{{ $pedido->id }}
-                @else
-                    Registrar Nueva Venta Directa
-                @endif
-            </h1>
+             <div class="mb-6 flex flex-wrap items-center gap-3">
+                 <h1 class="font-heading text-xl font-extrabold text-finora-navy">
+                 @if ($pedido)
+                     Registrar venta vinculada al Pedido #{{ $pedido->id }}
+                 @else
+                     Registrar nueva venta directa
+                 @endif
+                 </h1>
+                 <span class="rounded-full border px-3 py-1 text-xs font-bold {{ $pedido ? 'border-purple-200 bg-purple-50 text-purple-800 dark:border-purple-700 dark:bg-purple-950/60 dark:text-purple-200' : 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-700 dark:bg-blue-950/60 dark:text-blue-200' }}">
+                     {{ $pedido ? 'Origen: pedido' : 'Origen: venta directa' }}
+                 </span>
+             </div>
 
             <form action="{{ route('panel.ventas.store') }}" method="POST" class="space-y-6">
                 @csrf
@@ -55,7 +60,7 @@
                 @if ($pedido)
                     <input type="hidden" name="pedido_id" value="{{ $pedido->id }}">
                     <input type="hidden" name="cliente_id" value="{{ $pedido->cliente_id }}">
-                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl flex items-center justify-between text-xs text-blue-900">
+                     <div class="bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-700 p-4 rounded-xl flex items-center justify-between text-xs text-blue-900 dark:text-blue-100">
                         <div>
                             <span class="font-bold block">Asociada a Pedido #{{ $pedido->id }}</span>
                             <span>Cliente: {{ $pedido->cliente->persona->nombre }} {{ $pedido->cliente->persona->apellido }}</span>
@@ -82,6 +87,26 @@
                             <option value="CREDITO" {{ old('forma_pago') === 'CREDITO' ? 'selected' : '' }}>CRÉDITO (Cuenta por cobrar)</option>
                         </select>
                     </div>
+                    <div id="cuotas-container" class="hidden">
+                        <label for="numero_cuotas" class="block text-xs font-bold text-finora-navy mb-1">Número de cuotas</label>
+                        <select id="numero_cuotas" name="numero_cuotas" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                            @foreach ([1, 2, 3, 4, 6, 12] as $cuotas)
+                                <option value="{{ $cuotas }}" {{ (int) old('numero_cuotas', 1) === $cuotas ? 'selected' : '' }}>{{ $cuotas }} {{ $cuotas === 1 ? 'cuota' : 'cuotas' }}</option>
+                            @endforeach
+                        </select>
+                        @error('numero_cuotas') <span class="text-red-600 text-[11px] mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                    <div id="metodo-pago-container">
+                        <label for="metodo_pago" class="block text-xs font-bold text-finora-navy mb-1">Método de pago *</label>
+                        <select id="metodo_pago" name="metodo_pago" required class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
+                            <option value="">-- Seleccionar método --</option>
+                            <option value="EFECTIVO" {{ old('metodo_pago') === 'EFECTIVO' ? 'selected' : '' }}>Efectivo</option>
+                            <option value="TRANSFERENCIA" {{ old('metodo_pago') === 'TRANSFERENCIA' ? 'selected' : '' }}>Transferencia bancaria</option>
+                            <option value="QR" {{ old('metodo_pago') === 'QR' ? 'selected' : '' }}>Pago QR</option>
+                            <option value="TARJETA" {{ old('metodo_pago') === 'TARJETA' ? 'selected' : '' }}>Tarjeta</option>
+                            <option value="OTRO" {{ old('metodo_pago') === 'OTRO' ? 'selected' : '' }}>Otro</option>
+                        </select>
+                    </div>
                     <div>
                         <label for="descuento" class="block text-xs font-bold text-finora-navy mb-1">Descuento Global ($)</label>
                         <input type="number" step="0.01" min="0" id="descuento" name="descuento" value="{{ old('descuento', 0.00) }}" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-finora-navy focus:bg-white focus:ring-2 focus:ring-finora-blue outline-none">
@@ -105,14 +130,15 @@
                                 <div class="item-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
                                     <div class="sm:col-span-6">
                                         <input type="hidden" name="detalles[{{ $idx }}][producto_id]" value="{{ $det->producto_id }}">
-                                        <span class="block text-xs font-bold text-finora-navy">{{ $det->producto->codigo }} - {{ $det->producto->nombre }}</span>
+                                         <span class="block text-xs font-bold text-finora-navy">{{ $det->producto->codigo }} - {{ $det->producto->nombre }}</span>
+                                         <span class="mt-1 block text-xs font-semibold {{ $det->producto->stock_disponible >= $det->cantidad ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300' }}">Stock disponible: {{ $det->producto->stock_disponible }}</span>
                                     </div>
                                     <div class="sm:col-span-3">
                                         <label class="block text-[10px] font-bold text-finora-subtle mb-1">Cantidad</label>
                                         <input type="number" min="1" name="detalles[{{ $idx }}][cantidad]" value="{{ $det->cantidad }}" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                                     </div>
                                     <div class="sm:col-span-3">
-                                        <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Unitario ($)</label>
+                                         <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Unitario (Bs)</label>
                                         <input type="number" step="0.01" min="0" name="detalles[{{ $idx }}][precio_unitario]" value="{{ $det->precio_acordado }}" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                                     </div>
                                 </div>
@@ -124,16 +150,17 @@
                                     <select name="detalles[0][producto_id]" required class="product-select w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                                         <option value="">-- Seleccionar Producto --</option>
                                         @foreach ($productos as $prod)
-                                            <option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}">{{ $prod->codigo }} - {{ $prod->nombre }} ($ {{ $prod->precio_venta_actual }})</option>
+                                      <option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}" data-stock="{{ $prod->stock_disponible }}">{{ $prod->codigo }} - {{ $prod->nombre }} (Bs {{ number_format($prod->precio_venta_actual, 2, ',', '.') }})</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="sm:col-span-3">
                                     <label class="block text-[10px] font-bold text-finora-subtle mb-1">Cantidad</label>
-                                    <input type="number" min="1" name="detalles[0][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                     <input type="number" min="1" name="detalles[0][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                     <span class="stock-hint text-xs font-semibold text-finora-subtle">Selecciona un producto para ver su stock.</span>
                                 </div>
                                 <div class="sm:col-span-3">
-                                    <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Unitario ($)</label>
+                                     <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Unitario (Bs)</label>
                                     <input type="number" step="0.01" min="0" name="detalles[0][precio_unitario]" value="0.00" required class="precio-unitario-input w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                                 </div>
                             </div>
@@ -151,7 +178,7 @@
                 </div>
 
                 <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                    <a href="{{ route('panel.ventas.index') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                    <a href="{{ $pedido ? route('panel.pedidos.show', $pedido) : route('panel.ventas.index') }}" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
                         Cancelar
                     </a>
                     <button type="submit" class="finora-gradient-btn px-5 py-2 rounded-xl text-white font-heading font-semibold text-xs shadow-finora-btn">
@@ -169,20 +196,48 @@
             const form = document.querySelector('form');
             const alertBox = document.getElementById('form-validation-alert');
             const list = document.getElementById('missing-fields-list');
+            const formaPago = document.getElementById('forma_pago');
+            const cuotasContainer = document.getElementById('cuotas-container');
+            const cuotasInput = document.getElementById('numero_cuotas');
+            const metodoPagoContainer = document.getElementById('metodo-pago-container');
+            const metodoPago = document.getElementById('metodo_pago');
+
+            function toggleCuotas() {
+                const esCredito = formaPago?.value === 'CREDITO';
+                cuotasContainer?.classList.toggle('hidden', ! esCredito);
+                metodoPagoContainer?.classList.toggle('hidden', esCredito);
+                if (cuotasInput) {
+                    cuotasInput.required = esCredito;
+                }
+                if (metodoPago) {
+                    metodoPago.required = ! esCredito;
+                    if (esCredito) metodoPago.value = '';
+                }
+            }
+
+            formaPago?.addEventListener('change', toggleCuotas);
+            toggleCuotas();
 
             // Auto-asignación de precio unitario (3.1)
             function attachAutoPriceListener(row) {
-                const select = row.querySelector('.product-select');
-                const inputPrecio = row.querySelector('.precio-unitario-input');
-                if (select && inputPrecio) {
-                    select.addEventListener('change', () => {
-                        const opt = select.options[select.selectedIndex];
-                        const precio = opt ? opt.dataset.precio : 0;
+                 const select = row.querySelector('.product-select');
+                 const inputPrecio = row.querySelector('.precio-unitario-input');
+                 const stockHint = row.querySelector('.stock-hint');
+                 if (select && inputPrecio) {
+                     select.addEventListener('change', () => {
+                         const opt = select.options[select.selectedIndex];
+                         const precio = opt ? opt.dataset.precio : 0;
                         if (precio) {
-                            inputPrecio.value = parseFloat(precio).toFixed(2);
-                        }
-                    });
-                }
+                             inputPrecio.value = parseFloat(precio).toFixed(2);
+                         }
+                         if (stockHint) {
+                             const stock = Number(opt?.dataset.stock || 0);
+                             stockHint.textContent = `Stock disponible: ${stock}`;
+                             stockHint.classList.toggle('text-emerald-700', stock > 0);
+                             stockHint.classList.toggle('text-red-700', stock <= 0);
+                         }
+                     });
+                 }
             }
 
             const container = document.getElementById('items-container');
@@ -193,7 +248,7 @@
             @if (! $pedido)
                 let itemIdx = 1;
                 const btnAdd = document.getElementById('btn-add-item');
-                const productsOptions = `@foreach ($productos as $prod)<option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}">{{ $prod->codigo }} - {{ $prod->nombre }} ($ {{ $prod->precio_venta_actual }})</option>@endforeach`;
+                 const productsOptions = `@foreach ($productos as $prod)<option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}" data-stock="{{ $prod->stock_disponible }}">{{ $prod->codigo }} - {{ $prod->nombre }} (Bs {{ number_format($prod->precio_venta_actual, 2, ',', '.') }})</option>@endforeach`;
 
                 if (btnAdd) {
                     btnAdd.addEventListener('click', () => {
@@ -202,17 +257,18 @@
                         div.innerHTML = `
                             <div class="sm:col-span-5">
                                 <label class="block text-[10px] font-bold text-finora-subtle mb-1">Producto</label>
-                                <select name="detalles[${itemIdx}][producto_id]" required class="product-select w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                     <select name="detalles[${itemIdx}][producto_id]" required class="product-select w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                                     <option value="">-- Seleccionar Producto --</option>
                                     ${productsOptions}
                                 </select>
                             </div>
                             <div class="sm:col-span-3">
                                 <label class="block text-[10px] font-bold text-finora-subtle mb-1">Cantidad</label>
-                                <input type="number" min="1" name="detalles[${itemIdx}][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                 <input type="number" min="1" name="detalles[${itemIdx}][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                 <span class="stock-hint text-xs font-semibold text-finora-subtle">Selecciona un producto para ver su stock.</span>
                             </div>
                             <div class="sm:col-span-3">
-                                <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Unitario ($)</label>
+                                 <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Unitario (Bs)</label>
                                 <input type="number" step="0.01" min="0" name="detalles[${itemIdx}][precio_unitario]" value="0.00" required class="precio-unitario-input w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                             </div>
                             <div class="sm:col-span-1 text-right pt-3 sm:pt-0">

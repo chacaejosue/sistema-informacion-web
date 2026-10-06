@@ -70,7 +70,7 @@
             <div class="relative z-10 max-w-2xl">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-cyan-300 text-xs font-bold tracking-wide uppercase mb-4">
                     <span class="material-symbols-outlined text-sm">person</span>
-                    Espacio del Cliente
+                    Portal de Cliente en Desarrollo
                 </div>
 
                 <h1 id="welcome-title" class="font-heading text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
@@ -83,87 +83,85 @@
             </div>
         </section>
 
-        <!-- Tarjeta Principal de Estado en Desarrollo -->
-        <section class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm text-center space-y-6">
-            <div class="w-16 h-16 rounded-2xl bg-cyan-50 text-cyan-700 flex items-center justify-center mx-auto border border-cyan-100 shadow-sm">
-                <span class="material-symbols-outlined text-3xl">construction</span>
+        <section aria-label="Resumen de cuenta" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm">
+                <span class="text-xs font-bold uppercase tracking-wide text-purple-700">Pedidos recientes</span>
+                <strong class="block mt-2 font-heading text-3xl text-finora-navy">{{ $pedidos->count() }}</strong>
             </div>
-
-            <div class="max-w-xl mx-auto">
-                <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-finora-navy">
-                    Portal de Cliente en Desarrollo
-                </h2>
-                <p class="text-xs sm:text-sm text-finora-subtle mt-2 leading-relaxed">
-                    Estamos trabajando en nuevas herramientas exclusivas para ti. Mientras tanto, puedes explorar nuestro catálogo público de productos.
-                </p>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm">
+                <span class="text-xs font-bold uppercase tracking-wide text-emerald-700">Compras registradas</span>
+                <strong class="block mt-2 font-heading text-3xl text-finora-navy">{{ $ventas->count() }}</strong>
             </div>
-
-            <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <a href="{{ route('categorias') }}" class="finora-gradient-btn px-6 py-3 rounded-xl text-white font-heading font-semibold text-xs shadow-finora-btn inline-flex items-center gap-2">
-                    <span class="material-symbols-outlined text-base">storefront</span>
-                    Explorar Catálogo de Productos
-                </a>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm">
+                <span class="text-xs font-bold uppercase tracking-wide text-amber-700">Saldo pendiente</span>
+                <strong class="block mt-2 font-heading text-3xl text-finora-navy">@money($ventas->sum(fn ($venta) => $venta->saldo_pendiente))</strong>
             </div>
         </section>
 
-        <!-- Secciones Próximas (Tarjetas de vista previa) -->
-        <!-- Secciones Próximas (Tarjetas de vista previa) -->
-        <section aria-labelledby="upcoming-title" class="space-y-4">
-            <h3 id="upcoming-title" class="font-heading text-lg font-bold text-finora-navy">
-                Funcionalidades Próximas
-            </h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                <!-- Próxima 1: Mis Pedidos -->
-                <div class="finora-card-interactive bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4 shadow-xs">
-                            <span class="material-symbols-outlined text-2xl">shopping_bag</span>
-                        </div>
-                        <h4 class="font-heading text-base font-bold text-finora-navy flex items-center justify-between">
-                            <span>Mis Pedidos</span>
-                            <span class="text-[10px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-full">Próximamente</span>
-                        </h4>
-                        <p class="text-xs text-finora-subtle mt-2 leading-relaxed">
-                            Consulta el estado en tiempo real de tus solicitudes y fechas estimadas de entrega.
-                        </p>
-                    </div>
+        <section aria-labelledby="orders-title" class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
+            <div class="flex items-center justify-between gap-4 mb-5">
+                <div>
+                    <h2 id="orders-title" class="font-heading text-xl font-extrabold text-finora-navy">Mis pedidos</h2>
+                    <p class="text-xs text-finora-subtle mt-1">Consulta el estado de tus solicitudes recientes.</p>
                 </div>
-
-                <!-- Próxima 2: Estado de Cuenta -->
-                <div class="finora-card-interactive bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 shadow-xs">
-                            <span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
-                        </div>
-                        <h4 class="font-heading text-base font-bold text-finora-navy flex items-center justify-between">
-                            <span>Estado de Cuenta</span>
-                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Próximamente</span>
-                        </h4>
-                        <p class="text-xs text-finora-subtle mt-2 leading-relaxed">
-                            Historial de compras a crédito, saldos pendientes y comprobantes de abonos.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Próxima 3: Promociones Natura -->
-                <div class="finora-card-interactive bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4 shadow-xs">
-                            <span class="material-symbols-outlined text-2xl">local_offer</span>
-                        </div>
-                        <h4 class="font-heading text-base font-bold text-finora-navy flex items-center justify-between">
-                            <span>Promociones</span>
-                            <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">Próximamente</span>
-                        </h4>
-                        <p class="text-xs text-finora-subtle mt-2 leading-relaxed">
-                            Ofertas exclusivas y descuentos recomendados por tu consultor independiente.
-                        </p>
-                    </div>
-                </div>
-
+                <a href="{{ route('categorias') }}" class="text-xs font-bold text-finora-blue hover:underline">Ver catálogo</a>
             </div>
+
+            @if ($pedidos->isEmpty())
+                <p class="rounded-2xl bg-slate-50 border border-slate-100 px-4 py-5 text-sm text-finora-subtle">Aún no tienes pedidos registrados.</p>
+            @else
+                <div class="space-y-3">
+                    @foreach ($pedidos as $pedido)
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-100 px-4 py-4">
+                            <div>
+                                <p class="text-sm font-bold text-finora-navy">Pedido #{{ $pedido->id }}</p>
+                                <p class="text-xs text-finora-subtle mt-1">{{ $pedido->fecha->format('d/m/Y H:i') }} · {{ $pedido->detalles->count() }} producto(s)</p>
+                                @if ($pedido->fecha_entrega)
+                                    <p class="text-xs text-emerald-700 mt-1 font-semibold">Entregado el {{ $pedido->fecha_entrega->format('d/m/Y H:i') }} a {{ $pedido->recibido_por }}</p>
+                                @endif
+                            </div>
+                            <div class="text-left sm:text-right">
+                                <span class="inline-flex rounded-full bg-purple-50 border border-purple-100 px-2.5 py-1 text-[11px] font-bold text-purple-700">{{ str_replace('_', ' ', $pedido->estado) }}</span>
+                                <p class="text-sm font-bold text-finora-navy mt-1">@money($pedido->total)</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </section>
+
+        <section aria-labelledby="account-title" class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
+            <div class="mb-5">
+                <h2 id="account-title" class="font-heading text-xl font-extrabold text-finora-navy">Estado de cuenta</h2>
+                <p class="text-xs text-finora-subtle mt-1">Historial de tus compras y saldo pendiente.</p>
+            </div>
+
+            @if ($ventas->isEmpty())
+                <p class="rounded-2xl bg-slate-50 border border-slate-100 px-4 py-5 text-sm text-finora-subtle">Aún no tienes compras registradas.</p>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="border-b border-slate-100 text-[11px] uppercase tracking-wide text-finora-subtle">
+                            <tr>
+                                <th class="px-3 py-3 font-bold">Venta</th>
+                                <th class="px-3 py-3 font-bold">Fecha</th>
+                                <th class="px-3 py-3 font-bold">Estado</th>
+                                <th class="px-3 py-3 font-bold text-right">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach ($ventas as $venta)
+                                <tr>
+                                    <td class="px-3 py-3 font-bold text-finora-navy">#{{ $venta->id }}</td>
+                                    <td class="px-3 py-3 text-finora-subtle">{{ $venta->fecha->format('d/m/Y') }}</td>
+                                    <td class="px-3 py-3 text-finora-subtle">{{ str_replace('_', ' ', $venta->estado) }}</td>
+                                    <td class="px-3 py-3 text-right font-bold text-finora-navy">@money($venta->saldo_pendiente)</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         </section>
 
     </main>

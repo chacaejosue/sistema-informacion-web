@@ -179,7 +179,7 @@
                                     {{ $prod->proveedor->nombre }}
                                 </td>
                                 <td class="py-3 px-4 font-bold text-finora-navy">
-                                    ${{ number_format($prod->precio_venta_actual, 2) }} USD
+                                    @money($prod->precio_venta_actual)
                                 </td>
                                 <td class="py-3 px-4 text-center font-bold {{ $prod->stock_disponible > 0 ? 'text-emerald-700' : 'text-slate-400' }}">
                                     {{ $prod->stock_disponible }}

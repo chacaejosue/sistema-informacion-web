@@ -14,20 +14,29 @@ use App\Http\Controllers\Admin\VentaController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\PedidoPublicoController;
+use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\TipoCambioController;
 use Illuminate\Support\Facades\Route;
 
 // Landing pública
-Route::get('/', function () {
-    return view('landing');
-})->name('landing');
+Route::get('/', [CatalogoController::class, 'landing'])->name('landing');
 
 // Catálogo público conectado a MySQL
 Route::get('/categorias', [CatalogoController::class, 'index'])->name('categorias');
+Route::get('/carrito', [PedidoPublicoController::class, 'create'])->name('carrito');
+Route::get('/tipo-cambio', TipoCambioController::class)->name('tipo-cambio');
+Route::post('/carrito/pedido', [PedidoPublicoController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('carrito.pedido');
 
 // Rutas de autenticación (solo para visitantes sin sesión)
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
-        return view('login');
+        return response()
+            ->view('login')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache');
     })->name('login');
 
     Route::post('/login', [LoginController::class, 'login'])
@@ -41,11 +50,7 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->name('logout');
 
 // Mi Cuenta / Portal de Cliente (para usuarios autenticados)
-Route::middleware('auth')->get('/mi-cuenta', function () {
-    $usuario = auth()->user()->load('persona');
-
-    return view('cliente.index', compact('usuario'));
-})->name('mi-cuenta');
+Route::middleware(['auth', 'rol.cliente'])->get('/mi-cuenta', [PanelController::class, 'cliente'])->name('mi-cuenta');
 
 // Panel privado para usuarios autenticados
 Route::middleware('auth')->prefix('panel')->group(function () {
@@ -55,6 +60,10 @@ Route::middleware('auth')->prefix('panel')->group(function () {
         Route::get('/', [PanelController::class, 'index'])->name('panel');
         Route::name('panel.')->group(function () {
             Route::get('/index', [PanelController::class, 'index'])->name('index');
+            Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
+            Route::get('/reportes/exportar', [ReporteController::class, 'exportar'])->name('reportes.exportar');
+            Route::patch('/tipo-cambio', [TipoCambioController::class, 'update'])->name('tipo-cambio.update');
+            Route::post('/tipo-cambio/actualizar', [TipoCambioController::class, 'refresh'])->name('tipo-cambio.refresh');
 
             // Usuarios (Reservado exclusivamente a CONSULTOR)
             Route::patch('usuarios/{usuario}/toggle', [UsuarioController::class, 'toggleStatus'])->name('usuarios.toggle');
@@ -64,6 +73,8 @@ Route::middleware('auth')->prefix('panel')->group(function () {
 
     // Rutas para roles operativos (CONSULTOR / COLABORADOR)
     Route::middleware('rol.operativo')->name('panel.')->group(function () {
+        Route::get('/colaborador', [PanelController::class, 'operativo'])->name('colaborador');
+
         // CRUD de Productos
         Route::patch('productos/{producto}/toggle', [ProductoController::class, 'toggleStatus'])->name('productos.toggle');
         Route::resource('productos', ProductoController::class);
@@ -75,6 +86,7 @@ Route::middleware('auth')->prefix('panel')->group(function () {
 
         // Clientes
         Route::patch('clientes/{cliente}/toggle', [ClienteController::class, 'toggleStatus'])->name('clientes.toggle');
+        Route::post('clientes/{cliente}/acceso', [ClienteController::class, 'crearAcceso'])->name('clientes.acceso');
         Route::resource('clientes', ClienteController::class);
 
         // Compras / Abastecimiento
@@ -88,6 +100,7 @@ Route::middleware('auth')->prefix('panel')->group(function () {
 
         // Pedidos
         Route::post('pedidos/{pedido}/reservar', [PedidoController::class, 'reservarStock'])->name('pedidos.reservar');
+        Route::patch('pedidos/{pedido}/entregar', [PedidoController::class, 'entregar'])->name('pedidos.entregar');
         Route::patch('pedidos/{pedido}/estado', [PedidoController::class, 'cambiarEstado'])->name('pedidos.estado');
         Route::resource('pedidos', PedidoController::class)->except(['destroy', 'edit', 'update']);
 

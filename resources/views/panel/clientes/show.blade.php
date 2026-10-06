@@ -37,7 +37,7 @@
             </div>
         </div>
     </header>
-    @include('partials.panel-nav')
+        @include('partials.panel-nav')
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
@@ -59,7 +59,7 @@
                 <div class="text-right">
                     <span class="text-xs text-finora-subtle font-medium block">Deuda Pendiente</span>
                     <span class="text-xl font-heading font-extrabold text-finora-navy">
-                        ${{ number_format($totalDeuda, 2) }}
+                        @money($totalDeuda)
                     </span>
                 </div>
                 <a href="{{ route('panel.clientes.edit', $cliente) }}" class="px-3.5 py-2 bg-finora-navy text-white text-xs font-semibold rounded-xl hover:bg-finora-dark transition-colors inline-flex items-center gap-1">
@@ -90,6 +90,26 @@
                 </div>
             </div>
 
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-3">
+                <h3 class="font-heading font-bold text-sm text-finora-navy border-b border-slate-100 pb-2">Acceso del cliente</h3>
+                @if ($cliente->persona->usuario)
+                    <p class="text-xs text-emerald-700 font-semibold">Este cliente ya puede iniciar sesión en su portal.</p>
+                    <span class="inline-flex rounded-full bg-emerald-50 border border-emerald-200 px-2 py-1 text-[10px] font-bold text-emerald-800">{{ $cliente->persona->usuario->activo ? 'Acceso activo' : 'Acceso inactivo' }}</span>
+                @else
+                    <p class="text-xs text-finora-subtle">Crea una cuenta opcional para que consulte sus pedidos y compras.</p>
+                    @if ($errors->has('acceso'))
+                        <p class="text-xs text-red-600">{{ $errors->first('acceso') }}</p>
+                    @endif
+                    <form action="{{ route('panel.clientes.acceso', $cliente) }}" method="POST" class="space-y-2">
+                        @csrf
+                        <input type="email" name="email" value="{{ old('email', $cliente->persona->email) }}" required placeholder="Correo de acceso" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-finora-blue">
+                        <input type="password" name="password" required minlength="6" placeholder="Contraseña inicial" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-finora-blue">
+                        <input type="password" name="password_confirmation" required minlength="6" placeholder="Confirmar contraseña" class="w-full bg-[#F8FAFC] border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-finora-blue">
+                        <button type="submit" class="w-full rounded-xl bg-finora-navy text-white px-3 py-2 text-xs font-bold hover:bg-finora-dark">Crear acceso</button>
+                    </form>
+                @endif
+            </div>
+
             <div class="md:col-span-2 space-y-6">
                 <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
                     <h3 class="font-heading font-bold text-sm text-finora-navy mb-3">Historial de Ventas</h3>
@@ -113,8 +133,8 @@
                                             <td class="py-2 px-3 text-slate-600">{{ $v->fecha->format('d/m/Y') }}</td>
                                             <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-slate-100 font-bold text-[10px]">{{ $v->forma_pago }}</span></td>
                                             <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-bold text-[10px]">{{ $v->estado }}</span></td>
-                                            <td class="py-2 px-3 text-right font-bold">${{ number_format($v->total, 2) }}</td>
-                                            <td class="py-2 px-3 text-right font-bold text-red-600">${{ number_format($v->saldo_pendiente, 2) }}</td>
+                                            <td class="py-2 px-3 text-right font-bold">@money($v->total)</td>
+                                            <td class="py-2 px-3 text-right font-bold text-red-600">@money($v->saldo_pendiente)</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pago extends Model
 {
@@ -35,5 +36,10 @@ class Pago extends Model
     public function registradoPor(): BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'registrado_por_usuario_id');
+    }
+
+    public function aplicaciones(): HasMany
+    {
+        return $this->hasMany(AplicacionPago::class, 'pago_id');
     }
 }

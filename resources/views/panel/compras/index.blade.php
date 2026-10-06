@@ -140,7 +140,7 @@
                                     </span>
                                 </td>
                                 <td class="py-3 px-4 text-right font-bold text-finora-navy">
-                                    ${{ number_format($cmp->total, 2) }}
+                                    @money($cmp->total)
                                 </td>
                                 <td class="py-3 px-4 text-right">
                                     <a href="{{ route('panel.compras.show', $cmp) }}" class="p-1.5 text-slate-600 hover:text-finora-blue hover:bg-blue-50 rounded-lg transition-colors inline-flex items-center" title="Ver detalle">

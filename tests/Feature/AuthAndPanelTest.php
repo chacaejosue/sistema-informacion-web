@@ -22,6 +22,14 @@ class AuthAndPanelTest extends TestCase
         $response->assertRedirect('/login');
     }
 
+    public function test_pantalla_de_login_no_se_puede_guardar_en_cache_del_navegador(): void
+    {
+        $response = $this->get('/login');
+
+        $this->assertStringContainsString('no-store', (string) $response->headers->get('Cache-Control'));
+        $response->assertHeader('Pragma', 'no-cache');
+    }
+
     /**
      * Un CONSULTOR autenticado activo puede acceder al panel.
      */
@@ -249,6 +257,6 @@ class AuthAndPanelTest extends TestCase
 
         $response = $this->actingAs($usuario)->get('/login');
 
-        $response->assertRedirect(route('panel.productos.index'));
+        $response->assertRedirect(route('panel.colaborador'));
     }
 }

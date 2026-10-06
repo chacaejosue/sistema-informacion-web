@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Categoria;
 use App\Models\Cliente;
 use App\Models\Compra;
-use App\Models\Pago;
 use App\Models\Pedido;
 use App\Models\Persona;
 use App\Models\Producto;
@@ -20,8 +19,11 @@ class FlujoNegocioCompletoTest extends TestCase
     use RefreshDatabase;
 
     private Usuario $consultor;
+
     private Cliente $cliente;
+
     private Producto $producto;
+
     private Proveedor $proveedor;
 
     protected function setUp(): void
@@ -81,7 +83,7 @@ class FlujoNegocioCompletoTest extends TestCase
                 [
                     'producto_id' => $this->producto->id,
                     'cantidad' => 10,
-                    'costo_unitario' => 70.00,
+                    'costo_unitario_usd' => 70.00,
                 ],
             ],
         ]);
@@ -107,6 +109,8 @@ class FlujoNegocioCompletoTest extends TestCase
             'cliente_id' => $this->cliente->id,
             'pedido_id' => $pedido->id,
             'forma_pago' => 'CREDITO',
+            'metodo_pago' => null,
+            'numero_cuotas' => 2,
             'descuento' => 20.00,
             'detalles' => [
                 [
@@ -126,6 +130,7 @@ class FlujoNegocioCompletoTest extends TestCase
 
         $this->assertEquals('CONFIRMADA', $venta->estado);
         $this->assertEquals(5, $this->producto->fresh()->stock_fisico); // 10 entradas - 5 salidas = 5
+        $this->assertDatabaseCount('cuotas', 2);
 
         // STEP 7: El cliente abona el monto total a crédito.
         $resPago = $this->actingAs($this->consultor)->post(route('panel.pagos.store'), [
@@ -139,5 +144,6 @@ class FlujoNegocioCompletoTest extends TestCase
         $venta->refresh();
         $this->assertEquals(0.00, $venta->saldo_pendiente);
         $this->assertEquals('PAGADO', $venta->credito->estado);
+        $this->assertDatabaseHas('cuotas', ['credito_id' => $venta->credito->id, 'estado' => 'PAGADA']);
     }
 }

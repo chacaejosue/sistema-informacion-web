@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Venta;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class PagoRequest extends FormRequest
 {
@@ -23,6 +24,33 @@ class PagoRequest extends FormRequest
             'metodo' => ['required', 'string', 'max:40'],
             'observacion' => ['nullable', 'string'],
         ];
+    }
+
+    /**
+     * Impide registrar pagos fuera del flujo de crédito confirmado.
+     *
+     * @return array<int, callable(Validator): void>
+     */
+    public function after(): array
+    {
+        return [function (Validator $validator): void {
+            if ($validator->errors()->has('venta_id')) {
+                return;
+            }
+
+            $venta = Venta::find($this->input('venta_id'));
+            if (! $venta) {
+                return;
+            }
+
+            if ($venta->estado !== 'CONFIRMADA') {
+                $validator->errors()->add('venta_id', 'Solo se pueden registrar pagos de ventas confirmadas.');
+            }
+
+            if ($venta->forma_pago !== 'CREDITO') {
+                $validator->errors()->add('venta_id', 'Los pagos parciales solo aplican a ventas a crédito.');
+            }
+        }];
     }
 
     public function messages(): array

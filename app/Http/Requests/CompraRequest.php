@@ -21,7 +21,7 @@ class CompraRequest extends FormRequest
             'detalles.*.nuevo_producto_nombre' => ['nullable', 'string', 'max:180'],
             'detalles.*.nuevo_producto_codigo' => ['nullable', 'string', 'max:80'],
             'detalles.*.cantidad' => ['required', 'integer', 'min:1'],
-            'detalles.*.costo_unitario' => ['required', 'numeric', 'min:0'],
+            'detalles.*.costo_unitario_usd' => ['required', 'numeric', 'min:0'],
         ];
     }
 
@@ -32,7 +32,7 @@ class CompraRequest extends FormRequest
             'detalles.required' => 'Debe agregar al menos un producto a la compra.',
             'detalles.min' => 'Debe agregar al menos un producto a la compra.',
             'detalles.*.cantidad.min' => 'La cantidad debe ser mayor que cero.',
-            'detalles.*.costo_unitario.min' => 'El costo unitario no puede ser negativo.',
+            'detalles.*.costo_unitario_usd.min' => 'El precio en dólares no puede ser negativo.',
         ];
     }
 }

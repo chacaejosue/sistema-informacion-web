@@ -76,7 +76,7 @@
                                 <span class="text-[10px] text-finora-subtle">{{ $cli->persona->telefono ?? 'Sin celular' }}</span>
                             </div>
                             <div class="text-right">
-                                <span class="text-xs font-extrabold text-red-600 block">${{ number_format($cli->total_deuda, 2) }}</span>
+                                <span class="text-xs font-extrabold text-red-600 block">@money($cli->total_deuda)</span>
                                 <a href="{{ route('panel.clientes.show', $cli) }}" class="text-[10px] font-bold text-finora-blue hover:underline">Ver ficha</a>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                                     {{ $p->metodo }}
                                 </td>
                                 <td class="py-3 px-4 text-right font-extrabold text-emerald-700 text-sm">
-                                    ${{ number_format($p->monto, 2) }}
+                                    @money($p->monto)
                                 </td>
                                 <td class="py-3 px-4 text-slate-600">
                                     {{ $p->observacion ?? '-' }}

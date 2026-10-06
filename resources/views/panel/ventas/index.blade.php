@@ -54,7 +54,7 @@
             <div>
                 <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-finora-navy">Registro de Ventas</h1>
                 <p class="text-xs sm:text-sm text-finora-subtle font-medium mt-1">
-                    Facturación de ventas a contado o crédito, confirmación y descuento de inventario.
+                    Registra ventas directas o ventas vinculadas a pedidos; al confirmarlas se descuenta el inventario.
                 </p>
             </div>
             <div>
@@ -109,6 +109,7 @@
                             <th class="py-3.5 px-4">Cliente</th>
                             <th class="py-3.5 px-4">Forma de Pago</th>
                             <th class="py-3.5 px-4">Fecha</th>
+                            <th class="py-3.5 px-4">Origen</th>
                             <th class="py-3.5 px-4 text-center">Estado</th>
                             <th class="py-3.5 px-4 text-right">Total</th>
                             <th class="py-3.5 px-4 text-right">Saldo Pendiente</th>
@@ -134,6 +135,13 @@
                                 <td class="py-3 px-4 text-slate-600">
                                     {{ $vnt->fecha ? $vnt->fecha->format('d/m/Y H:i') : '-' }}
                                 </td>
+                                <td class="py-3 px-4">
+                                    @if ($vnt->pedido)
+                                        <a href="{{ route('panel.pedidos.show', $vnt->pedido) }}" class="inline-flex rounded-full border border-purple-200 bg-purple-50 px-2.5 py-1 text-[10px] font-bold text-purple-800 hover:bg-purple-100 dark:border-purple-700 dark:bg-purple-950/70 dark:text-purple-200">Pedido #{{ $vnt->pedido->id }}</a>
+                                    @else
+                                        <span class="inline-flex rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[10px] font-bold text-blue-800 dark:border-blue-700 dark:bg-blue-950/70 dark:text-blue-200">Directa</span>
+                                    @endif
+                                </td>
                                 <td class="py-3 px-4 text-center">
                                     @php
                                         $badgeStyle = match($vnt->estado) {
@@ -147,10 +155,10 @@
                                     </span>
                                 </td>
                                 <td class="py-3 px-4 text-right font-bold text-finora-navy">
-                                    ${{ number_format($vnt->total, 2) }}
+                                    @money($vnt->total)
                                 </td>
                                 <td class="py-3 px-4 text-right font-bold {{ $vnt->saldo_pendiente > 0 ? 'text-red-600' : 'text-emerald-600' }}">
-                                    ${{ number_format($vnt->saldo_pendiente, 2) }}
+                                    @money($vnt->saldo_pendiente)
                                 </td>
                                 <td class="py-3 px-4 text-right">
                                     <a href="{{ route('panel.ventas.show', $vnt) }}" class="p-1.5 text-slate-600 hover:text-finora-blue hover:bg-blue-50 rounded-lg transition-colors inline-flex items-center" title="Ver detalle">
@@ -160,7 +168,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="py-8 text-center text-finora-subtle">
+                                <td colspan="9" class="py-8 text-center text-finora-subtle">
                                     <span class="material-symbols-outlined text-3xl text-slate-300 block mb-1">point_of_sale</span>
                                     <span>No se encontraron ventas registradas.</span>
                                 </td>

@@ -15,6 +15,10 @@ class Pedido extends Model
         'cliente_id',
         'registrado_por_usuario_id',
         'fecha',
+        'fecha_entrega',
+        'entregado_por_usuario_id',
+        'recibido_por',
+        'observaciones_entrega',
         'estado',
         'observaciones',
     ];
@@ -23,6 +27,7 @@ class Pedido extends Model
     {
         return [
             'fecha' => 'datetime',
+            'fecha_entrega' => 'datetime',
         ];
     }
 
@@ -34,6 +39,11 @@ class Pedido extends Model
     public function registradoPor(): BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'registrado_por_usuario_id');
+    }
+
+    public function entregadoPor(): BelongsTo
+    {
+        return $this->belongsTo(Usuario::class, 'entregado_por_usuario_id');
     }
 
     public function detalles(): HasMany

@@ -9,6 +9,8 @@ use App\Models\Producto;
 use App\Models\Proveedor;
 use App\Models\Usuario;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class CompraEInventarioTest extends TestCase
@@ -16,12 +18,18 @@ class CompraEInventarioTest extends TestCase
     use RefreshDatabase;
 
     private Usuario $consultor;
+
     private Proveedor $proveedor;
+
     private Producto $producto;
 
     protected function setUp(): void
     {
         parent::setUp();
+        Cache::forget('finora.tipo-cambio.usd-bob.oficial');
+        Http::fake([
+            config('finora.exchange_rate_url') => Http::response('ESTADOS UNIDOS DÓLAR USD 12.00'),
+        ]);
 
         $persona = Persona::create(['nombre' => 'Admin', 'email' => 'admin@finora.test']);
         $this->consultor = Usuario::create([
@@ -52,7 +60,7 @@ class CompraEInventarioTest extends TestCase
                 [
                     'producto_id' => $this->producto->id,
                     'cantidad' => 10,
-                    'costo_unitario' => 25.00,
+                    'costo_unitario_usd' => 25.00,
                 ],
             ],
         ]);
@@ -60,6 +68,7 @@ class CompraEInventarioTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('compras', ['proveedor_id' => $this->proveedor->id, 'estado' => 'BORRADOR']);
         $this->assertDatabaseHas('detalle_compras', ['producto_id' => $this->producto->id, 'cantidad' => 10]);
+        $this->assertDatabaseHas('detalle_compras', ['producto_id' => $this->producto->id, 'costo_unitario' => 300.00]);
     }
 
     public function test_recepcion_de_compra_ingresa_inventario(): void

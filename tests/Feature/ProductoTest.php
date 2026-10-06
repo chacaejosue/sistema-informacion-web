@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Categoria;
-use App\Models\Linea;
 use App\Models\Persona;
 use App\Models\Producto;
 use App\Models\Proveedor;
@@ -245,6 +244,39 @@ class ProductoTest extends TestCase
         $response->assertDontSee('Producto Desactivado');
     }
 
+    public function test_catalogo_publico_filtra_por_categoria_seleccionada(): void
+    {
+        $proveedor = Proveedor::create(['nombre' => 'Proveedor categorías', 'activo' => true]);
+        $categoriaIncluida = Categoria::create(['nombre' => 'Cuidado Facial', 'activo' => true]);
+        $categoriaExcluida = Categoria::create(['nombre' => 'Cuidado Corporal', 'activo' => true]);
+
+        Producto::create([
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $categoriaIncluida->id,
+            'codigo' => 'FACIAL-001',
+            'nombre' => 'Producto facial visible',
+            'precio_venta_actual' => 20,
+            'publicado' => true,
+            'activo' => true,
+        ]);
+        Producto::create([
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $categoriaExcluida->id,
+            'codigo' => 'CORPORAL-001',
+            'nombre' => 'Producto corporal oculto por filtro',
+            'precio_venta_actual' => 25,
+            'publicado' => true,
+            'activo' => true,
+        ]);
+
+        $response = $this->get(route('categorias', ['categoria' => 'cuidado-facial']));
+
+        $response->assertOk();
+        $response->assertSee('Producto facial visible');
+        $response->assertDontSee('data-product-category="cuidado-corporal"');
+        $response->assertSee('Categoría seleccionada: Cuidado Facial');
+    }
+
     /**
      * REGRESIÓN: La búsqueda por código exacto debe devolver el producto correcto.
      */
@@ -327,35 +359,35 @@ class ProductoTest extends TestCase
 
         // Producto publicado
         Producto::create([
-            'codigo'              => 'PRUEBA-001',
-            'nombre'              => 'Producto Prueba Publicado',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $categoria->id,
+            'codigo' => 'PRUEBA-001',
+            'nombre' => 'Producto Prueba Publicado',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $categoria->id,
             'precio_venta_actual' => 20.00,
-            'publicado'           => true,
-            'activo'              => true,
+            'publicado' => true,
+            'activo' => true,
         ]);
 
         // Producto borrador (no publicado)
         Producto::create([
-            'codigo'              => 'PRUEBA-002',
-            'nombre'              => 'Producto Prueba Borrador',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $categoria->id,
+            'codigo' => 'PRUEBA-002',
+            'nombre' => 'Producto Prueba Borrador',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $categoria->id,
             'precio_venta_actual' => 25.00,
-            'publicado'           => false,
-            'activo'              => true,
+            'publicado' => false,
+            'activo' => true,
         ]);
 
         // Producto sin coincidencia
         Producto::create([
-            'codigo'              => 'OTRO-001',
-            'nombre'              => 'Otro Producto',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $categoria->id,
+            'codigo' => 'OTRO-001',
+            'nombre' => 'Otro Producto',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $categoria->id,
             'precio_venta_actual' => 30.00,
-            'publicado'           => true,
-            'activo'              => true,
+            'publicado' => true,
+            'activo' => true,
         ]);
 
         // Simula exactamente el formulario con «Todas las categorías» y «Todos los estados»:
@@ -381,13 +413,13 @@ class ProductoTest extends TestCase
         [$proveedor, $categoria] = $this->crearProveedorYCategoria();
 
         Producto::create([
-            'codigo'              => 'NAT-FACIAL-001',
-            'nombre'              => 'Crema Facial Hidratante',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $categoria->id,
+            'codigo' => 'NAT-FACIAL-001',
+            'nombre' => 'Crema Facial Hidratante',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $categoria->id,
             'precio_venta_actual' => 15.00,
-            'publicado'           => true,
-            'activo'              => true,
+            'publicado' => true,
+            'activo' => true,
         ]);
 
         $response = $this->actingAs($consultor)
@@ -413,35 +445,35 @@ class ProductoTest extends TestCase
 
         // Producto en Cuidado Facial y Publicado
         Producto::create([
-            'codigo'              => 'FAC-001',
-            'nombre'              => 'Sérum Facial',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $catFacial->id,
+            'codigo' => 'FAC-001',
+            'nombre' => 'Sérum Facial',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $catFacial->id,
             'precio_venta_actual' => 40.00,
-            'publicado'           => true,
-            'activo'              => true,
+            'publicado' => true,
+            'activo' => true,
         ]);
 
         // Producto en Cuidado Facial pero Borrador
         Producto::create([
-            'codigo'              => 'FAC-002',
-            'nombre'              => 'Mascarilla Facial',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $catFacial->id,
+            'codigo' => 'FAC-002',
+            'nombre' => 'Mascarilla Facial',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $catFacial->id,
             'precio_venta_actual' => 20.00,
-            'publicado'           => false,
-            'activo'              => true,
+            'publicado' => false,
+            'activo' => true,
         ]);
 
         // Producto en Cuidado Corporal y Publicado
         Producto::create([
-            'codigo'              => 'CORP-001',
-            'nombre'              => 'Crema Corporal',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $catCorporal->id,
+            'codigo' => 'CORP-001',
+            'nombre' => 'Crema Corporal',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $catCorporal->id,
             'precio_venta_actual' => 30.00,
-            'publicado'           => true,
-            'activo'              => true,
+            'publicado' => true,
+            'activo' => true,
         ]);
 
         // 1. Filtrar por Cuidado Facial + Publicados + término "Facial"
@@ -471,23 +503,23 @@ class ProductoTest extends TestCase
         [$proveedor, $categoria] = $this->crearProveedorYCategoria();
 
         Producto::create([
-            'codigo'              => 'PROD-A',
-            'nombre'              => 'Producto A',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $categoria->id,
+            'codigo' => 'PROD-A',
+            'nombre' => 'Producto A',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $categoria->id,
             'precio_venta_actual' => 10.00,
-            'publicado'           => true,
-            'activo'              => true,
+            'publicado' => true,
+            'activo' => true,
         ]);
 
         Producto::create([
-            'codigo'              => 'PROD-B',
-            'nombre'              => 'Producto B',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $categoria->id,
+            'codigo' => 'PROD-B',
+            'nombre' => 'Producto B',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $categoria->id,
             'precio_venta_actual' => 12.00,
-            'publicado'           => false,
-            'activo'              => true,
+            'publicado' => false,
+            'activo' => true,
         ]);
 
         $response = $this->actingAs($consultor)->get('/panel/productos');
@@ -515,7 +547,6 @@ class ProductoTest extends TestCase
         $respBusqueda->assertSee('restart_alt');
     }
 
-
     /**
      * REGRESIÓN: Al editar otros atributos sin enviar imagen, la imagen se conserva.
      */
@@ -536,21 +567,21 @@ class ProductoTest extends TestCase
         ]);
 
         $response = $this->actingAs($consultor)->put("/panel/productos/{$producto->id}", [
-            'codigo'              => 'IMG-001',
-            'nombre'              => 'Nombre Actualizado',
-            'proveedor_id'        => $proveedor->id,
-            'categoria_id'        => $categoria->id,
+            'codigo' => 'IMG-001',
+            'nombre' => 'Nombre Actualizado',
+            'proveedor_id' => $proveedor->id,
+            'categoria_id' => $categoria->id,
             'precio_venta_actual' => 25.00,
-            'publicado'           => '1',
-            'activo'              => '1',
+            'publicado' => '1',
+            'activo' => '1',
             // No se envía 'imagen' ni 'imagen_url'
         ]);
 
         $response->assertRedirect('/panel/productos');
         // 2.8: El nombre se convierte a mayúsculas antes de guardarse
         $this->assertDatabaseHas('productos', [
-            'id'               => $producto->id,
-            'nombre'           => 'NOMBRE ACTUALIZADO',
+            'id' => $producto->id,
+            'nombre' => 'NOMBRE ACTUALIZADO',
             'imagen_principal' => 'demo/productos/ilia.jpg', // debe conservarse
         ]);
     }

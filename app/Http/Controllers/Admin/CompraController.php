@@ -4,18 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompraRequest;
+use App\Models\Auditoria;
 use App\Models\Categoria;
 use App\Models\Compra;
 use App\Models\DetalleCompra;
 use App\Models\MovimientoInventario;
 use App\Models\Producto;
 use App\Models\Proveedor;
+use App\Services\TipoCambioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CompraController extends Controller
 {
+    public function __construct(private TipoCambioService $tipoCambio) {}
+
     public function index(Request $request)
     {
         $query = Compra::with(['proveedor', 'registradoPor.persona']);
@@ -64,7 +68,7 @@ class CompraController extends Controller
                         ? mb_strtoupper(trim($item['nuevo_producto_codigo']), 'UTF-8')
                         : 'TEMP-'.strtoupper(Str::random(6));
 
-                    $costo = (float) $item['costo_unitario'];
+                    $costo = $this->convertirDolaresABolivianos($item['costo_unitario_usd']);
 
                     $nuevoProducto = Producto::create([
                         'proveedor_id' => $validated['proveedor_id'],
@@ -84,7 +88,7 @@ class CompraController extends Controller
                     'compra_id' => $compra->id,
                     'producto_id' => $productoId,
                     'cantidad' => $item['cantidad'],
-                    'costo_unitario' => $item['costo_unitario'],
+                    'costo_unitario' => $this->convertirDolaresABolivianos($item['costo_unitario_usd']),
                 ]);
             }
 
@@ -93,6 +97,11 @@ class CompraController extends Controller
 
         return redirect()->route('panel.compras.show', $compra)
             ->with('exito', 'Compra guardada en borrador correctamente.');
+    }
+
+    private function convertirDolaresABolivianos(float|string $precioEnDolares): float
+    {
+        return round((float) $precioEnDolares * $this->tipoCambio->bolivianosPorDolar(), 2);
     }
 
     public function show(Compra $compra)
@@ -123,6 +132,8 @@ class CompraController extends Controller
                 ]);
 
                 foreach ($compra->detalles as $detalle) {
+                    Producto::whereKey($detalle->producto_id)->lockForUpdate()->firstOrFail();
+
                     MovimientoInventario::create([
                         'producto_id' => $detalle->producto_id,
                         'registrado_por_usuario_id' => $request->user()->id,
@@ -133,6 +144,8 @@ class CompraController extends Controller
                         'observacion' => "Ingreso por recepción de compra #{$compra->id}",
                     ]);
                 }
+
+                Auditoria::registrar('RECIBIR_COMPRA', $compra, 'Compra recibida y agregada al inventario.');
             } else {
                 $compra->update(['estado' => $nuevoEstado]);
             }

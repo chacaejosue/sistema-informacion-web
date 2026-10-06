@@ -54,7 +54,7 @@
             <div>
                 <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-finora-navy">Pedidos de Clientes</h1>
                 <p class="text-xs sm:text-sm text-finora-subtle font-medium mt-1">
-                    Gestiona solicitudes de clientes, reservación de inventario y preparación de entregas.
+                    Gestiona solicitudes de clientes, reservación de inventario y preparación de entregas. Después puedes convertir un pedido en venta.
                 </p>
             </div>
             <div>
@@ -134,7 +134,7 @@
                                             default => 'bg-slate-100 border-slate-200 text-slate-600',
                                         };
                                     @endphp
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border {{ $badgeStyle }}">
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border {{ $badgeStyle }} dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100">
                                         {{ $ped->estado }}
                                     </span>
                                 </td>
@@ -150,21 +150,21 @@
                                     @elseif ($ped->estado === 'CANCELADO')
                                         <span class="text-[11px] text-slate-400">Liberado</span>
                                     @elseif ($totalReservado >= $totalItems && $totalItems > 0)
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-50 border border-cyan-200 text-cyan-800">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-50 border border-cyan-200 text-cyan-800 dark:bg-cyan-950/70 dark:border-cyan-700 dark:text-cyan-200">
                                             <span class="material-symbols-outlined text-xs">done_all</span> 100% ({{ $totalReservado }}/{{ $totalItems }})
                                         </span>
                                     @elseif ($totalReservado > 0)
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-800">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-950/70 dark:border-amber-700 dark:text-amber-200">
                                             <span class="material-symbols-outlined text-xs">hourglass_top</span> Parcial ({{ $totalReservado }}/{{ $totalItems }})
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 border border-red-200 text-red-700">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/70 dark:border-red-700 dark:text-red-200">
                                             <span class="material-symbols-outlined text-xs">block</span> Sin stock (0/{{ $totalItems }})
                                         </span>
                                     @endif
                                 </td>
                                 <td class="py-3 px-4 text-right font-bold text-finora-navy">
-                                    ${{ number_format($ped->total, 2) }}
+                                    @money($ped->total)
                                 </td>
                                 <td class="py-3 px-4 text-right">
                                     <a href="{{ route('panel.pedidos.show', $ped) }}" class="p-1.5 text-slate-600 hover:text-finora-blue hover:bg-blue-50 rounded-lg transition-colors inline-flex items-center" title="Ver detalle">

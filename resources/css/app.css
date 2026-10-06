@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -92,6 +94,23 @@
 
 /* Estilos base */
 @layer base {
+
+    .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 1em;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+        font-feature-settings: 'liga';
+    }
 
     html,
     body {
@@ -293,6 +312,111 @@ input::-ms-clear {
     box-shadow: 0 16px 32px -8px rgba(11, 25, 44, 0.08), 0 4px 12px -2px rgba(0, 98, 255, 0.04);
 }
 
+.finora-card-interactive:active,
+.finora-card-interactive:focus-within {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 16px 32px -8px rgba(11, 25, 44, 0.12);
+}
+
+@media (hover: none), (pointer: coarse) {
+    .product-item:active img,
+    .catalog-product:active img,
+    .finora-card-interactive:active img {
+        transform: scale(1.08);
+    }
+
+    .product-item:active,
+    .catalog-product:active {
+        transform: translateY(-2px) scale(1.01);
+    }
+}
+
+.touch-zoom img {
+    transform: scale(1.08);
+}
+
+.finora-cart-flight {
+    transition: left .6s cubic-bezier(.16, 1, .3, 1), top .6s cubic-bezier(.16, 1, .3, 1), opacity .6s ease, transform .6s ease;
+}
+
+.finora-cart-orb {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle at 30% 25%, #ffffff 0 8%, #00d2df 28%, #0062ff 72%, #0050cc 100%);
+    box-shadow: 0 0 0 5px rgba(0, 98, 255, 0.14), 0 8px 22px rgba(0, 80, 204, 0.42);
+    transition: left .7s cubic-bezier(.16, 1, .3, 1), top .7s cubic-bezier(.16, 1, .3, 1), transform .7s cubic-bezier(.16, 1, .3, 1), opacity .7s ease;
+}
+
+.finora-cart-orb::after {
+    content: '';
+    position: absolute;
+    width: 2.75rem;
+    height: .35rem;
+    right: 1rem;
+    top: .6rem;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, transparent, rgba(0, 210, 223, .72));
+    transform: rotate(-25deg);
+    transform-origin: right center;
+}
+
+.finora-cart-orb-flying {
+    transform: scale(.55) rotate(180deg);
+    opacity: .15;
+}
+
+.finora-typing {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    min-width: 3.5rem;
+}
+
+.finora-typing span {
+    width: .42rem;
+    height: .42rem;
+    border-radius: 9999px;
+    background: currentColor;
+    opacity: .45;
+    animation: finoraTyping 0.9s ease-in-out infinite;
+}
+
+.finora-typing span:nth-child(2) {
+    animation-delay: .15s;
+}
+
+.finora-typing span:nth-child(3) {
+    animation-delay: .3s;
+}
+
+.finora-chat-message {
+    animation: finoraChatMessage .35s cubic-bezier(.16, 1, .3, 1) both;
+}
+
+@keyframes finoraChatMessage {
+    from { opacity: 0; transform: translateY(.4rem) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes finoraTyping {
+    0%, 100% { transform: translateY(0); opacity: .35; }
+    50% { transform: translateY(-.35rem); opacity: 1; }
+}
+
+.login-page main > footer,
+.login-page aside > div:last-child {
+    min-height: 2.5rem;
+    line-height: 1.25rem;
+}
+
+@media (max-width: 640px) {
+    .text-body-sm, .text-label-sm {
+        font-size: 0.8125rem;
+        line-height: 1.25rem;
+    }
+}
+
 /* Transición suave para catálogo */
 .catalog-item-transition {
     transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -300,6 +424,12 @@ input::-ms-clear {
 
 /* Notificación flotante / Toast */
 .finora-toast {
+    position: fixed;
+    top: 5.5rem;
+    right: 1rem;
+    z-index: 100;
+    width: min(28rem, calc(100vw - 2rem));
+    box-shadow: 0 18px 45px -18px rgba(11, 25, 44, 0.35);
     animation: fadeInDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
@@ -396,6 +526,11 @@ input::-ms-clear {
 }
 
 @media (max-width: 640px) {
+    .text-xs {
+        font-size: 0.8125rem;
+        line-height: 1.25rem;
+    }
+
     .finora-gradient-btn {
         min-height: 44px;
     }
@@ -812,10 +947,62 @@ html.dark .admin-welcome-card .text-slate-300 {
     transform: translateY(-2px);
 }
 
+.public-header-inner .finora-theme-toggle,
+header .finora-theme-toggle {
+    margin-inline: 0.35rem;
+}
+
+header .finora-theme-toggle + a,
+header .finora-theme-toggle + form {
+    margin-left: 0.35rem;
+}
+
+header .finora-theme-toggle,
+.public-header-inner .finora-theme-toggle {
+    position: static;
+    width: auto;
+    height: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+.finora-theme-toggle.finora-theme-above-back-to-top {
+    bottom: 5.25rem;
+}
+
 html.dark .finora-theme-toggle {
     border-color: #455b77;
     background: rgba(29, 41, 61, 0.94);
     color: #8edcff;
+}
+
+html.dark .bg-teal-50,
+html.dark .bg-cyan-50,
+html.dark .bg-blue-50,
+html.dark .bg-purple-50,
+html.dark .bg-amber-50 {
+    background-color: #243b58 !important;
+}
+
+html.dark .bg-red-50,
+html.dark .bg-rose-50 {
+    background-color: #482936 !important;
+}
+
+html.dark [class~="bg-cyan-50/50"] {
+    background-color: #16445f !important;
+}
+
+html.dark .border-teal-200,
+html.dark .border-cyan-200,
+html.dark .border-blue-200,
+html.dark .border-purple-200,
+html.dark .border-amber-200,
+html.dark .border-red-200,
+html.dark .border-rose-200 {
+    border-color: #42617f !important;
 }
 
 @media (max-width: 640px) {

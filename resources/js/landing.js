@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const productItems = document.querySelectorAll('.product-item');
     const filterChips = document.querySelectorAll('.filter-chip');
     const searchInput = document.getElementById('catalog-search');
+    const emptyState = document.getElementById('landingEmptyCatalog');
+    const emptyMessage = document.getElementById('landingEmptyMessage');
 
     if (productItems.length === 0 && filterChips.length === 0 && !searchInput) {
         return;
@@ -21,6 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.style.display = 'none';
             }
         });
+
+        const visible = [...productItems].filter(item => item.style.display !== 'none').length;
+        emptyState?.classList.toggle('hidden', visible > 0);
+        if (emptyMessage && visible === 0) {
+            emptyMessage.textContent = currentCategory !== 'all'
+                ? 'No encontramos productos con esa búsqueda dentro de la categoría seleccionada. Prueba otra categoría o revisa el nombre.'
+                : 'Prueba con otro nombre o selecciona una categoría diferente.';
+        }
     }
 
     filterChips.forEach(chip => {

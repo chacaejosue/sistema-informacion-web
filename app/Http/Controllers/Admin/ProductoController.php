@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductoRequest;
+use App\Models\Auditoria;
 use App\Models\Categoria;
 use App\Models\Linea;
 use App\Models\MovimientoInventario;
@@ -100,6 +101,8 @@ class ProductoController extends Controller
 
         $producto = Producto::create($datos);
 
+        Auditoria::registrar('CREAR_PRODUCTO', $producto, 'Producto registrado en el catálogo.');
+
         if ($stockInicial > 0) {
             MovimientoInventario::create([
                 'producto_id' => $producto->id,
@@ -156,6 +159,8 @@ class ProductoController extends Controller
 
         $producto->update($datos);
 
+        Auditoria::registrar('ACTUALIZAR_PRODUCTO', $producto, 'Producto actualizado en el catálogo.');
+
         return redirect()->route('panel.productos.index')
             ->with('exito', 'Producto actualizado correctamente.');
     }
@@ -183,6 +188,8 @@ class ProductoController extends Controller
     public function destroy(Producto $producto)
     {
         $producto->update(['activo' => false]);
+
+        Auditoria::registrar('DESACTIVAR_PRODUCTO', $producto, 'Producto desactivado del catálogo.');
 
         return redirect()->route('panel.productos.index')
             ->with('exito', 'Producto desactivado correctamente.');
