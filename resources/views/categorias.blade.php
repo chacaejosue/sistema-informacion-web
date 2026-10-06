@@ -31,9 +31,14 @@
     <main id="catalogo" class="max-w-7xl mx-auto px-space-md lg:px-margin pt-28 pb-space-2xl">
         <!-- Encabezado y presentación de la página de categorías -->
         <div class="mb-space-xl">
-            <span class="text-secondary font-label-md uppercase tracking-wider">Catálogo Comercial de Natura</span>
+            <span class="text-secondary font-label-md uppercase tracking-wider">Catálogo comercial</span>
             <h1 class="font-headline-lg text-headline-lg text-primary-container mt-space-xs">Explora por categoría</h1>
-            <p class="text-on-surface-variant mt-space-sm">Encuentra productos Natura por nombre o categoría.</p>
+            <p class="text-on-surface-variant mt-space-sm">Encuentra productos registrados por el consultor.</p>
+            @if ($categoriaSeleccionada)
+                <p class="mt-3 inline-flex rounded-full bg-secondary/10 px-3 py-1 text-sm font-bold text-secondary">Categoría seleccionada: {{ $categoriaSeleccionada->nombre }}</p>
+            @elseif (request()->filled('categoria'))
+                <p class="mt-3 rounded-xl bg-amber-50 p-3 text-sm font-semibold text-amber-800">No encontramos esa categoría. Mostramos todas las categorías disponibles.</p>
+            @endif
         </div>
 
         {{-- 2.1: Grid donde el sidebar y el buscador son sticky --}}
@@ -84,17 +89,22 @@
                                 </span>
                             </div>
                             <div class="p-space-md flex flex-col gap-space-xs flex-1">
-                                <span class="text-secondary font-label-sm text-[11px] uppercase tracking-wider font-semibold">Natura</span>
+                                 <span class="text-secondary font-label-sm text-[11px] uppercase tracking-wider font-semibold">{{ $producto->proveedor?->nombre ?? 'Producto' }}</span>
                                 <h2 class="font-title-lg text-title-lg text-primary-container group-hover:text-secondary transition-colors font-bold line-clamp-1">{{ $producto->nombre }}</h2>
                                 <p class="text-on-surface-variant font-body-sm text-xs leading-relaxed line-clamp-2">{{ $producto->descripcion ?: 'Producto del catálogo comercial.' }}</p>
                                 <div class="mt-auto pt-space-md flex flex-col gap-2 border-t border-surface-container-high/40">
                                     <div class="flex items-center justify-between">
                                         <span class="text-xs text-on-surface-variant">Precio:</span>
-                                        <span class="text-primary-container font-extrabold font-title-lg">${{ number_format($producto->precio_venta_actual, 2) }} <span class="text-xs font-normal text-on-surface-variant">USD</span></span>
+                                        <span data-money-bob="{{ $producto->precio_venta_actual }}" class="text-primary-container font-extrabold font-title-lg">@money($producto->precio_venta_actual)</span>
                                     </div>
-                                    <a href="https://wa.me/59167673537?text=Hola%20deseo%20consultar%20por%20{{ urlencode($producto->nombre) }}"
+                                    <button type="button" data-add-product="{{ $producto->id }}" data-cart-url="{{ route('carrito') }}"
+                                        class="w-full rounded-xl bg-blue-600 py-2.5 text-white hover:bg-blue-700 font-title-md text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-xs hover:shadow-md cursor-pointer">
+                                        <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                        <span>Agregar al carrito</span>
+                                    </button>
+                                    <a href="{{ config('services.whatsapp.phone') ? 'https://wa.me/' . preg_replace('/\D+/', '', config('services.whatsapp.phone')) . '?text=' . urlencode('Hola deseo consultar por ' . $producto->nombre) : '#' }}"
                                         target="_blank" rel="noopener noreferrer"
-                                        class="w-full py-2.5 rounded-xl bg-surface-container-low text-primary-container hover:bg-emerald-600 hover:text-white font-title-md text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-xs hover:shadow-md cursor-pointer group/wa">
+                                        class="mt-2 w-full py-2.5 rounded-xl bg-surface-container-low text-primary-container hover:bg-emerald-600 hover:text-white font-title-md text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-xs hover:shadow-md cursor-pointer group/wa">
                                         <svg class="w-4 h-4 text-emerald-600 group-hover/wa:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.995.545 1.761.791 2.796.791 3.182 0 5.768-2.587 5.768-5.766.001-3.182-2.585-5.778-5.768-5.778zm0-2c4.28 0 7.768 3.488 7.768 7.778 0 4.281-3.487 7.766-7.768 7.766-1.328 0-2.597-.336-3.716-.941l-4.315 1.131 1.152-4.212c-.7-1.189-1.089-2.56-1.089-3.744 0-4.29 3.488-7.778 7.768-7.778z"/>
                                         </svg>
@@ -112,7 +122,7 @@
                         <span class="material-symbols-outlined text-[32px]" aria-hidden="true">search_off</span>
                     </div>
                     <h2 class="font-headline-sm text-headline-sm text-primary-container font-bold">No hay productos que coincidan</h2>
-                    <p class="text-on-surface-variant text-sm mt-1 max-w-sm mx-auto">Prueba buscando con otro término o seleccionando una categoría diferente.</p>
+                    <p id="emptyCatalogMessage" class="text-on-surface-variant text-sm mt-1 max-w-lg mx-auto">Prueba buscando con otro término o seleccionando una categoría diferente.</p>
                 </div>
             </section>
         </div>
@@ -130,6 +140,11 @@
     </button>
 
     <script>
+        window.finoraCatalogProducts = @json($productosBusqueda->map(fn ($producto) => [
+            'nombre' => $producto->nombre,
+            'categoria' => $producto->categoria?->nombre,
+        ])->values());
+
         document.addEventListener('DOMContentLoaded', () => {
             // Mostrar/ocultar botón volver arriba de forma suave
             const backToTopBtn = document.getElementById('backToTopCatalog');
@@ -147,20 +162,8 @@
 
             // Leer ?categoria=slug de la URL para preseleccionar la categoría activa (1.11 / 2.1)
             const params = new URLSearchParams(window.location.search);
-            const categoriaParam = params.get('categoria');
-            if (categoriaParam) {
-                // Intentar activar el botón de filtro que coincida
-                const filters = document.querySelectorAll('#categoryFilters .category-filter');
-                filters.forEach(btn => {
-                    if (btn.dataset.category === categoriaParam) {
-                        // Simular click para activar el filtro
-                        btn.click();
-                        // Scroll suave al inicio del catálogo
-                        setTimeout(() => {
-                            document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 100);
-                    }
-                });
+            if (params.has('categoria')) {
+                document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     </script>

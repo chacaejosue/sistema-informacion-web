@@ -47,12 +47,12 @@
                         Bienvenido a Finora
                     </h1>
                     <p class="mt-1.5 text-sm text-finora-subtle font-medium">
-                        Ingresa a tu cuenta para continuar.
+                        Accede a Finora según tu perfil: cliente, colaborador o consultor.
                     </p>
                 </div>
 
                 <!-- Formulario de autenticación (2.5: manejado para evitar duplicar entradas en historial del navegador) -->
-                <form id="loginForm" action="{{ route('login.authenticate') }}" class="space-y-4" method="POST" data-prevent-submit-feedback="true">
+                <form id="loginForm" action="{{ route('login.authenticate') }}" class="space-y-4" method="POST" autocomplete="on" data-prevent-submit-feedback="true">
                     @csrf
 
                     <!-- Campo: Correo electrónico -->
@@ -64,7 +64,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <span class="material-symbols-outlined text-[20px]">person</span>
                             </div>
-                            <input autocomplete="username" class="block w-full pl-10 pr-4 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 text-finora-navy focus:bg-white focus:outline-none focus:ring-2 focus:ring-finora-blue focus:border-transparent transition-all" id="identity" name="identity" placeholder="tu@email.com" required="" type="email" value="{{ old('identity') }}"/>
+                    <input autocomplete="email" class="block w-full pl-10 pr-4 py-2.5 bg-[#F8FAFC] border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 text-finora-navy focus:bg-white focus:outline-none focus:ring-2 focus:ring-finora-blue focus:border-transparent transition-all" id="identity" name="identity" placeholder="tu@email.com" required="" type="email" value=""/>
                         </div>
                     </div>
 
@@ -84,16 +84,6 @@
                                 <span class="material-symbols-outlined text-[20px]" id="eyeIcon">visibility</span>
                             </button>
                         </div>
-                    </div>
-
-                    <!-- Opción: Recordar sesión -->
-                    <div class="pt-0.5">
-                        <label class="inline-flex items-center cursor-pointer select-none">
-                            <input class="h-4 w-4 rounded border-slate-300 text-finora-blue focus:ring-finora-blue cursor-pointer" id="remember-me" name="remember" type="checkbox"/>
-                            <span class="ml-2 text-xs font-medium text-finora-subtle">
-                                Recordar mi sesión
-                            </span>
-                        </label>
                     </div>
 
                     {{-- Mensajes de error de autenticación --}}
@@ -166,22 +156,22 @@
                 </div>
             </div>
 
-            <!-- Tarjeta central de gestión integral -->
+            <!-- Tarjeta central de acceso general -->
             <div class="relative z-10 my-auto py-10 max-w-lg mx-auto text-center lg:text-left w-full">
                 <div class="bg-white/80 backdrop-blur-xl p-8 sm:p-10 rounded-3xl border border-white shadow-finora-card">
 
                     <!-- Etiqueta decorativa superior -->
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50/80 border border-blue-100 text-finora-blue text-xs font-bold tracking-wide uppercase mb-5">
                         <span class="material-symbols-outlined text-sm">hub</span>
-                        Gestión Integral
+                         Acceso general
                     </div>
 
                     <!-- Mensaje y propuesta de valor -->
                     <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-finora-navy tracking-tight leading-snug">
-                        Tu negocio, organizado en un solo lugar.
+                         Todo Finora empieza aquí.
                     </h2>
                     <p class="mt-3 text-sm sm:text-base text-finora-subtle leading-relaxed font-normal">
-                        Gestiona ventas, pedidos, clientes y finanzas de forma simple con Finora.
+                         Ingresa con tu cuenta y continúa con las herramientas disponibles para tu perfil.
                     </p>
 
                     <!-- Cuadrícula con los 4 módulos conceptuales -->
@@ -192,7 +182,7 @@
                             <div class="w-9 h-9 rounded-xl bg-blue-50 text-finora-blue flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">point_of_sale</span>
                             </div>
-                            <span class="text-xs font-bold text-finora-navy">Ventas</span>
+                            <span class="text-xs font-bold text-finora-navy">Según tu rol</span>
                         </div>
 
                         <!-- Módulo: Pedidos -->
@@ -208,7 +198,7 @@
                             <div class="w-9 h-9 rounded-xl bg-sky-50 text-finora-sky flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">group</span>
                             </div>
-                            <span class="text-xs font-bold text-finora-navy">Clientes</span>
+                            <span class="text-xs font-bold text-finora-navy">Catálogo</span>
                         </div>
 
                         <!-- Módulo: Finanzas -->
@@ -216,7 +206,7 @@
                             <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-lg">account_balance</span>
                             </div>
-                            <span class="text-xs font-bold text-finora-navy">Finanzas</span>
+                            <span class="text-xs font-bold text-finora-navy">Atención</span>
                         </div>
                     </div>
                 </div>

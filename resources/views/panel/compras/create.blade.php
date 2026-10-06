@@ -64,8 +64,8 @@
                         <div class="item-row bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
                             <div class="flex items-center justify-between">
                                 <span class="text-[10px] font-bold text-finora-subtle uppercase">Ítem de Compra</span>
-                                <button type="button" class="btn-toggle-nuevo-prod text-[11px] font-semibold text-finora-blue hover:underline">
-                                    + Escribir producto no registrado
+                                 <button type="button" class="btn-toggle-nuevo-prod inline-flex items-center gap-1 rounded-lg border-2 border-finora-blue bg-blue-50 px-3 py-2 text-xs font-extrabold text-finora-blue shadow-sm hover:bg-finora-blue hover:text-white transition-colors">
+                                     <span class="material-symbols-outlined text-base">edit_note</span> Escribir producto no registrado
                                 </button>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
@@ -90,8 +90,13 @@
                                     <input type="number" min="1" name="detalles[0][cantidad]" value="1" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                                 </div>
                                 <div class="sm:col-span-3">
-                                    <label class="block text-[10px] font-bold text-finora-subtle mb-1">Costo Unitario ($)</label>
-                                    <input type="number" step="0.01" min="0" name="detalles[0][costo_unitario]" value="0.00" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                    <label class="block text-[10px] font-bold text-finora-subtle mb-1">Precio Natura (USD)</label>
+                                    <input type="number" step="0.01" min="0" name="detalles[0][costo_unitario_usd]" value="0.00" required class="input-costo-usd w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                                    <p class="mt-1 text-[10px] text-finora-subtle">Se guardará convertido en Bs.</p>
+                                </div>
+                                <div class="sm:col-span-3">
+                                    <label class="block text-[10px] font-bold text-finora-subtle mb-1">Costo guardado (Bs)</label>
+                                    <input type="text" value="Bs 0,00" readonly class="input-costo-bob w-full rounded-lg border border-blue-100 bg-blue-50 px-2.5 py-1.5 text-xs font-bold text-finora-blue outline-none">
                                 </div>
                             </div>
                         </div>
@@ -134,6 +139,27 @@
             const list = document.getElementById('missing-fields-list');
 
             const productsOptions = `@foreach ($productos as $prod)<option value="{{ $prod->id }}">{{ $prod->codigo }} - {{ $prod->nombre }}</option>@endforeach`;
+            let tipoCambio = 12;
+
+            const formatBob = (value) => `Bs ${Number(value).toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            const actualizarCostoConvertido = (row) => {
+                const usd = Number(row.querySelector('.input-costo-usd')?.value || 0);
+                const bob = row.querySelector('.input-costo-bob');
+                if (bob) bob.value = formatBob(usd * tipoCambio);
+            };
+
+            const cargarTipoCambio = async () => {
+                try {
+                    const response = await fetch('{{ route('tipo-cambio') }}', { headers: { Accept: 'application/json' } });
+                    const data = await response.json();
+                    tipoCambio = Number(data.bolivianos_por_dolar) || 12;
+                } catch {
+                    tipoCambio = 12;
+                }
+
+                container.querySelectorAll('.item-row').forEach(actualizarCostoConvertido);
+            };
 
             function attachRowToggle(row) {
                 const btnToggle = row.querySelector('.btn-toggle-nuevo-prod');
@@ -165,6 +191,11 @@
             }
 
             container.querySelectorAll('.item-row').forEach(row => attachRowToggle(row));
+            container.addEventListener('input', event => {
+                if (event.target.classList.contains('input-costo-usd')) {
+                    actualizarCostoConvertido(event.target.closest('.item-row'));
+                }
+            });
 
             btnAdd.addEventListener('click', () => {
                 const div = document.createElement('div');
@@ -173,8 +204,8 @@
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-bold text-finora-subtle uppercase">Ítem de Compra</span>
                         <div class="flex items-center gap-2">
-                            <button type="button" class="btn-toggle-nuevo-prod text-[11px] font-semibold text-finora-blue hover:underline">
-                                + Escribir producto no registrado
+                             <button type="button" class="btn-toggle-nuevo-prod inline-flex items-center gap-1 rounded-lg border-2 border-finora-blue bg-blue-50 px-3 py-2 text-xs font-extrabold text-finora-blue shadow-sm hover:bg-finora-blue hover:text-white transition-colors">
+                                 <span class="material-symbols-outlined text-base">edit_note</span> Escribir producto no registrado
                             </button>
                             <button type="button" class="btn-remove-row text-red-500 hover:text-red-700 p-0.5" title="Eliminar fila">
                                 <span class="material-symbols-outlined text-base">delete</span>
@@ -202,18 +233,26 @@
                         </div>
                         <div class="sm:col-span-3">
                             <label class="block text-[10px] font-bold text-finora-subtle mb-1">Costo Unitario ($)</label>
-                            <input type="number" step="0.01" min="0" name="detalles[${itemIdx}][costo_unitario]" value="0.00" required class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                            <input type="number" step="0.01" min="0" name="detalles[${itemIdx}][costo_unitario_usd]" value="0.00" required class="input-costo-usd w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
+                            <p class="mt-1 text-[10px] text-finora-subtle">Se guardará convertido en Bs.</p>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label class="block text-[10px] font-bold text-finora-subtle mb-1">Costo guardado (Bs)</label>
+                            <input type="text" value="Bs 0,00" readonly class="input-costo-bob w-full rounded-lg border border-blue-100 bg-blue-50 px-2.5 py-1.5 text-xs font-bold text-finora-blue outline-none">
                         </div>
                     </div>
                 `;
                 container.appendChild(div);
                 attachRowToggle(div);
+                actualizarCostoConvertido(div);
                 itemIdx++;
 
                 div.querySelector('.btn-remove-row').addEventListener('click', () => {
                     div.remove();
                 });
             });
+
+            cargarTipoCambio();
 
             // Validación interactiva de campos vacíos (2.9)
             form.addEventListener('submit', (e) => {

@@ -144,15 +144,15 @@
                                 <td class="py-2.5 px-3 font-mono text-slate-600 font-bold">{{ $det->producto->codigo }}</td>
                                 <td class="py-2.5 px-3 font-bold text-finora-navy">{{ $det->producto->nombre }}</td>
                                 <td class="py-2.5 px-3 text-center font-bold">{{ $det->cantidad }}</td>
-                                <td class="py-2.5 px-3 text-right text-slate-600">${{ number_format($det->costo_unitario, 2) }}</td>
-                                <td class="py-2.5 px-3 text-right font-bold text-finora-navy">${{ number_format($det->subtotal, 2) }}</td>
+                                <td class="py-2.5 px-3 text-right text-slate-600">@money($det->costo_unitario)</td>
+                                <td class="py-2.5 px-3 text-right font-bold text-finora-navy">@money($det->subtotal)</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot class="border-t border-slate-200 font-bold text-sm text-finora-navy">
                         <tr>
                             <td colspan="4" class="py-3 px-3 text-right">Total Orden:</td>
-                            <td class="py-3 px-3 text-right text-finora-blue">${{ number_format($compra->total, 2) }}</td>
+                            <td class="py-3 px-3 text-right text-finora-blue">@money($compra->total)</td>
                         </tr>
                     </tfoot>
                 </table>

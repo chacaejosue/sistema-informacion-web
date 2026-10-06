@@ -104,7 +104,7 @@
                                 <select name="detalles[0][producto_id]" required class="product-select w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-finora-navy outline-none">
                                     <option value="">-- Seleccionar Producto --</option>
                                     @foreach ($productos as $prod)
-                                        <option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}">{{ $prod->codigo }} - {{ $prod->nombre }} - ${{ number_format($prod->precio_venta_actual, 2) }} (Stock: {{ $prod->stock_disponible }})</option>
+                                        <option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}">{{ $prod->codigo }} - {{ $prod->nombre }} - Bs {{ number_format($prod->precio_venta_actual, 2, ',', '.') }} (Stock: {{ $prod->stock_disponible }})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -202,7 +202,7 @@
 
             container.querySelectorAll('.item-row').forEach(row => attachProductChangeListener(row));
 
-            const productsOptions = `@foreach ($productos as $prod)<option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}">{{ $prod->codigo }} - {{ $prod->nombre }} - ${{ number_format($prod->precio_venta_actual, 2) }} (Stock: {{ $prod->stock_disponible }})</option>@endforeach`;
+            const productsOptions = `@foreach ($productos as $prod)<option value="{{ $prod->id }}" data-precio="{{ $prod->precio_venta_actual }}">{{ $prod->codigo }} - {{ $prod->nombre }} - Bs {{ number_format($prod->precio_venta_actual, 2, ',', '.') }} (Stock: {{ $prod->stock_disponible }})</option>@endforeach`;
 
             btnAdd.addEventListener('click', () => {
                 const div = document.createElement('div');

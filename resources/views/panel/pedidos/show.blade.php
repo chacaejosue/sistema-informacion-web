@@ -44,16 +44,16 @@
             </div>
         @endif
 
-        @if ($errors->has('error'))
+        @if ($errors->any())
             <div role="alert" class="rounded-2xl border border-red-200 bg-red-50 p-4 flex items-center justify-between text-red-800 text-sm font-medium">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-red-600">error</span>
-                    <span>{{ $errors->first('error') }}</span>
+                    <span>{{ $errors->first() }}</span>
                 </div>
             </div>
         @endif
 
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div>
                 <div class="flex items-center gap-3">
                     <h1 class="font-heading text-2xl font-extrabold text-finora-navy">
@@ -69,30 +69,30 @@
                             default => 'bg-slate-100 border-slate-200 text-slate-600',
                         };
                     @endphp
-                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $badgeStyle }}">
+                     <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $badgeStyle }} dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200">
                         {{ $pedido->estado }}
                     </span>
                 </div>
                 <p class="text-xs text-finora-subtle mt-1">
-                    Cliente: <strong class="text-finora-navy">{{ $pedido->cliente->persona->nombre }} {{ $pedido->cliente->persona->apellido }}</strong> &bull; Registrado el {{ $pedido->fecha ? $pedido->fecha->format('d/m/Y H:i') : '-' }}
+                     Cliente: <strong class="text-finora-navy">{{ $pedido->cliente->persona->nombre }} {{ $pedido->cliente->persona->apellido }}</strong> &bull; Registrado el {{ $pedido->fecha ? $pedido->fecha->format('d/m/Y H:i') : '-' }} &bull; Teléfono: <strong class="text-finora-navy">{{ $pedido->cliente->persona->telefono ?? 'No registrado' }}</strong>
                 </p>
             </div>
 
             <div class="flex flex-wrap items-center gap-2">
-                @if (! in_array($pedido->estado, ['COMPLETADO', 'CANCELADO']))
+                 @if ($pedido->estado === 'PENDIENTE')
                     <form action="{{ route('panel.pedidos.reservar', $pedido) }}" method="POST">
                         @csrf
                         <button type="submit" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors inline-flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">inventory_2</span>
-                            Verificar y Reservar Stock
+                             Verificar y reservar stock
                         </button>
                     </form>
                 @endif
 
-                @if (in_array($pedido->estado, ['RESERVADO', 'LISTO_ENTREGA']) && ! $pedido->venta)
-                    <a href="{{ route('panel.ventas.create', ['pedido_id' => $pedido->id]) }}" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors inline-flex items-center gap-1">
+                 @if (in_array($pedido->estado, ['RESERVADO', 'LISTO_ENTREGA']) && ! $pedido->venta)
+                     <a href="{{ route('panel.ventas.create', ['pedido_id' => $pedido->id]) }}" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors inline-flex items-center gap-1">
                         <span class="material-symbols-outlined text-sm">point_of_sale</span>
-                        Generar Venta
+                         Generar venta desde pedido
                     </a>
                 @endif
 
@@ -102,19 +102,37 @@
                         Ver Venta #{{ $pedido->venta->id }}
                     </a>
                 @endif
+
+                 @if ($pedido->estado === 'LISTO_ENTREGA')
+                     <form action="{{ route('panel.pedidos.entregar', $pedido) }}" method="POST" class="flex max-w-full flex-wrap items-end gap-3 rounded-xl border border-emerald-200 bg-emerald-50/60 p-3 dark:border-emerald-800 dark:bg-emerald-950/50">
+                         @csrf
+                         @method('PATCH')
+                         <label class="text-xs font-bold text-emerald-900 dark:text-emerald-200">Recibido por
+                             <input type="text" name="recibido_por" required placeholder="Nombre de quien recibe" class="mt-1 w-full rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-finora-blue dark:border-emerald-700 dark:bg-slate-900 dark:text-white">
+                         </label>
+                         <label class="text-xs font-bold text-emerald-900 dark:text-emerald-200">Observación <span class="font-normal text-emerald-700 dark:text-emerald-300">(opcional)</span>
+                             <input type="text" name="observaciones_entrega" placeholder="Nota de entrega" class="mt-1 w-full rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-finora-blue dark:border-emerald-700 dark:bg-slate-900 dark:text-white">
+                         </label>
+                        <button type="submit" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl inline-flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm">check_circle</span>
+                            Registrar entrega
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
 
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
+         <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 rounded-2xl p-6 shadow-sm space-y-4">
             <h3 class="font-heading font-bold text-sm text-finora-navy">Items del Pedido</h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs divide-y divide-slate-100">
                     <thead class="bg-[#F8FAFC] text-finora-subtle font-bold uppercase">
-                        <tr>
+                             <tr class="dark:border-slate-700">
                             <th class="py-2.5 px-3">Código</th>
                             <th class="py-2.5 px-3">Producto</th>
                             <th class="py-2.5 px-3 text-center">Cantidad Pedida</th>
-                            <th class="py-2.5 px-3 text-center">Cantidad Reservada</th>
+                             <th class="py-2.5 px-3 text-center">Cantidad Reservada</th>
+                             <th class="py-2.5 px-3 text-center">Stock disponible</th>
                             <th class="py-2.5 px-3 text-right">Precio Acordado</th>
                             <th class="py-2.5 px-3 text-right">Subtotal</th>
                         </tr>
@@ -125,16 +143,17 @@
                                 <td class="py-2.5 px-3 font-mono text-slate-600 font-bold">{{ $det->producto->codigo }}</td>
                                 <td class="py-2.5 px-3 font-bold text-finora-navy">{{ $det->producto->nombre }}</td>
                                 <td class="py-2.5 px-3 text-center font-bold">{{ $det->cantidad }}</td>
-                                <td class="py-2.5 px-3 text-center font-bold text-cyan-700 bg-cyan-50/50 rounded">{{ $det->cantidad_reservada }}</td>
-                                <td class="py-2.5 px-3 text-right text-slate-600">${{ number_format($det->precio_acordado, 2) }}</td>
-                                <td class="py-2.5 px-3 text-right font-bold text-finora-navy">${{ number_format($det->subtotal, 2) }}</td>
+                                  <td class="py-2.5 px-3 text-center font-bold text-cyan-700 bg-cyan-50/50 dark:bg-cyan-950/70 dark:text-cyan-200 rounded">{{ $det->cantidad_reservada }}</td>
+                                  <td class="py-2.5 px-3 text-center font-bold {{ $det->producto->stock_disponible > 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300' }}">{{ $det->producto->stock_disponible }}</td>
+                                <td class="py-2.5 px-3 text-right text-slate-600">@money($det->precio_acordado)</td>
+                                <td class="py-2.5 px-3 text-right font-bold text-finora-navy">@money($det->subtotal)</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot class="border-t border-slate-200 font-bold text-sm text-finora-navy">
                         <tr>
-                            <td colspan="5" class="py-3 px-3 text-right">Total Pedido:</td>
-                            <td class="py-3 px-3 text-right text-finora-blue">${{ number_format($pedido->total, 2) }}</td>
+                             <td colspan="6" class="py-3 px-3 text-right">Total Pedido:</td>
+                            <td class="py-3 px-3 text-right text-finora-blue">@money($pedido->total)</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -146,6 +165,14 @@
                     <p class="text-xs text-slate-700 mt-0.5">{{ $pedido->observaciones }}</p>
                 </div>
             @endif
+
+                 @if ($pedido->fecha_entrega)
+                <div class="pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div><span class="text-finora-subtle block">Fecha de entrega:</span><strong>{{ $pedido->fecha_entrega->format('d/m/Y H:i') }}</strong></div>
+                    <div><span class="text-finora-subtle block">Recibido por:</span><strong>{{ $pedido->recibido_por }}</strong></div>
+                    <div><span class="text-finora-subtle block">Registró:</span><strong>{{ $pedido->entregadoPor?->persona?->nombre ?? '—' }}</strong></div>
+                 </div>
+             @endif
         </div>
     </main>
 </body>

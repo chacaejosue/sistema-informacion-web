@@ -93,6 +93,119 @@
             </div>
         </section>
 
+        @if ($usuario->rol === 'CONSULTOR')
+            <section class="mb-10 rounded-2xl border border-blue-100 bg-white p-5 shadow-sm" aria-labelledby="currency-calculator-title" data-currency-calculator>
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-finora-blue">Herramienta de apoyo</p>
+                        <h2 id="currency-calculator-title" class="mt-1 text-lg font-extrabold text-finora-navy">Calculadora de divisas</h2>
+                        <p class="mt-1 text-xs text-finora-subtle">Consulta una referencia actualizada del tipo de cambio oficial del BCB para comunicar precios a tus clientes.</p>
+                    </div>
+                    <div class="grid gap-3 sm:grid-cols-[8rem_9rem_9rem] sm:items-end">
+                        <label class="text-xs font-bold text-finora-subtle">Moneda
+                            <select id="currencyDirection" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-finora-navy">
+                                <option value="USD_BOB">USD → Bs</option>
+                                <option value="BOB_USD">Bs → USD</option>
+                            </select>
+                        </label>
+                        <label class="text-xs font-bold text-finora-subtle">Importe
+                            <input id="currencyAmount" type="number" min="0" step="0.01" value="1" class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-finora-navy">
+                        </label>
+                        <div class="rounded-xl bg-blue-50 px-3 py-2.5">
+                            <span class="block text-[10px] font-bold uppercase tracking-wide text-blue-700">Resultado</span>
+                            <strong id="currencyResult" class="block text-lg font-extrabold text-finora-blue">Cargando…</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950/50 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p class="text-xs font-extrabold text-finora-navy dark:text-slate-100">Fuente del tipo de cambio</p>
+                        <p id="currencySourceLabel" class="mt-1 text-xs text-finora-subtle dark:text-slate-300">Consultando fuente activa…</p>
+                    </div>
+                    <div class="flex flex-wrap items-end gap-2">
+                        <form action="{{ route('panel.tipo-cambio.refresh') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center gap-1 rounded-xl border border-finora-blue px-3 py-2 text-xs font-bold text-finora-blue hover:bg-blue-50 dark:hover:bg-blue-950/60">
+                                <span class="material-symbols-outlined text-sm">refresh</span> Actualizar ahora
+                            </button>
+                        </form>
+                        <form action="{{ route('panel.tipo-cambio.update') }}" method="POST" class="flex flex-wrap items-end gap-2">
+                            @csrf
+                            @method('PATCH')
+                            <label class="text-xs font-bold text-finora-subtle dark:text-slate-300">Fuente
+                                <select id="exchangeRateSource" name="fuente" class="mt-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-finora-navy dark:border-slate-600 dark:bg-slate-900 dark:text-white">
+                                    <option value="OFICIAL">Oficial BCB</option>
+                                    <option value="MANUAL">Manual</option>
+                                </select>
+                            </label>
+                            <label id="manualRateField" class="hidden text-xs font-bold text-finora-subtle dark:text-slate-300">Bs por USD
+                                <input name="tasa_manual" type="number" step="0.0001" min="0.0001" class="mt-1 w-28 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-finora-navy dark:border-slate-600 dark:bg-slate-900 dark:text-white" placeholder="6.96">
+                            </label>
+                            <button type="submit" class="rounded-xl bg-finora-navy px-3 py-2 text-xs font-bold text-white hover:bg-finora-dark">Guardar fuente</button>
+                        </form>
+                    </div>
+                </div>
+                <p id="currencyRateLabel" class="mt-3 text-[11px] text-finora-subtle">Consultando tipo de cambio oficial…</p>
+            </section>
+            <script>
+                document.addEventListener('DOMContentLoaded', async () => {
+                    const direction = document.getElementById('currencyDirection');
+                    const amount = document.getElementById('currencyAmount');
+                    const result = document.getElementById('currencyResult');
+                     const rateLabel = document.getElementById('currencyRateLabel');
+                     const source = document.getElementById('exchangeRateSource');
+                     const manualField = document.getElementById('manualRateField');
+                     const sourceLabel = document.getElementById('currencySourceLabel');
+                     if (!direction || !amount || !result || !rateLabel) return;
+
+                    let rate = 12;
+                    try {
+                        const response = await fetch('{{ route('tipo-cambio') }}', { headers: { Accept: 'application/json' } });
+                         const data = await response.json();
+                         rate = Number(data.bolivianos_por_dolar) || 12;
+                         if (source) source.value = data.fuente || 'OFICIAL';
+                         if (sourceLabel) {
+                             const updatedAt = data.actualizado ? new Date(data.actualizado).toLocaleString('es-BO') : 'sin fecha';
+                             sourceLabel.textContent = data.fuente === 'MANUAL'
+                                 ? `Usando la tasa manual configurada. Actualizada: ${updatedAt}.`
+                                 : `${data.es_respaldo ? 'Usando respaldo local' : 'Usando la tasa oficial del BCB'}. Última consulta: ${updatedAt}.`;
+                         }
+                     } catch {
+                        rateLabel.textContent = 'No se pudo consultar el BCB; se utiliza la tasa de respaldo configurada.';
+                    }
+
+                    const format = (value, currency) => `${currency} ${Number(value).toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    const update = () => {
+                        const value = Number(amount.value) || 0;
+                        const isDollarToBob = direction.value === 'USD_BOB';
+                        result.textContent = format(isDollarToBob ? value * rate : value / rate, isDollarToBob ? 'Bs' : 'USD');
+                         rateLabel.textContent = `Tasa de referencia: 1 USD = ${format(rate, 'Bs')}. La tasa oficial se consulta una vez al día.`;
+                     };
+
+                     const toggleManualRate = () => manualField?.classList.toggle('hidden', source?.value !== 'MANUAL');
+                     source?.addEventListener('change', toggleManualRate);
+                     toggleManualRate();
+
+                    amount.addEventListener('input', update);
+                    direction.addEventListener('change', update);
+                    update();
+                });
+            </script>
+        @endif
+
+        @if ($pedidosPendientes > 0)
+            <section class="mb-10 flex flex-col gap-3 rounded-2xl border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-950/60 sm:flex-row sm:items-center sm:justify-between" role="status">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-purple-700 dark:text-purple-300">notifications_active</span>
+                    <div>
+                        <p class="text-sm font-extrabold text-purple-900 dark:text-purple-100">Tienes {{ $pedidosPendientes }} pedido(s) pendiente(s) de atención</p>
+                        <p class="text-xs text-purple-700 dark:text-purple-200">Revisa disponibilidad y coordina con tus clientes.</p>
+                    </div>
+                </div>
+                <a href="{{ route('panel.pedidos.index') }}" class="inline-flex items-center justify-center gap-1 rounded-xl bg-purple-700 px-3 py-2 text-xs font-bold text-white hover:bg-purple-800">Ver pedidos <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+            </section>
+        @endif
+
         <section aria-labelledby="modules-title" class="space-y-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -204,7 +317,7 @@
                 </a>
 
                 <!-- 7. Créditos y Pagos -->
-                <a href="{{ route('panel.pagos.index') }}" class="finora-card-interactive animate-fade-in-up delay-400 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-indigo-600 transition-all flex flex-col justify-between group">
+                 <a href="{{ route('panel.pagos.index') }}" class="finora-card-interactive animate-fade-in-up delay-400 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-indigo-600 transition-all flex flex-col justify-between group">
                     <div>
                         <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
                             <span class="material-symbols-outlined text-2xl">account_balance</span>
@@ -217,9 +330,24 @@
                             Cuentas por cobrar y registro de abonos.
                         </p>
                     </div>
-                </a>
+                 </a>
 
-                <!-- 8. Usuarios -->
+                 @if ($usuario->rol === 'CONSULTOR')
+                     <a href="{{ route('panel.reportes.index') }}" class="finora-card-interactive animate-fade-in-up delay-400 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm hover:shadow-xl hover:border-teal-600 transition-all flex flex-col justify-between group">
+                         <div>
+                             <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-300 group-hover:bg-teal-600 group-hover:text-white transition-colors flex items-center justify-center mb-4 shadow-xs">
+                                 <span class="material-symbols-outlined text-2xl">analytics</span>
+                             </div>
+                             <h3 class="font-heading text-lg font-bold text-finora-navy dark:text-slate-100 group-hover:text-teal-600 transition-colors flex items-center justify-between">
+                                 <span>Reportes</span>
+                                 <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                             </h3>
+                             <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">Ventas, cobros, pedidos y existencias del periodo.</p>
+                         </div>
+                     </a>
+                 @endif
+
+                 <!-- 8. Usuarios -->
                 @if ($usuario->rol === 'CONSULTOR')
                     <a href="{{ route('panel.usuarios.index') }}" class="finora-card-interactive animate-fade-in-up delay-400 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-slate-800 transition-all flex flex-col justify-between group">
                         <div>
@@ -230,7 +358,7 @@
                                 <span>Usuarios</span>
                                 <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </h3>
-                            <p class="text-xs text-finora-subtle mt-1.5 leading-relaxed">
+                             <p class="text-xs text-finora-subtle dark:text-slate-300 mt-1.5 leading-relaxed">
                                 Administración de cuentas de acceso y roles.
                             </p>
                         </div>

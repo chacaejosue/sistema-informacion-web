@@ -47,7 +47,7 @@
                         <option value="">-- Seleccionar Venta Pendiente --</option>
                         @foreach ($ventasConSaldo as $v)
                             <option value="{{ $v->id }}" {{ (old('venta_id', $ventaSeleccionada?->id) == $v->id) ? 'selected' : '' }}>
-                                Venta #{{ $v->id }} &bull; Cliente: {{ $v->cliente->persona->nombre }} {{ $v->cliente->persona->apellido }} (Saldo: ${{ number_format($v->saldo_pendiente, 2) }})
+                                Venta #{{ $v->id }} &bull; Cliente: {{ $v->cliente->persona->nombre }} {{ $v->cliente->persona->apellido }} (Saldo: @money($v->saldo_pendiente))
                             </option>
                         @endforeach
                     </select>

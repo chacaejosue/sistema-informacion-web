@@ -60,13 +60,13 @@
             </div>
         @endif
 
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
                 <div class="flex items-center gap-3">
                     <h1 class="font-heading text-2xl font-extrabold text-finora-navy">
                         Venta #{{ $venta->id }}
                     </h1>
-                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border bg-purple-50 border-purple-200 text-purple-800">
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border bg-purple-50 border-purple-200 text-purple-800 dark:bg-purple-950/70 dark:border-purple-700 dark:text-purple-200">
                         {{ $venta->forma_pago }}
                     </span>
                     @php
@@ -76,7 +76,7 @@
                             default => 'bg-slate-100 border-slate-200 text-slate-600',
                         };
                     @endphp
-                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $badgeStyle }}">
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $badgeStyle }} dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100">
                         {{ $venta->estado }}
                     </span>
                 </div>
@@ -111,7 +111,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="md:col-span-2 space-y-6">
-                <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
+                <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 rounded-2xl p-6 shadow-sm space-y-4">
                     <h3 class="font-heading font-bold text-sm text-finora-navy">Detalle de Productos</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs divide-y divide-slate-100">
@@ -130,23 +130,23 @@
                                         <td class="py-2.5 px-3 font-mono text-slate-600 font-bold">{{ $det->producto->codigo }}</td>
                                         <td class="py-2.5 px-3 font-bold text-finora-navy">{{ $det->producto->nombre }}</td>
                                         <td class="py-2.5 px-3 text-center font-bold">{{ $det->cantidad }}</td>
-                                        <td class="py-2.5 px-3 text-right text-slate-600">${{ number_format($det->precio_unitario, 2) }}</td>
-                                        <td class="py-2.5 px-3 text-right font-bold text-finora-navy">${{ number_format($det->subtotal, 2) }}</td>
+                                        <td class="py-2.5 px-3 text-right text-slate-600">@money($det->precio_unitario)</td>
+                                        <td class="py-2.5 px-3 text-right font-bold text-finora-navy">@money($det->subtotal)</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot class="border-t border-slate-200 font-bold text-xs text-finora-navy">
                                 <tr>
                                     <td colspan="4" class="py-2 px-3 text-right text-finora-subtle">Subtotal General:</td>
-                                    <td class="py-2 px-3 text-right">${{ number_format($venta->subtotal, 2) }}</td>
+                                    <td class="py-2 px-3 text-right">@money($venta->subtotal)</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4" class="py-2 px-3 text-right text-finora-subtle">Descuento:</td>
-                                    <td class="py-2 px-3 text-right text-red-600">-${{ number_format($venta->descuento, 2) }}</td>
+                                    <td class="py-2 px-3 text-right text-red-600">-@money($venta->descuento)</td>
                                 </tr>
                                 <tr class="text-sm font-extrabold border-t border-slate-200">
                                     <td colspan="4" class="py-3 px-3 text-right">Total Venta:</td>
-                                    <td class="py-3 px-3 text-right text-finora-blue">${{ number_format($venta->total, 2) }}</td>
+                                    <td class="py-3 px-3 text-right text-finora-blue">@money($venta->total)</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -159,15 +159,15 @@
                     <h3 class="font-heading font-bold text-sm text-finora-navy border-b border-slate-100 pb-2">Resumen de Pagos</h3>
                     <div class="flex justify-between text-xs">
                         <span class="text-finora-subtle">Total Venta:</span>
-                        <span class="font-bold text-finora-navy">${{ number_format($venta->total, 2) }}</span>
+                        <span class="font-bold text-finora-navy">@money($venta->total)</span>
                     </div>
                     <div class="flex justify-between text-xs">
                         <span class="text-finora-subtle">Monto Pagado:</span>
-                        <span class="font-bold text-emerald-700">${{ number_format($venta->total_pagado, 2) }}</span>
+                        <span class="font-bold text-emerald-700">@money($venta->total_pagado)</span>
                     </div>
                     <div class="flex justify-between text-sm border-t border-slate-100 pt-2">
                         <span class="font-bold text-finora-navy">Saldo Pendiente:</span>
-                        <span class="font-extrabold text-red-600">${{ number_format($venta->saldo_pendiente, 2) }}</span>
+                        <span class="font-extrabold text-red-600">@money($venta->saldo_pendiente)</span>
                     </div>
 
                     @if ($venta->estado === 'CONFIRMADA' && $venta->saldo_pendiente > 0)
@@ -183,7 +183,7 @@
                     @forelse ($venta->pagos as $p)
                         <div class="text-xs p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex justify-between items-center">
                             <div>
-                                <span class="font-bold text-finora-navy block">${{ number_format($p->monto, 2) }}</span>
+                                <span class="font-bold text-finora-navy block">@money($p->monto)</span>
                                 <span class="text-[10px] text-finora-subtle">{{ $p->metodo }} &bull; {{ $p->fecha ? $p->fecha->format('d/m/Y') : '' }}</span>
                             </div>
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $p->estado === 'REGISTRADO' ? 'bg-emerald-50 text-emerald-800' : 'bg-red-50 text-red-700' }}">
