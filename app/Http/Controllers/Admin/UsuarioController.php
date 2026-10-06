@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UsuarioRequest;
+use App\Models\Auditoria;
 use App\Models\Persona;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
@@ -59,6 +60,8 @@ class UsuarioController extends Controller
                 'rol' => $validated['rol'],
                 'activo' => $validated['activo'] ?? true,
             ]);
+
+            Auditoria::registrar('CREAR_USUARIO', $persona, 'Cuenta de usuario creada.');
         });
 
         return redirect()->route('panel.usuarios.index')
@@ -96,6 +99,8 @@ class UsuarioController extends Controller
             }
 
             $usuario->update($userData);
+
+            Auditoria::registrar('ACTUALIZAR_USUARIO', $usuario, 'Cuenta de usuario actualizada.');
         });
 
         return redirect()->route('panel.usuarios.index')
@@ -110,6 +115,8 @@ class UsuarioController extends Controller
         }
 
         $usuario->update(['activo' => ! $usuario->activo]);
+
+        Auditoria::registrar('CAMBIAR_ESTADO_USUARIO', $usuario, 'Estado de usuario actualizado.', null, ['activo' => $usuario->activo]);
 
         $estadoText = $usuario->activo ? 'activado' : 'desactivado';
 

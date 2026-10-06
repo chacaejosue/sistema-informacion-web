@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EntregarPedidoRequest;
 use App\Http\Requests\PedidoRequest;
+use App\Models\Auditoria;
 use App\Models\Cliente;
 use App\Models\DetallePedido;
 use App\Models\Pedido;
@@ -94,7 +96,7 @@ class PedidoController extends Controller
 
     public function show(Pedido $pedido)
     {
-        $pedido->load(['cliente.persona', 'registradoPor.persona', 'detalles.producto', 'venta']);
+        $pedido->load(['cliente.persona', 'registradoPor.persona', 'entregadoPor.persona', 'detalles.producto', 'venta']);
 
         return view('panel.pedidos.show', compact('pedido'));
     }
@@ -134,6 +136,30 @@ class PedidoController extends Controller
             ->with('exito', "Estado del pedido actualizado a {$nuevoEstado}.");
     }
 
+    public function entregar(EntregarPedidoRequest $request, Pedido $pedido)
+    {
+        if ($pedido->estado !== 'LISTO_ENTREGA') {
+            return redirect()->back()->withErrors(['error' => 'El pedido debe estar listo para entrega.']);
+        }
+
+        $pedido->update([
+            'estado' => 'COMPLETADO',
+            'fecha_entrega' => now(),
+            'entregado_por_usuario_id' => $request->user()->id,
+            'recibido_por' => $request->validated('recibido_por'),
+            'observaciones_entrega' => $request->validated('observaciones_entrega'),
+        ]);
+
+        Auditoria::registrar('REGISTRAR_ENTREGA', $pedido, 'Se registró la entrega del pedido.', null, [
+            'estado' => $pedido->estado,
+            'recibido_por' => $pedido->recibido_por,
+            'fecha_entrega' => $pedido->fecha_entrega?->toISOString(),
+        ]);
+
+        return redirect()->route('panel.pedidos.show', $pedido)
+            ->with('exito', 'Entrega registrada correctamente.');
+    }
+
     private function ejecutarReserva(Pedido $pedido): array
     {
         return DB::transaction(function () use ($pedido) {
@@ -141,7 +167,7 @@ class PedidoController extends Controller
             $algoReservado = false;
 
             foreach ($pedido->detalles as $det) {
-                $producto = $det->producto;
+                $producto = Producto::whereKey($det->producto_id)->lockForUpdate()->firstOrFail();
                 // Stock disponible considerando reservas de OTROS pedidos
                 $stockFisico = (int) DB::table('movimientos_inventario')
                     ->where('producto_id', $producto->id)

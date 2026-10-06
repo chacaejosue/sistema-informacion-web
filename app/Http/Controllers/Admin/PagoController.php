@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PagoRequest;
+use App\Models\AplicacionPago;
+use App\Models\Auditoria;
 use App\Models\Cliente;
+use App\Models\Cuota;
 use App\Models\Pago;
 use App\Models\Venta;
 use Illuminate\Http\Request;
@@ -28,6 +31,7 @@ class PagoController extends Controller
         }])->get()->map(function ($cli) {
             $deuda = $cli->ventas->sum(fn ($v) => $v->saldo_pendiente);
             $cli->total_deuda = $deuda;
+
             return $cli;
         })->filter(fn ($cli) => $cli->total_deuda > 0);
 
@@ -53,7 +57,7 @@ class PagoController extends Controller
     {
         $validated = $request->validated();
 
-        DB::transaction(function () use ($validated, $request) {
+        DB::transaction(function () use ($validated, $request): void {
             $pago = Pago::create([
                 'venta_id' => $validated['venta_id'],
                 'registrado_por_usuario_id' => $request->user()->id,
@@ -65,9 +69,47 @@ class PagoController extends Controller
             ]);
 
             $venta = Venta::with('credito')->find($validated['venta_id']);
+            $montoRestante = (float) $pago->monto;
+
+            if ($venta?->credito) {
+                $cuotas = Cuota::where('credito_id', $venta->credito->id)
+                    ->orderBy('numero')
+                    ->lockForUpdate()
+                    ->get();
+
+                foreach ($cuotas as $cuota) {
+                    if ($montoRestante <= 0) {
+                        break;
+                    }
+
+                    $aplicado = (float) AplicacionPago::where('cuota_id', $cuota->id)
+                        ->whereHas('pago', fn ($query) => $query->where('estado', 'REGISTRADO'))
+                        ->sum('monto_aplicado');
+                    $saldoCuota = max(0, (float) $cuota->monto - $aplicado);
+                    $montoAplicado = min($montoRestante, $saldoCuota);
+
+                    if ($montoAplicado <= 0) {
+                        continue;
+                    }
+
+                    AplicacionPago::create([
+                        'pago_id' => $pago->id,
+                        'cuota_id' => $cuota->id,
+                        'monto_aplicado' => $montoAplicado,
+                    ]);
+                    $montoRestante -= $montoAplicado;
+
+                    $cuota->update([
+                        'estado' => $montoAplicado + $aplicado >= (float) $cuota->monto ? 'PAGADA' : 'PARCIAL',
+                    ]);
+                }
+            }
+
             if ($venta && $venta->credito && $venta->saldo_pendiente <= 0.01) {
                 $venta->credito->update(['estado' => 'PAGADO']);
             }
+
+            Auditoria::registrar('REGISTRAR_PAGO', $pago, 'Pago registrado y aplicado a las cuotas disponibles.');
         });
 
         return redirect()->route('panel.ventas.show', $validated['venta_id'])

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Auditoria;
 use App\Models\MovimientoInventario;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class InventarioController extends Controller
 {
@@ -19,7 +21,7 @@ class InventarioController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('nombre', 'like', "%{$search}%")
-                  ->orWhere('codigo', 'like', "%{$search}%");
+                    ->orWhere('codigo', 'like', "%{$search}%");
             });
         }
 
@@ -57,14 +59,29 @@ class InventarioController extends Controller
 
         $cantidadSigned = $validated['tipo'] === 'AJUSTE_ENTRADA' ? $validated['cantidad'] : -$validated['cantidad'];
 
-        MovimientoInventario::create([
-            'producto_id' => $validated['producto_id'],
-            'registrado_por_usuario_id' => $request->user()->id,
-            'tipo' => $validated['tipo'],
-            'cantidad' => $cantidadSigned,
-            'fecha' => now(),
-            'observacion' => $validated['observacion'],
-        ]);
+        DB::transaction(function () use ($validated, $cantidadSigned, $request): void {
+            $producto = Producto::whereKey($validated['producto_id'])->lockForUpdate()->firstOrFail();
+
+            if ($cantidadSigned < 0 && $producto->stock_fisico < abs($cantidadSigned)) {
+                throw ValidationException::withMessages([
+                    'cantidad' => 'El ajuste no puede dejar el inventario en negativo.',
+                ]);
+            }
+
+            MovimientoInventario::create([
+                'producto_id' => $producto->id,
+                'registrado_por_usuario_id' => $request->user()->id,
+                'tipo' => $validated['tipo'],
+                'cantidad' => $cantidadSigned,
+                'fecha' => now(),
+                'observacion' => $validated['observacion'],
+            ]);
+
+            Auditoria::registrar('AJUSTAR_INVENTARIO', $producto, 'Se registró un ajuste manual de inventario.', null, [
+                'tipo' => $validated['tipo'],
+                'cantidad' => $cantidadSigned,
+            ]);
+        });
 
         return redirect()->back()->with('exito', 'Ajuste de inventario registrado correctamente.');
     }

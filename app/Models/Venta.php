@@ -17,6 +17,8 @@ class Venta extends Model
         'registrado_por_usuario_id',
         'fecha',
         'forma_pago',
+        'metodo_pago',
+        'numero_cuotas',
         'estado',
         'descuento',
     ];
@@ -26,6 +28,7 @@ class Venta extends Model
         return [
             'fecha' => 'datetime',
             'descuento' => 'decimal:2',
+            'numero_cuotas' => 'integer',
         ];
     }
 
@@ -67,6 +70,7 @@ class Venta extends Model
     public function getTotalAttribute(): float
     {
         $totalCalculado = $this->subtotal - (float) $this->descuento;
+
         return max(0, $totalCalculado);
     }
 

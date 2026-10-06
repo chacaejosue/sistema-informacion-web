@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DetallePedido extends Model
 {
@@ -36,11 +35,6 @@ class DetallePedido extends Model
     public function producto(): BelongsTo
     {
         return $this->belongsTo(Producto::class, 'producto_id');
-    }
-
-    public function asignacionesAbastecimiento(): HasMany
-    {
-        return $this->hasMany(AsignacionAbastecimiento::class, 'detalle_pedido_id');
     }
 
     public function getSubtotalAttribute(): float
